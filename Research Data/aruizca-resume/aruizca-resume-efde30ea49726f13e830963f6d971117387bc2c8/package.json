@@ -1,0 +1,30 @@
+{
+  "name": "aruizca-resume",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "AI-powered resume and cover letter generator",
+  "private": true,
+  "packageManager": "pnpm@10.14.0",
+  "scripts": {
+    "setup": "pnpm install && pnpm install --filter=\"./packages/*\"",
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "dev:ui": "pnpm --filter @aruizca-resume/web-ui run dev",
+    "dev:core": "pnpm --filter @aruizca-resume/core run dev",
+    "dev:full": "concurrently \"pnpm dev:core\" \"pnpm dev:ui\" --names \"CORE,UI\" --prefix-colors \"blue,green\"",
+    "start:dev": "pnpm dev:full",
+    "start": "pnpm build && pnpm --filter @aruizca-resume/web-ui run preview",
+    "test": "turbo run test",
+    "lint": "turbo run lint",
+    "clean": "turbo run clean",
+    "resume": "pnpm --filter @aruizca-resume/core run build && node --env-file=.env packages/core/dist/resume.js",
+    "resume:fresh": "pnpm --filter @aruizca-resume/core run build && node --env-file=.env packages/core/dist/resume.js --force-refresh",
+    "cover-letter": "pnpm --filter @aruizca-resume/core run build && node --env-file=.env packages/core/dist/cover-letter.js",
+    "cover-letter:fresh": "pnpm --filter @aruizca-resume/core run build && node --env-file=.env packages/core/dist/cover-letter.js --force-refresh",
+    "pdf": "node packages/core/src/main/shared/infrastructure/pdf/playwright-pdf.js"
+  },
+  "devDependencies": {
+    "turbo": "^2.5.5",
+    "concurrently": "^8.2.2"
+  }
+}

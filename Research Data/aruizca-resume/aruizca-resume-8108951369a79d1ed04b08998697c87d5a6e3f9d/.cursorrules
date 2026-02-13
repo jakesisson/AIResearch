@@ -1,0 +1,124 @@
+# Cursor Rules for AI-Powered Resume Generator
+
+## Project Memory System
+This project uses a comprehensive memory bank system to maintain context across development sessions. Always load and reference these files for complete project understanding.
+
+### Required Context Files
+Always load these files from `memory-bank/` directory as project context for every session:
+
+1. **projectbrief.md** - Project goals, requirements, and scope
+2. **productContext.md** - Purpose, user stories, and problems addressed  
+3. **activeContext.md** - Current work, open threads, decisions, and next steps
+4. **systemPatterns.md** - Architecture, component relationships, and design patterns
+5. **techContext.md** - Technologies, setup guides, and dependencies
+6. **progress.md** - What's working, what's left, and known issues
+
+### Memory Bank Updates
+Proactively update these files when new important project information emerges:
+
+- **activeContext.md**: Update current work status, decisions made, and next steps
+- **progress.md**: Log completed work, new issues discovered, and updated priorities
+- **systemPatterns.md**: Document new architectural decisions or component changes
+- **techContext.md**: Add new dependencies, setup requirements, or technical decisions
+
+### Development Guidelines
+
+#### Architecture Principles
+- Follow DDD (Domain-Driven Design) + Hexagonal Architecture patterns
+- Maintain clear separation between domain, application, and infrastructure layers
+- Use the `resume-generator` context module for all core functionality
+- Implement dependency injection for testability and flexibility
+
+#### Code Organization
+- **Barrel Exports Pattern**: Use `index.ts` files for clean import paths
+  - Each directory should have an `index.ts` that re-exports from sub-modules
+  - Enables clean imports: `import { Component } from './components'` vs `import { Component } from './components/Component'`
+  - Provides encapsulation and easier refactoring
+  - Use explicit named exports over `export *` for better tree-shaking
+  - Avoid `export *` with CommonJS modules
+- Avoid `.js` extensions in ESM imports
+- Prefer relative imports within the context module
+- Follow TypeScript strict typing throughout
+
+#### File Structure Conventions
+```
+src/resume-generator/
+├── service/          # Application services (use cases)
+│   ├── GenerateResume.ts
+│   └── index.ts      # Barrel exports
+├── domain/           # Domain models and business logic
+│   ├── model/
+│   │   ├── Resume.ts
+│   │   └── index.ts  # Barrel exports
+│   ├── services/
+│   │   ├── ResumeBuilder.ts
+│   │   └── index.ts  # Barrel exports
+│   └── index.ts      # Barrel exports
+├── infrastructure/   # External integrations and adapters
+│   ├── parsers/
+│   │   ├── LinkedInParser.ts
+│   │   └── index.ts  # Barrel exports
+│   ├── langchain/
+│   │   ├── PromptRunner.ts
+│   │   └── index.ts  # Barrel exports
+│   ├── output/
+│   │   ├── HtmlRenderer.ts
+│   │   ├── PdfExporter.ts
+│   │   └── index.ts  # Barrel exports
+│   └── index.ts      # Barrel exports
+└── prompts/         # AI prompt templates
+```
+
+#### Barrel Pattern Examples
+```typescript
+// ✅ Good - Explicit named exports
+export { Resume } from './model/Resume';
+export { ResumeBuilder } from './services/ResumeBuilder';
+
+// ✅ Good - Re-export from sub-modules
+export * from './model';
+export * from './services';
+
+// ❌ Avoid - Wildcard exports with CommonJS modules
+export * from './components';
+```
+
+#### Error Handling Strategy
+- Handle API errors gracefully (OpenAI rate limits, quotas)
+- Validate input files and output directories
+- Provide clear error messages for debugging
+- Implement graceful degradation where possible
+
+#### Testing Approach
+- Unit tests for domain logic and services
+- Integration tests for full pipeline
+- Mock external dependencies (OpenAI API, file system)
+- Validate JSON Resume schema compliance
+
+### Current Development Focus
+- **Phase**: ✅ Milestone 2 Complete - Production Ready
+- **Priority**: Documentation enhancement and Milestone 3 features
+- **Architecture**: DDD + Hexagonal with context module organization
+- **Tech Stack**: Node.js + TypeScript + ESM + OpenAI API
+
+### Key Dependencies
+- OpenAI API (ChatGPT 4o) for content generation
+- jsonresume-theme-even-crewshin for HTML rendering
+- papaparse for CSV parsing
+- Playwright for PDF export
+- @jsonresume/schema for validation
+- ajv for JSON schema validation
+
+### Environment Setup
+- Node.js 18+ required
+- OpenAI API key in `.env` file
+- Build with `npm run build`
+- Run with `npm start`
+- Use `npm run start:fresh` to bypass cache
+
+### Output Files
+- Generated files go to `/output` directory
+- Date-stamped naming: `resume-yyyymmdd.{json,html,pdf}`
+- Output directory is gitignored
+
+Always reference the memory bank files for complete context and update them as the project evolves. 

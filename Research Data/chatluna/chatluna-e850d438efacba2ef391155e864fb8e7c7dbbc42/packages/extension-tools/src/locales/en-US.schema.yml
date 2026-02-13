@@ -1,0 +1,74 @@
+$inner:
+    - {}
+    - $desc: 'Conversation & AI Features'
+      think: 'Enable thinking function (may improve responses)'
+      send: 'Enable pre-message sending'
+      todos: 'Enable task decomposition. Can generate multi-step task lists and automatically break down tasks'
+      chat: 'Enable interactive query. Note: Rebuilds tool chain'
+
+    - $desc: 'Creative Content Features'
+      draw: 'Enable text-to-image (uses Koishi text-to-image plugin)'
+      music: 'Enable simple audio generation. (Requires installation and activation of [@dgck81lnn/music](https://github.com/DGCK81LNN/koishi-plugin-music))'
+    - $desc: 'System Tools Features'
+      request: 'Enable request plugin (GET/POST interface)'
+      fs: 'Enable fs plugin (file read/write interface)'
+      command: 'Enable command assistance (execute Koishi bot commands)'
+      codeSandbox: 'Enable Python code execution (requires API key)'
+      cron: 'Enable scheduled reminders. '
+    - $desc: 'Extended Services Features'
+      group: 'Enable group management plugin'
+      knowledge: 'Enable knowledge base plugin calls'
+      actions: 'Enable OpenAPI tool calls (requires request tool to be enabled)'
+
+    - - $desc: 'Request Plugin Configuration'
+        requestMaxOutputLength: 'Max output length for request plugin'
+        requestSelector: 'Keywords to trigger request tool. Always selected when empty.'
+        requestHeaders:
+            $desc: 'Configure request headers based on domain matching.'
+            $inner:
+                matcher: 'Domain matcher pattern (supports wildcards, e.g., *.example.com, api.github.com).'
+                headers: 'Request headers to apply when this domain matches.'
+
+    - - $desc: 'File Plugin Configuration'
+        fsScopePath: 'Scope path for file plugin. Empty for system-wide access'
+        fsSelector: 'Keywords to trigger file system tools. Always selected when empty.'
+        fsIgnores: 'Default ignored folder expressions.'
+
+    - - $desc: 'Command Plugin Configuration'
+        commandWithSend: Whether to send command execution results by default.
+        commandList:
+            $desc: 'Available commands. If empty, all first-level commands are registered'
+            $inner:
+                command: 'Command to trigger'
+                description: 'Description of the command tool'
+                selector: 'Keyword to trigger the command'
+                confirm: 'Whether validation is required when executing the command'
+        commandBlacklist: 'Blacklist of top-level commands to block (including all sub-commands). Sensitive management commands are blocked by default.'
+
+    - - $desc: 'Group Management Plugin Configuration'
+        groupScopeSelector:
+            $desc: 'Member IDs allowed to use group management functions'
+        groupWhitelist:
+            $desc: 'Group ID whitelist for using group management functions. Available in all groups when empty.'
+
+    - - $desc: 'Cron Task Plugin Configuration'
+        cronScopeSelector:
+            $desc: 'Member IDs allowed to create command-type scheduled tasks. When empty, everyone can create reminder tasks but cannot create command tasks.'
+
+    - - $desc: 'Drawing Plugin Configuration'
+        drawPrompt: 'Prompt for drawing plugin'
+        drawCommand: 'Drawing execution command. {prompt} is the prompt used'
+        drawSelector: 'Keywords to trigger drawing tool. Always selected when empty.'
+
+    - - $desc: 'Music Generation Plugin Configuration'
+        musicSelector: 'Keywords to trigger music generation tool. Always selected when empty.'
+
+    - - $desc: 'OpenAPI Tool Call Plugin Configuration'
+        actionsList:
+            $desc: 'List of available OpenAPI tools'
+            $inner:
+                name: 'Tool name. Please use English names only.'
+                description: 'Tool description'
+                headers: Request headers
+                openAPISpec: 'OpenAPI specification content'
+                selector: 'Keywords to trigger the tool'

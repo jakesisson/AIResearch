@@ -1,0 +1,38 @@
+# This configuration compares LLM output using the actual commit.py prompt
+# Learn more: https://promptfoo.dev/docs/configuration/guide
+description: "Commit message generation eval using dynamic prompt from commit.py"
+
+prompts:
+  - file://dynamic_prompt.py:get_commit_prompt
+
+providers:
+  - openai:chat:gpt-4.1
+  - anthropic:messages:claude-sonnet-4-20250514
+  - groq:meta-llama/llama-4-maverick-17b-128e-instruct
+
+tests:
+  - vars:
+      diff_content: |
+        diff --git a/commit.py b/commit.py
+        new file mode 100644
+        index 0000000..1234567
+        --- /dev/null
+        +++ b/commit.py
+        @@ -0,0 +1,50 @@
+        +#!/usr/bin/env python3
+        +
+        +import sys
+        +import asyncio
+        +from langchain_core import messages
+        +from langchain_core.language_models.chat_models import BaseChatModel
+        +
+        +def prompt_summarize_diff(diff_output, oneline=False):
+        +    if oneline:
+        +        instructions = "Write a single-line commit message"
+        +    else:
+        +        instructions = "Write a detailed commit message"
+        +    return instructions
+      oneline: false
+    assert:
+      - type: llm-rubric
+        value: ensure the documents are merged well, and there is nothing beyond the merge documents included

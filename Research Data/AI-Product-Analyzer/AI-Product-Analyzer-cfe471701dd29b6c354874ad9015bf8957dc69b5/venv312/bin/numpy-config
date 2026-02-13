@@ -1,0 +1,8 @@
+#!/bin/sh
+'''exec' "/Users/jsisson/Research/Research Data/AI-Product-Analyzer/AI-Product-Analyzer-cfe471701dd29b6c354874ad9015bf8957dc69b5/venv312/bin/python3.12" "$0" "$@"
+' '''
+import sys
+from numpy._configtool import main
+if __name__ == '__main__':
+    sys.argv[0] = sys.argv[0].removesuffix('.exe')
+    sys.exit(main())

@@ -1,0 +1,38 @@
+import logging
+import os
+
+from sqlmodel import Session, select
+
+from app.config.config import settings
+from app.core.dependencies import engine  # Import engine directly
+from app.core.models import User, UserCreate
+from app.db.crud import create_user
+
+logger = logging.getLogger(__name__)
+
+
+def init_db():
+    """
+    Initializes the database: creates the first superuser if it doesn't exist.
+    Assumes database tables are already created by Alembic.
+    """
+    with Session(engine) as session:
+        # Only create superuser if credentials are provided
+        if settings.DB_SUPERUSER_USERNAME and settings.DB_SUPERUSER_PASSWORD and settings.DB_SUPERUSER_EMAIL:
+            # Check if the superuser already exists
+            superuser = session.exec(
+                select(User).where(User.email == settings.DB_SUPERUSER_EMAIL)
+            ).first()
+            if not superuser and not os.getenv("TESTING"):
+                logger.info("Initial user not found, creating...")
+                intial_user = UserCreate(
+                    username=settings.DB_SUPERUSER_USERNAME,
+                    password=settings.DB_SUPERUSER_PASSWORD,
+                    email=settings.DB_SUPERUSER_EMAIL,
+                )
+                superuser = create_user(session=session, user_create=intial_user)
+                logger.info("Initial user created")
+            else:
+                logger.info("Initial user already exists")
+        else:
+            logger.info("Superuser credentials not configured, skipping superuser creation")

@@ -1,0 +1,282 @@
+{
+  "extracted_at": "2026-02-10T11:05:51.446512",
+  "total_repositories": 46,
+  "repositories": [
+    {
+      "base_url": "https://github.com/Mihai-Tirtara/HypochondriAI",
+      "researched_commit": "https://github.com/Mihai-Tirtara/HypochondriAI/tree/c24b8d2c2fc40913415a7883c87a5c8185a17a37",
+      "prior_commit": "https://github.com/Mihai-Tirtara/HypochondriAI/tree/3b23faa83b3007490569ac2951887fe622c0cdcc",
+      "path": "Research Data/HypochondriAI"
+    },
+    {
+      "base_url": "https://github.com/Yaswanth-Mitta/multi",
+      "researched_commit": "https://github.com/Yaswanth-Mitta/multi/tree/6779ffda3a8a21dec8afb5b57bfee345a8a19798",
+      "prior_commit": "https://github.com/Yaswanth-Mitta/multi/tree/cfe471701dd29b6c354874ad9015bf8957dc69b5",
+      "path": "Research Data/AI-Product-Analyzer"
+    },
+    {
+      "base_url": "https://github.com/fvanevski/knowledge_agent",
+      "researched_commit": "https://github.com/fvanevski/knowledge_agent/tree/ef77bb2ccb38eee7f8a5e2374edb418adac4473b",
+      "prior_commit": "https://github.com/fvanevski/knowledge_agent/tree/e4c81ec2352265ce89233400995dfca1c9101f94",
+      "path": "Research Data/knowledge-agent"
+    },
+    {
+      "base_url": "https://github.com/Eden-Cohen1/Projectron",
+      "researched_commit": "https://github.com/Eden-Cohen1/Projectron/tree/b0c6e9a966b61ae3f72057f07e3c20c6cc0d8ebe",
+      "prior_commit": "https://github.com/Eden-Cohen1/Projectron/tree/2cddc9edf806a39818e5cdf698fe4dd7ac764931",
+      "path": "Research Data/Projectron"
+    },
+    {
+      "base_url": "https://github.com/Mohamed-B-ak/Siyadah-Call-Center-AI-maatmd-fryq",
+      "researched_commit": "https://github.com/Mohamed-B-ak/Siyadah-Call-Center-AI-maatmd-fryq/tree/57f9fd5529a48d9d4a79ece65d082c0d0e87d192",
+      "prior_commit": "https://github.com/Mohamed-B-ak/Siyadah-Call-Center-AI-maatmd-fryq/tree/4874dabad7212cc6e5d6f6b6fcbb002f008a5fc9",
+      "path": "Research Data/Siyadah-Call-Center"
+    },
+    {
+      "base_url": "https://github.com/lothronx/cm3070-lawtime",
+      "researched_commit": "https://github.com/lothronx/cm3070-lawtime/tree/c72917ff1975277c7462ab0babc37b69d0a49fba",
+      "prior_commit": "https://github.com/lothronx/cm3070-lawtime/tree/331aa34eb5e6f7447e4276a816095d8c4c440ed5",
+      "path": "Research Data/cm3070-lawtime"
+    },
+    {
+      "base_url": "https://github.com/RyanLisse/solomon-codes",
+      "researched_commit": "https://github.com/RyanLisse/solomon-codes/tree/262c51c5f63369ace7e4c94874a4a4a21d84e75b",
+      "prior_commit": "https://github.com/RyanLisse/solomon-codes/tree/40ac1a659bf1b382cfb9900d82b8d2963cf04cbb",
+      "path": "Research Data/solomon-codes"
+    },
+    {
+      "base_url": "https://github.com/bossjones/boss-bot",
+      "researched_commit": "https://github.com/bossjones/boss-bot/tree/f4877dc71af4bc6a2405aaf844c535cec788dde3",
+      "prior_commit": "https://github.com/bossjones/boss-bot/tree/426a3505432ca841d8d0d8569a53c6d534852535",
+      "path": "Research Data/boss-bot"
+    },
+    {
+      "base_url": "https://github.com/J-mazz/sys-scan-graph",
+      "researched_commit": "https://github.com/J-mazz/sys-scan-graph/tree/b9a4506472e8dd660ce3d5d2e2b4f2d076a4d16f",
+      "prior_commit": "https://github.com/J-mazz/sys-scan-graph/tree/d0e0ea8a9d030175fb196f8f4f30ecf378bd0f10",
+      "path": "Research Data/sys-scan-graph"
+    },
+    {
+      "base_url": "https://github.com/chintamanil/cybershield",
+      "researched_commit": "https://github.com/chintamanil/cybershield/tree/07608050ca98ff61c92beec7c15b9a666d735139",
+      "prior_commit": "https://github.com/chintamanil/cybershield/tree/c6c2d98169d6f2a6b0fd1132ed7771a69770e39f",
+      "path": "Research Data/cybershield"
+    },
+    {
+      "base_url": "https://github.com/parth1609/RAGveda",
+      "researched_commit": "https://github.com/parth1609/RAGveda/tree/a11d83969234368fd6c7a4a3118a23177b5e7ec8",
+      "prior_commit": "https://github.com/parth1609/RAGveda/tree/1de749ce978d3c0911743ba07dbf89dbba3088db",
+      "path": "Research Data/RAGveda"
+    },
+    {
+      "base_url": "https://github.com/Dtano17/pathwise_app",
+      "researched_commit": "https://github.com/Dtano17/pathwise_app/tree/7e4670094d0cd943e5eac928352881126862a350",
+      "prior_commit": "https://github.com/Dtano17/pathwise_app/tree/24278341077550d220fac6044f520646522fc799",
+      "path": "Research Data/pathwise-app"
+    },
+    {
+      "base_url": "https://github.com/JaymieX/JAA",
+      "researched_commit": "https://github.com/JaymieX/JAA/tree/c373419d444a224aaf561b032ba5446e00138286",
+      "prior_commit": "https://github.com/JaymieX/JAA/tree/bcd9c1c5414efe14115e5f05a62d2e4b5b7d9b5e",
+      "path": "Research Data/JAA"
+    },
+    {
+      "base_url": "https://github.com/aruizca/aruizca-resume",
+      "researched_commit": "https://github.com/aruizca/aruizca-resume/tree/8108951369a79d1ed04b08998697c87d5a6e3f9d",
+      "prior_commit": "https://github.com/aruizca/aruizca-resume/tree/efde30ea49726f13e830963f6d971117387bc2c8",
+      "path": "Research Data/aruizca-resume"
+    },
+    {
+      "base_url": "https://github.com/Ziyan0219/data-cleaning-agent",
+      "researched_commit": "https://github.com/Ziyan0219/data-cleaning-agent/tree/ad59db504daa798862aeafb880b9f357691b1812",
+      "prior_commit": "https://github.com/Ziyan0219/data-cleaning-agent/tree/0796e3380ee3e1cf6866137c80c0d293faedbbe4",
+      "path": "Research Data/data-cleaning-agent"
+    },
+    {
+      "base_url": "https://github.com/Yousif-Abuzeid/Deep-Query",
+      "researched_commit": "https://github.com/Yousif-Abuzeid/Deep-Query/tree/14a6100a1b7eaa168c0e04ec15e7ccee75e40b2f",
+      "prior_commit": "https://github.com/Yousif-Abuzeid/Deep-Query/tree/cff22449ff1f8213488a681f1b0766ccfa85cf28",
+      "path": "Research Data/Deep-Query"
+    },
+    {
+      "base_url": "https://github.com/parth1609/RAGveda",
+      "researched_commit": "https://github.com/parth1609/RAGveda/tree/a11d83969234368fd6c7a4a3118a23177b5e7ec8",
+      "prior_commit": "https://github.com/parth1609/RAGveda/tree/1de749ce978d3c0911743ba07dbf89dbba3088db",
+      "path": "Research Data/RAGveda2"
+    },
+    {
+      "base_url": "https://github.com/cds-9-group-6/sasya-chikitsa",
+      "researched_commit": "https://github.com/cds-9-group-6/sasya-chikitsa/tree/7600564b2048f95d4e1e7e22ad67a0417cade07d",
+      "prior_commit": "https://github.com/cds-9-group-6/sasya-chikitsa/tree/c4dae086a9b7d91697e5350ec97a6df299a2b380",
+      "path": "Research Data/sasya-chikitsa"
+    },
+    {
+      "base_url": "https://github.com/aandmaldonado/ai-resume-agent",
+      "researched_commit": "https://github.com/aandmaldonado/ai-resume-agent/tree/0ad71e1993b2e1361290dc93d5d04a11b66c8bdf",
+      "prior_commit": "https://github.com/aandmaldonado/ai-resume-agent/tree/d251ed01d4dbdc6ea94ff8cdf43005ab995ea5f6",
+      "path": "Research Data/ai-resume-agent"
+    },
+    {
+      "base_url": "https://github.com/ChatLunaLab/chatluna",
+      "researched_commit": "https://github.com/ChatLunaLab/chatluna/tree/9f7332529850cceb0b1ab8138540796c6a47890e",
+      "prior_commit": "https://github.com/ChatLunaLab/chatluna/tree/e850d438efacba2ef391155e864fb8e7c7dbbc42",
+      "path": "Research Data/chatluna"
+    },
+    {
+      "base_url": "https://github.com/idvorkin/nlp",
+      "researched_commit": "https://github.com/idvorkin/nlp/tree/ed783b2aebf9bdad2de7fedcec3a9ba9e723e7f8",
+      "prior_commit": "https://github.com/idvorkin/nlp/tree/f236b3158fdabab625e74a52b251832bdac1816f",
+      "path": "Research Data/nlp"
+    },
+    {
+      "base_url": "https://github.com/pablo-lozano-martin/genesis",
+      "researched_commit": "https://github.com/pablo-lozano-martin/genesis/tree/25d916b0f6920e360f0b7bbcc4c03a13d767596f",
+      "prior_commit": "https://github.com/pablo-lozano-martin/genesis/tree/38f2556b0f7f6ebc079b9e4e774c71402a002665",
+      "path": "Research Data/genesis"
+    },
+    {
+      "base_url": "https://github.com/canoekuro/analytics_ai",
+      "researched_commit": "https://github.com/canoekuro/analytics_ai/tree/8e53e7f5ef5ac140549db4b40eb2e299ddaad4a1",
+      "prior_commit": "https://github.com/canoekuro/analytics_ai/tree/14c09b32e8384087c2b1747eab89c92556630661",
+      "path": "Research Data/analytics_ai"
+    },
+    {
+      "base_url": "https://github.com/unfoldingWord/bt-servant-engine",
+      "researched_commit": "https://github.com/unfoldingWord/bt-servant-engine/tree/231d4f2d2c062c04a233a788fd99f487ba4866bf",
+      "prior_commit": "https://github.com/unfoldingWord/bt-servant-engine/tree/64e8ae1443de945f9d01633685d106326b3c558b",
+      "path": "Research Data/bt-servant-engine"
+    },
+    {
+      "base_url": "https://github.com/arthurmorais12/ecommerce-chat",
+      "researched_commit": "https://github.com/arthurmorais12/ecommerce-chat/tree/3e924091a8e3713a712fb8bcc187696d02c5b3fb",
+      "prior_commit": "https://github.com/arthurmorais12/ecommerce-chat/tree/bc7575e0392e83d44472161298df08c9baf08b83",
+      "path": "Research Data/ecommerce-chat"
+    },
+    {
+      "base_url": "https://github.com/Rajathbharadwaj/DocRAG-Backend",
+      "researched_commit": "https://github.com/Rajathbharadwaj/DocRAG-Backend/tree/cbe1f370adbd46b191523631613b6afd9ff213bb",
+      "prior_commit": "https://github.com/Rajathbharadwaj/DocRAG-Backend/tree/8c0d68755d31ad633fc8c026bc8e866c836149ad",
+      "path": "Research Data/DocRAG-Backend"
+    },
+    {
+      "base_url": "https://github.com/Alexanderdunlop/MemGPT-Discord",
+      "researched_commit": "https://github.com/Alexanderdunlop/MemGPT-Discord/tree/9eb09b5b228db748c740c20b656691b156ee3dd4",
+      "prior_commit": "https://github.com/Alexanderdunlop/MemGPT-Discord/tree/77cff2f5636ae3b322d9e3b2cca1a1de5a90a4e9",
+      "path": "Research Data/MemGPT-Discord"
+    },
+    {
+      "base_url": "https://github.com/Gael-Android/SSU_RAG",
+      "researched_commit": "https://github.com/Gael-Android/SSU_RAG/tree/4228e4e133cd201ebb2e04d0e40c3bf27b775b4c",
+      "prior_commit": "https://github.com/Gael-Android/SSU_RAG/tree/b9b2befc1271c08e73efc34212c8d4ea229f1b63",
+      "path": "Research Data/SSU_RAG"
+    },
+    {
+      "base_url": "https://github.com/nguyenhonglich111-1001/Experimental",
+      "researched_commit": "https://github.com/nguyenhonglich111-1001/Experimental/tree/3e970bfea0fb85405b07cd96dfc6e1d1ca862ed2",
+      "prior_commit": "https://github.com/nguyenhonglich111-1001/Experimental/tree/2954648d4d35e4014a65fee1737259e7e5ef525c",
+      "path": "Research Data/Experimental"
+    },
+    {
+      "base_url": "https://github.com/langflow-ai/langflow",
+      "researched_commit": "https://github.com/langflow-ai/langflow/tree/7aeb687533e53027aa477722d06d337b1a210ac6",
+      "prior_commit": "https://github.com/langflow-ai/langflow/tree/30c678b2937656e9f1b53c6d80123f84779d8ad1",
+      "path": "Research Data/langflow"
+    },
+    {
+      "base_url": "https://github.com/synergyai-nl/svelte-langgraph",
+      "researched_commit": "https://github.com/synergyai-nl/svelte-langgraph/tree/1ae88f755e6d8550cff98f00c5c8baf48a65ff76",
+      "prior_commit": "https://github.com/synergyai-nl/svelte-langgraph/tree/80f19464f7b79708c75473f5be407035bd5d0ff3",
+      "path": "Research Data/svelte-langgraph"
+    },
+    {
+      "base_url": "https://github.com/TuberRishi/Kisan_Dost_AI",
+      "researched_commit": "https://github.com/TuberRishi/Kisan_Dost_AI/tree/55c162e2d02236f2d6a133c34f4ca3cb4a5d3824",
+      "prior_commit": "https://github.com/TuberRishi/Kisan_Dost_AI/tree/d4c2e4ce3a82de7a357034d0b09532ddfc56a4fe",
+      "path": "Research Data/Kisan_Dost_AI"
+    },
+    {
+      "base_url": "https://github.com/anadi45/quark-chat",
+      "researched_commit": "https://github.com/anadi45/quark-chat/tree/b49fe1ece02ea9d12a3ecb8c1ad251aa0d482501",
+      "prior_commit": "https://github.com/anadi45/quark-chat/tree/c2a6dc9e713d4f553298f88d8e916603af84d29a",
+      "path": "Research Data/quark-chat"
+    },
+    {
+      "base_url": "https://github.com/jewells77/EchoBrandAI-Mind-Backup",
+      "researched_commit": "https://github.com/jewells77/EchoBrandAI-Mind-Backup/tree/362b4c1fcc3129b7ac0ec6f22f75674f9c5cf6a6",
+      "prior_commit": "https://github.com/jewells77/EchoBrandAI-Mind-Backup/tree/0e97698ec2a3a1362c650eedb3a46862f37152c4",
+      "path": "Research Data/EchoBrandAI-Mind-Backup"
+    },
+    {
+      "base_url": "https://github.com/danny-avila/agents",
+      "researched_commit": "https://github.com/danny-avila/agents/tree/399dbb01547de86c1b159c30c2e139093628988f",
+      "prior_commit": "https://github.com/danny-avila/agents/tree/ce19a8b87353f038fb99122ed66f0bbd2a9f977f",
+      "path": "Research Data/agents"
+    },
+    {
+      "base_url": "https://github.com/Les-Mills-Ai-Agent/RAG-Demon",
+      "researched_commit": "https://github.com/Les-Mills-Ai-Agent/RAG-Demon/tree/b7bca5a1310bdbfdd98023ad28e98954b063367c",
+      "prior_commit": "https://github.com/Les-Mills-Ai-Agent/RAG-Demon/tree/de66a26cac71261a4803b93484248a9a5b0514aa",
+      "path": "Research Data/RAG-Demon"
+    },
+    {
+      "base_url": "https://github.com/FurkanSahinnn/psychological-agent",
+      "researched_commit": "https://github.com/FurkanSahinnn/psychological-agent/tree/efcab0a6ae2707f8c9ab8b35a3eeddf8ca0e8565",
+      "prior_commit": "https://github.com/FurkanSahinnn/psychological-agent/tree/124599544119a8487c1eb09ac05849bf6d5a0bc6",
+      "path": "Research Data/psychological-agent"
+    },
+    {
+      "base_url": "https://github.com/kafkaGen/general-assistant",
+      "researched_commit": "https://github.com/kafkaGen/general-assistant/tree/c83e2588e088adf5f4803dff9688ef07f5e925f3",
+      "prior_commit": "https://github.com/kafkaGen/general-assistant/tree/fe11f9b7b610817d5e1f08d417d1f4009f39fa7d",
+      "path": "Research Data/general-assistant"
+    },
+    {
+      "base_url": "https://github.com/arthurmorais12/ecommerce-chat",
+      "researched_commit": "https://github.com/arthurmorais12/ecommerce-chat/tree/8e3edabb925f892107438516701dd6f0ac1b3def",
+      "prior_commit": "https://github.com/arthurmorais12/ecommerce-chat/tree/467f81b0e3fc51a46cb03d45a3d61a03dec1273a",
+      "path": "Research Data/ecommerce-chat2"
+    },
+    {
+      "base_url": "https://github.com/Lostovayne/Agente-de-IA-usando-Next-y-Langchain",
+      "researched_commit": "https://github.com/Lostovayne/Agente-de-IA-usando-Next-y-Langchain/tree/e7cd19cc538f3f5156dd717c457d73df6b6dae67",
+      "prior_commit": "https://github.com/Lostovayne/Agente-de-IA-usando-Next-y-Langchain/tree/bd049f6b662373f99f152ccbacebaea3b9936129",
+      "path": "Research Data/Agente-de-IA-usando-Next-y-Langchain"
+    },
+    {
+      "base_url": "https://github.com/luistorres/medabot",
+      "researched_commit": "https://github.com/luistorres/medabot/tree/b44b80ae3991ac76872bec46e622c51bb5ab4cea",
+      "prior_commit": "https://github.com/luistorres/medabot/tree/3facc256a7fb92baff9246476227839385f537f4",
+      "path": "Research Data/medabot"
+    },
+    {
+      "base_url": "https://github.com/LongStoryMedia/llmmllab",
+      "researched_commit": "https://github.com/LongStoryMedia/llmmllab/tree/70e006ef3c47e51254a9f85f00ae806278e5da0d",
+      "prior_commit": "https://github.com/LongStoryMedia/llmmllab/tree/17cf68d744762046d273005c753725853549772f",
+      "path": "Research Data/llmmllab"
+    },
+    {
+      "base_url": "https://github.com/shskwmt/hikizan-emacs",
+      "researched_commit": "https://github.com/shskwmt/hikizan-emacs/tree/84365f48d52394fe39ed9ad9e8174a26ba1b9a8f",
+      "prior_commit": "https://github.com/shskwmt/hikizan-emacs/tree/57b593c832e1d1941d81895d9c0a91b196eaccb4",
+      "path": "Research Data/hikizan-emacs"
+    },
+    {
+      "base_url": "https://github.com/NirelNemirovsky/aigie-io",
+      "researched_commit": "https://github.com/NirelNemirovsky/aigie-io/tree/de4c24820cd5967f1abff5f4af6dafab0207e618",
+      "prior_commit": "https://github.com/NirelNemirovsky/aigie-io/tree/ecfb314b546018e0e745344ce391a89c5d78774a",
+      "path": "Research Data/aigie-io"
+    },
+    {
+      "base_url": "https://github.com/Annotation-Garden/HEDit",
+      "researched_commit": "https://github.com/Annotation-Garden/HEDit/tree/ef6ed6fa475a79cf6a52c3a5bf405c8d3a94414b",
+      "prior_commit": "https://github.com/Annotation-Garden/HEDit/tree/7567091434d09849ac0fe5b297c23bff5124e9ac",
+      "path": "Research Data/HEDit"
+    },
+    {
+      "base_url": "https://github.com/stride-nyc/export-langsmith-data",
+      "researched_commit": "https://github.com/stride-nyc/export-langsmith-data/tree/ffe23613dfa5a90e3b03cff809114aa21df74599",
+      "prior_commit": "https://github.com/stride-nyc/export-langsmith-data/tree/570dea898391b06a8510012a66d2d9266aa86524",
+      "path": "Research Data/export-langsmith-data"
+    }
+  ]
+}

@@ -1,0 +1,101 @@
+<svg width="800" height="1100" xmlns="http://www.w3.org/2000/svg" font-family="sans-serif">
+    <style>
+        .box { stroke-width: 2; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.15)); }
+        .process rect { fill: #e3f2fd; stroke: #1e88e5; }
+        .process text { fill: #1565c0; font-size: 14px; }
+        .decision rect { fill: #fffde7; stroke: #fbc02d; }
+        .decision text { fill: #f57f17; font-size: 14px; }
+        .tool rect { fill: #e8f5e9; stroke: #388e3c; }
+        .tool text { fill: #1b5e20; font-size: 14px; }
+        .io rect { fill: #f3e5f5; stroke: #8e24aa; }
+        .io text { fill: #6a1b9a; font-size: 14px; }
+        .terminal rect { fill: #eceff1; stroke: #546e7a; }
+        .terminal text { fill: #37474f; font-size: 14px; }
+        .edge path { stroke: #546e7a; stroke-width: 2; fill: none; }
+        .edge text { fill: #37474f; font-size: 12px; }
+        .arrow-marker { fill: #546e7a; }
+        .title { font-size: 20px; font-weight: bold; text-anchor: middle; }
+    </style>
+    <defs>
+        <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" class="arrow-marker" />
+        </marker>
+    </defs>
+
+    <text x="400" y="30" class="title">Kisan Dost AI - Detailed Agent Workflow</text>
+
+    <!-- Nodes -->
+    <g class="io" transform="translate(300, 60)">
+        <rect class="box" width="200" height="50" rx="25" />
+        <text x="100" y="30" text-anchor="middle">User Speaks / Clicks Mic</text>
+    </g>
+    <g class="process" transform="translate(300, 140)">
+        <rect class="box" width="200" height="50" rx="5" />
+        <text x="100" y="30" text-anchor="middle">1. Transcribe Audio (Whisper)</text>
+    </g>
+    <g class="process" transform="translate(300, 220)">
+        <rect class="box" width="200" height="50" rx="5" />
+        <text x="100" y="30" text-anchor="middle">2. Determine Persona</text>
+    </g>
+    <g class="tool" transform="translate(300, 300)">
+        <rect class="box" width="200" height="50" rx="5" />
+        <text x="100" y="30" text-anchor="middle">3. Retrieve Relevant Memories</text>
+    </g>
+    <g class="decision" transform="translate(300, 380)">
+        <rect class="box" width="200" height="70" rx="5" transform="translate(100, 35) rotate(45)"/>
+        <text x="100" y="40" text-anchor="middle">Can I Answer?</text>
+    </g>
+    <g class="tool" transform="translate(550, 460)">
+        <rect class="box" width="200" height="50" rx="5" />
+        <text x="100" y="30" text-anchor="middle">Use Skill/Tool (RAG, etc.)</text>
+    </g>
+    <g class="tool" transform="translate(50, 460)">
+        <rect class="box" width="200" height="50" rx="5" fill="#fbe9e7" stroke="#d84315"/>
+        <text x="100" y="30" text-anchor="middle" fill="#bf360c">Fallback: Create Ticket</text>
+    </g>
+    <g class="process" transform="translate(300, 560)">
+        <rect class="box" width="200" height="50" rx="5" />
+        <text x="100" y="30" text-anchor="middle">4. Generate Text Response</text>
+    </g>
+    <g class="process" transform="translate(300, 640)">
+        <rect class="box" width="200" height="50" rx="5" />
+        <text x="100" y="30" text-anchor="middle">5. Synthesize Speech (TTS)</text>
+    </g>
+    <g class="io" transform="translate(300, 720)">
+        <rect class="box" width="200" height="50" rx="25" />
+        <text x="100" y="30" text-anchor="middle">Agent Speaks Response</text>
+    </g>
+    <g class="terminal" transform="translate(300, 820)">
+        <rect class="box" width="200" height="50" rx="5" />
+        <text x="100" y="30" text-anchor="middle">End of Conversation</text>
+    </g>
+    <g class="process" transform="translate(300, 900)">
+        <rect class="box" width="200" height="50" rx="5" />
+        <text x="100" y="30" text-anchor="middle">6. Consolidate Memories</text>
+    </g>
+    <g class="terminal" transform="translate(300, 980)">
+        <circle cx="100" cy="25" r="25" fill="#424242" stroke="#212121" stroke-width="2" />
+        <text x="100" y="30" text-anchor="middle" fill="white" font-weight="bold">End</text>
+    </g>
+
+    <!-- Edges -->
+    <path class="edge" d="M 400 110 V 140" marker-end="url(#arrow)" />
+    <path class="edge" d="M 400 190 V 220" marker-end="url(#arrow)" />
+    <path class="edge" d="M 400 270 V 300" marker-end="url(#arrow)" />
+    <path class="edge" d="M 400 350 V 380" marker-end="url(#arrow)" />
+    <path class="edge" d="M 400 450 V 560" marker-end="url(#arrow)" />
+    <text class="edge" x="410" y="500">Yes</text>
+    <path class="edge" d="M 400 610 V 640" marker-end="url(#arrow)" />
+    <path class="edge" d="M 400 690 V 720" marker-end="url(#arrow)" />
+    <path class="edge" d="M 400 770 V 820" marker-end="url(#arrow)" />
+    <path class="edge" d="M 400 870 V 900" marker-end="url(#arrow)" />
+    <path class="edge" d="M 400 950 V 980" marker-end="url(#arrow)" />
+
+    <path class="edge" d="M 435 415 C 500 415, 550 450, 550 485" marker-end="url(#arrow)" />
+    <text class="edge" x="500" y="440">No, need info</text>
+    <path class="edge" d="M 650 510 V 540 H 400" marker-end="url(#arrow)" />
+
+    <path class="edge" d="M 365 415 C 300 415, 250 450, 250 485" marker-end="url(#arrow)" />
+    <text class="edge" x="250" y="440">No, can't help</text>
+    <path class="edge" d="M 150 510 V 590 H 300" marker-end="url(#arrow)" />
+</svg>

@@ -1,0 +1,180 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "idvorkin_nlp"
+version = "0.1.0"
+requires-python = "==3.13.*"
+dependencies = [
+    "icecream",
+    "ipython",
+    "ell-ai",
+    "alembic",
+    "rich",
+    "pydantic",
+    "loguru",
+    "langchain-core",
+    "sparklines",
+    "langchain-community",
+    "langchain-openai",
+    "langchain-groq",
+    "pandas",
+    "dspy",
+    "elevenlabs",
+    "langchain-google-genai",
+    "langchain-google-genai",
+    "google-generativeai",
+    "pyobjc; sys_platform == 'darwin'",
+    "langchain_anthropic",
+    "replicate",
+    "twilio",
+    "sounddevice",
+    "soundfile",
+    "backoff",
+    "httpx",
+    "numpy>=2.0.0",
+    "typing-extensions",
+    "assemblyai",
+    "deepgram-sdk",
+    "openai",
+    "pudb",
+    "py-cord",
+    # jupyter-ai hasn't been much fun :(
+    # "jupyter-ai",
+    "langchainhub",
+    "typer",
+    "click==8.1.8",
+    "tiktoken",
+    "ruff",
+    "asyncer",
+    "html2text",
+    "fastapi",
+    "faiss-cpu",
+    "beautifulsoup4",
+    "azure-cosmos",
+    "torch; sys_platform == 'darwin'", # Can't afford to install it on my cloud VM's too massive
+    "matplotlib",
+    "pydub",
+    "yt-dlp",
+    "exa-py",
+    "google-cloud-texttospeech",
+    "pytest",
+    "pytest-asyncio",
+    "requests",
+    "tqdm",
+    "fastmcp",
+    "uvicorn",
+    "unstructured",
+    "google-cloud-speech>=2.32.0",
+    "google-cloud-storage>=3.1.0",
+    "pymupdf",
+    "validators",
+    "rank-bm25>=0.2.2",
+    "langchain-xai",
+]
+
+[tool.setuptools]
+py-modules = [
+    "gpt3",
+    "bestie",
+    "life",
+    "igor_journal",
+    "dump_grateful",
+    "improv",
+    "openai_wrapper",
+    "langchain_helper",
+    "tts",
+    "tts_dialog",
+    "pbf",
+    "commit",
+    "play_langchain",
+    "changes",
+    "changes2",
+    "fix",
+    "illustrate",
+    "think",
+    "vapi_sim",
+    "pell",
+    "pchanges",
+    "recognize",
+    "parse_week",
+    "image",
+    "captions",
+    "ell_helper",
+    "pdspy",
+    "qa_blog",
+    "discord_helper",
+    "journal",
+    "github_helper",
+    "iwhere",
+    "askig_mcp",
+    "askig_build_logic",
+    "askig_logic",
+    "askig_models",
+    "diarize",
+    "transcribe",
+]
+
+[project.scripts]
+gpt = "gpt3:app"
+think = "think:app"
+pell = "pell:app"
+pdspy = "pdspy:app"
+pchanges = "pchanges:app"
+gpt3 = "gpt3:app"
+ij = "igor_journal:app"
+dg = "dump_grateful:app"
+improv = "improv:app"
+plc = "play_langchain:app"
+life = "life:app"
+tts = "tts:app"
+tts-dialog = "tts_dialog:app_wrap_loguru"
+bestie = "bestie:app"
+pbf = "pbf:app"
+commit = "commit:app"
+changes = "changes:app"
+changes2 = "changes2:app"
+fix = "fix:app"
+parse_week = "parse_week:app"
+fabric = "fabric:app"
+illustrate = "illustrate:app"
+vapi_sim = "vapi_sim:app"
+recognize = "recognize:app"
+image = "image:app"
+captions = "captions:app"
+dspy = "dspy:app"
+qa_blog = "qa_blog:app_wrap_loguru"
+journal = "journal:app"
+iwhere = "iwhere:app_wrap_loguru"
+askig_mcp = "askig_mcp:cli_app"
+diarize = "diarize:app"
+transcribe = "transcribe:app_wrap_loguru"
+
+[tool.pyright]
+# ...
+venvPath = "."
+venv = ".venv"
+
+[dependency-groups]
+dev = [
+    "jupyterlab>=4.2",
+    "jupyterlab-lsp",
+    "nbdime",
+]
+
+[tool.ruff]
+extend-exclude = ["*.ipynb"]
+
+[tool.pytest.ini_options]
+asyncio_default_fixture_loop_scope = "function"
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+]
+filterwarnings = [
+    # Suppress Pydantic deprecation warnings from dependencies
+    "ignore:`min_items` is deprecated and will be removed, use `min_length` instead:DeprecationWarning:pydantic.*",
+    "ignore:`max_items` is deprecated and will be removed, use `max_length` instead:DeprecationWarning:pydantic.*",
+    # Suppress Pydantic v1 typing warnings from dependencies
+    "ignore:Failing to pass a value to the 'type_params' parameter.*:DeprecationWarning:pydantic.*",
+]

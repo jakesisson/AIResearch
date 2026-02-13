@@ -1,0 +1,9 @@
+streamlit
+atomic-agents
+PyPDF2
+python-dotenv
+instructor
+openai
+pytest
+pytest-asyncio
+pytest-mock

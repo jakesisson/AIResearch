@@ -1,0 +1,411 @@
+{
+  "basics": {
+    "name": "Angel Ruiz",
+    "label": "Manager - Technical Team Lead at Appfire",
+    "email": "",
+    "phone": "",
+    "url": "[BLOG:http://aruizca.com",
+    "summary": "I am a Software Engineer with more than 15 years of experience, managing, leading and developing quite a few IT projects. Most of my career has been mostly related to web application development in the JVM platform. But I consider myself a generalist that is passionate about software development and someone who is continuously seeking for ways to improve his skills, learn new technologies, improve software design and keep things fresh.  I always enjoy working and collaborating with a team of professionals to deliver valuable and quality solutions using Open Source technologies as well as proprietary software when required. I base my professional development in finding the technical knowledge and managerial skills that would allow  my team and myself to be more productive while providing a high level of quality and maintainability. My professional experience, qualifications and skills set allows me to handle myself and be fairly competent in any designated IT related role.",
+    "location": {
+      "address": "",
+      "city": "Pozuelo de Alarcón",
+      "region": " Community of Madrid",
+      "countryCode": " Spain",
+      "postalCode": ""
+    },
+    "profiles": [
+      {
+        "network": "LinkedIn",
+        "username": "",
+        "url": ""
+      }
+    ]
+  },
+  "work": [
+    {
+      "company": "Appfire",
+      "position": "Manager - Technical Team Lead",
+      "website": "",
+      "startDate": "Apr 2022",
+      "endDate": "",
+      "summary": "",
+      "highlights": []
+    },
+    {
+      "company": "Comalatech",
+      "position": "Platform Manager - Technical Team Lead",
+      "website": "",
+      "startDate": "Feb 2020",
+      "endDate": "Apr 2022",
+      "summary": "(Acquired by Appfire) This role encompassed both technical expertise and leadership, allowing me to continuously leverage my development skills. I take pride in being a people manager who remains actively engaged in coding.  As a manager, I led the Atlassian Cloud apps team and achieved significant milestones:   - We stabilized our highest-grossing cloud app, \"Comala Document Management,\" by reducing customer-reported issues and ensuring its readiness to accommodate large customers, a segment we soon began attracting. - We successfully released the initial production version of our Comala Publishing app for the cloud platform.  Following this success, I was promoted to Platform Manager, overseeing a team of 7 developers tasked with developing our new cloud-native platform. This initiative aimed to support our next generation of cloud products and marked the company's most extensive development effort. The goal was to pivot our business strategy, reducing our technical and financial dependence on the Atlassian Marketplace.  Creating this platform marked our first significant step into a microservice-oriented architecture, utilizing AWS serverless components. Additionally, we transitioned from using JavaScript as our primary language for cloud development to TypeScript. This transition required a comprehensive upskilling program for the entire team, including myself.",
+      "highlights": []
+    },
+    {
+      "company": "Comalatech",
+      "position": "Senior Software Engineer",
+      "website": "",
+      "startDate": "Nov 2015",
+      "endDate": "Feb 2020",
+      "summary": "I have primarily been developing apps for Jira and Confluence across both the Atlassian Cloud and Server platforms.  Additionally, I am responsible for overseeing the SDLC ecosystem pipeline, including maintenance and improvements of tools, infrastructure, CI, and release management processes.  I played a key role in introducing Scrum into our development process by serving as the ScrumMaster for one of the teams.  I implemented Docker into our CI process to enhance the development of cross-platform apps. Moreover, I successfully integrated Docker to improve our customer support, exemplified by the side project: docker-confluence-for-testing (GitHub).  The nature of being part of a small company has enabled me to engage in various other facets such as customer support, product definition and design, and even sales and marketing.",
+      "highlights": []
+    },
+    {
+      "company": "Atlas of Living Australia",
+      "position": "Software Engineer (CSIRO Contractor)",
+      "website": "",
+      "startDate": "Nov 2014",
+      "endDate": "Feb 2016",
+      "summary": "Software engineer working as a contractor at the Atlas of Living Australia (www.ala.org.au) designing and implementing several applications using the Grails framework and under a distributed micro services architecture. Some of these app are available online:  * ALA Dashboard: http://dashboard.ala.org.au * ALA Regions: http://regions.ala.org.au * Taxon Overflow  These projects involved technologies such us: Groovy & Grails framework, REST web services, HTML5, CSS3, Javascript, GIS: Google Maps and Open Street Maps, PostgreSQL, Elasticsearch, AjaxAnywhere, ...",
+      "highlights": []
+    },
+    {
+      "company": "CSIRO's Data61",
+      "position": "Senior Software Engineer",
+      "website": "",
+      "startDate": "Apr 2014",
+      "endDate": "Nov 2014",
+      "summary": "I was part of the eGov Cluster initiative to promote innovation in IT within Government, acting as a liaison between Federal and State departments and agencies, the industry, the Australian startup ecosystem and the academic IT research performed at NICTA. I was also involved in the design and development of a new generation of digital documents repository based on a distributed architecture and using best of breed open source products. As the cornerstone of such system I was working on a native CMIS spec implementation on top of a NoSQL datastore. This was intended to be a whole of government initiative started by the National Archives of Australia.",
+      "highlights": []
+    },
+    {
+      "company": "nerdErg.com",
+      "position": "Senior Software Developer",
+      "website": "",
+      "startDate": "Nov 2012",
+      "endDate": "Apr 2014",
+      "summary": "Startup focused on designing and developing kick-ass software mainly with the Groovy & Grails and Java EE technology stacks. As a startup we tried bootstrapping the development of our own products by providing our development services to third parties. During this time we worked with:  * Legal Aid ACT: developing a customize grant management system (eGrants) while providing integration with their existing case management system via web services. * Australian National Botanic Gardens: implementing the Living Collections project.",
+      "highlights": []
+    },
+    {
+      "company": "SRA Information Technology",
+      "position": "IT Senior Consultant",
+      "website": "",
+      "startDate": "Mar 2009",
+      "endDate": "Nov 2012",
+      "summary": "Since I joined SRA information Technology, I have mainly been leading and managing IT projects for the Australian Department of Environment among other departments and agencies. Projects were mostly related with environmental data collection and analysis with, occasionally, some GIS related services. A good example that synthesizes all those concepts is the National Pollutant Inventory (NPI) Public Database project for which I was the Technical Lead.  As project manager I have introduced tools and agile practices like iterative development, dependency management, unit testing, continuous integration and other not agile like issue tracking. Internally, the described set is now formally known as the SRA Development Ecosystem, for which I am the main responsible and contributor.  I have also been involved in business development tasks like writing tender responses and preparing and providing pre-sales presentations to current and prospective clients. I also initiated conversations and take part of negotiations to make SRA become partner with Jaspersoft. So we could generate a profitable pipeline of cost effective BI related work  On the pure technical side I have been the main contributor to change and improve all the steps involved in the SDLC of every Java EE application developed in the ACT branch. I have also put together our Java EE development platform called SRA-COMMONS which establishes the technologies and frameworks that shape the core of our architecture, having the Spring and Hibernate frameworks as its cornerstone. This new framework has certainly improved productivity and also has added quality, reliability as well as improved scalability and performance within all the developments, because it also provides a powerful layer of abstraction to, for instance, use Hibernate correctly (similar to GORM) and it encapsulates our expertise using those frameworks and their multiple dependencies.",
+      "highlights": []
+    },
+    {
+      "company": "SRA Information Technology",
+      "position": "IT Consultant",
+      "website": "",
+      "startDate": "Jun 2008",
+      "endDate": "Mar 2009",
+      "summary": "",
+      "highlights": []
+    },
+    {
+      "company": "Paradigma Tecnológico",
+      "position": "IT Senior Analyst",
+      "website": "",
+      "startDate": "Sep 2007",
+      "endDate": "Jan 2008",
+      "summary": "Technical lead to develop the first production ready iteration of the Spanish portal for “Simyo” mobile operator (www.simyo.es) which is the mobile brand of “KPN”, a Dutch company that provides telephone, Internet and television services to many European countries. The project was developed in collaboration with a Spanish company called “the cocktail” (www.the-cocktail.com) which is one of the most relevant companies to provide the best user experience in the web platform. The initial version of the portal, which included the public content, shop (handles around 80% of the contracts) and private CRM, was successfully deployed into the production environment in just 4 months, which represented an impressive accomplishment. The whole project was developed using Open Source technology. This web received an award as the best “telco” website in 2009 and also in 2009 it was awarded as one of the 20 best websites in Spain by Red.es.",
+      "highlights": []
+    },
+    {
+      "company": "Oesia (formerly IT-Deusto)",
+      "position": "IT Senior Analyst",
+      "website": "",
+      "startDate": "Sep 2005",
+      "endDate": "Sep 2007",
+      "summary": "Competences, clients and projects in which I’ve been involved are the following: •\tTeam leader in project for developing a CMS and a public portal for the online version of several magazines from the Spanish editor “Motorpress Ibérica”. Some of the portals are: www.menshealth.es, www.sportlife.es and www.mountainbike.es •\tAnalysis and development of the management application for the different sub-systems that take part in the Noxtrum search engine (www.noxtrum.com) from “TPI” (now “Yell Group”). For this project we defined a new layered architecture with technologies like: JSF, Spring and Hibernate and additionally we developed a MDA based code generator that uses Freemarker templates and  XML/XSD for the entities definition. For the first time we introduced Maven2 and the continuous integration in our methodology. •\tAnalysis and development as well as the evolutionary maintenance of a custom ERP for a Spanish state agency called “Punto Inmobiliario”.",
+      "highlights": []
+    },
+    {
+      "company": "Coritel / Accenture",
+      "position": "JavaEE Senior Programmer",
+      "website": "",
+      "startDate": "Dec 2003",
+      "endDate": "Sep 2005",
+      "summary": "Coritel is the Spanish brand for the Accenture Technology Solutions division in Spain. There, I worked almost one year in the Government market unit for clients like Spain's Ministry of Industry, Ministry of Interior and Red.es. During the following year I worked in the Technology and Telecommunications market unit for clients like Ya.com (Deutsche Telekom) and Vodafone Spain.",
+      "highlights": []
+    },
+    {
+      "company": "Envisión / FullSIX España",
+      "position": "JavaEE programmer",
+      "website": "",
+      "startDate": "Jan 2003",
+      "endDate": "Dec 2003",
+      "summary": "Developer to build a web application to process and manage all the insurance policies for the Spanish insurance company “Mapfre”.",
+      "highlights": []
+    }
+  ],
+  "education": [
+    {
+      "institution": "Universidad Pontificia Comillas",
+      "area": "",
+      "studyType": "Bachelor’s Degree",
+      "startDate": "1997",
+      "endDate": "2002",
+      "gpa": "",
+      "courses": []
+    }
+  ],
+  "skills": [
+    {
+      "name": "Spring Boot",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "Agile Methodologies",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "Java",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "Hibernate",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "Continuous Integration",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "Maven",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "Agile Project Management",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "Groovy",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "Web Services",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "Software Engineering",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "SOA",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "Databases",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "Scrum",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "Web Development",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "SDLC",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "SQL",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "Requirements Analysis",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "Business Analysis",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "Team Leadership",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "Grails",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "Linux",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "REST",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "TDD",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "NoSQL",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "PostgreSQL",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "Java EE",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "Software Development",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "Spring Framework",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "Web Applications",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "node.js",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "Javascript",
+      "level": "",
+      "keywords": []
+    }
+  ],
+  "languages": [
+    {
+      "language": "",
+      "fluency": ""
+    },
+    {
+      "language": "",
+      "fluency": ""
+    }
+  ],
+  "projects": [
+    {
+      "name": "",
+      "description": "AjaxAnywhere is an Open Source Java Ajax framework that enables the developer to add Ajax behavior to your web application without any Javascript coding.",
+      "highlights": [],
+      "keywords": [],
+      "startDate": "Feb 2013",
+      "endDate": "",
+      "url": "http://www.ajaxanywhere.com",
+      "roles": [],
+      "entity": "",
+      "type": ""
+    }
+  ],
+  "certificates": [
+    {
+      "name": "Certified ScrumMaster",
+      "date": "Mar 2017",
+      "url": "",
+      "issuer": "Scrum Alliance"
+    },
+    {
+      "name": "Prince2 Foundation",
+      "date": "",
+      "url": "",
+      "issuer": "APMG-International"
+    },
+    {
+      "name": "Prince2 Practitioner",
+      "date": "Apr 2017",
+      "url": "",
+      "issuer": "APMG-International"
+    },
+    {
+      "name": "Oracle Certified Professional, Java SE 6 Programmer",
+      "date": "",
+      "url": "https://www.youracclaim.com/badges/534931f9-4129-4c88-9020-b7c84055a261/linked_in_profile",
+      "issuer": "Oracle"
+    }
+  ],
+  "meta": {
+    "training": [
+      {
+        "name": "ELICOS (English Language Intensive for Overseas Students) at Australian National University (ANU), Canberra (Australia)",
+        "institution": "",
+        "number": ""
+      },
+      {
+        "name": "ScrumMaster training course",
+        "institution": "Scrumology Pty Ltd",
+        "number": ""
+      },
+      {
+        "name": "ARIA & HTML5 workshop",
+        "institution": "the Web Industry Professional Association",
+        "number": ""
+      },
+      {
+        "name": "Testing and TDD for Java developers",
+        "institution": "John Ferguson Smart",
+        "number": ""
+      },
+      {
+        "name": "Spring Core",
+        "institution": "SpringSource",
+        "number": ""
+      },
+      {
+        "name": "Advanced XML course",
+        "institution": "Coritel",
+        "number": ""
+      },
+      {
+        "name": "Advanced Java Web applications",
+        "institution": "Coritel",
+        "number": ""
+      },
+      {
+        "name": "Team work",
+        "institution": "Coritel",
+        "number": ""
+      },
+      {
+        "name": "M101J: MongoDB for Java Developers",
+        "institution": "10gen",
+        "number": "http://education.10gen.co"
+      },
+      {
+        "name": "M102: MongoDB for DBAs",
+        "institution": "",
+        "number": "http://education.mongodb."
+      },
+      {
+        "name": "Core Elasticsearch",
+        "institution": "",
+        "number": ""
+      }
+    ]
+  }
+}

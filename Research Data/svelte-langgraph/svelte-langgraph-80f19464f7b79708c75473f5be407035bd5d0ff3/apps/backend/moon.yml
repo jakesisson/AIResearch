@@ -1,0 +1,35 @@
+# https://moonrepo.dev/docs/config/project
+$schema: "https://moonrepo.dev/schemas/project.json"
+
+language: python
+stack: backend
+type: application
+
+tasks:
+  format:
+    command: "ruff format"
+    args: "--check"
+  format-write:
+    command: "ruff format"
+    local: true
+  lint:
+    command: "ruff check"
+  lint-fix:
+    extends: lint
+    args: "--fix"
+    local: true
+  typecheck:
+    command: "pyright"
+  dev:
+    command: "langgraph dev --no-browser"
+    preset: "watcher"
+  build:
+    command: "langgraph build --tag svelte-langgraph-backend --pull"
+    deps:
+      - lint
+      - typecheck
+  up:
+    command: "langgraph up"
+    preset: "server"
+    deps:
+      - build

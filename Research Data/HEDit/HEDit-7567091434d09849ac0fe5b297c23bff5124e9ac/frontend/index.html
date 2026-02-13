@@ -1,0 +1,1996 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HEDit - HED Annotation Generator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <!-- Cloudflare Turnstile for bot protection -->
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
+    <style>
+        :root {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f5f5f4;
+            --bg-tertiary: #fafaf9;
+            --bg-page: linear-gradient(135deg, #f5f5f4 0%, #e7e5e4 50%, #d6d3d1 100%);
+            --text-primary: #1c1917;
+            --text-secondary: #57534e;
+            --text-muted: #78716c;
+            --border-color: #e7e5e4;
+            --border-light: #d6d3d1;
+            --input-bg: #fafaf9;
+            --shadow-color: rgba(24, 74, 61, 0.12);
+            --shadow-light: rgba(0, 0, 0, 0.08);
+        }
+
+        html.dark {
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #171717;
+            --bg-tertiary: #1a1a1a;
+            --bg-page: linear-gradient(135deg, #0a0a0a 0%, #0f0f0f 50%, #171717 100%);
+            --text-primary: #f5f5f4;
+            --text-secondary: #a8a29e;
+            --text-muted: #78716c;
+            --border-color: #2a2a2a;
+            --border-light: #333333;
+            --input-bg: #171717;
+            --shadow-color: rgba(0, 0, 0, 0.4);
+            --shadow-light: rgba(0, 0, 0, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--bg-page);
+            min-height: 100vh;
+            padding: 20px;
+            transition: background 0.3s ease;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: var(--bg-primary);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px var(--shadow-color);
+            padding: 0;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            transition: background 0.3s ease, border-color 0.3s ease;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 30px 40px;
+            background: linear-gradient(135deg, #184A3D 0%, #2A6B5A 100%);
+            border-bottom: 4px solid #E99852;
+        }
+
+        /* Theme Toggle Button */
+        .theme-toggle {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(233, 152, 82, 0.3);
+            border-radius: 8px;
+            padding: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-right: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .theme-toggle:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(233, 152, 82, 0.5);
+        }
+
+        .theme-toggle svg {
+            width: 20px;
+            height: 20px;
+            display: none;
+        }
+
+        /* Show appropriate icon based on theme mode */
+        .theme-toggle[data-theme="light"] .sun-icon { display: block; }
+        .theme-toggle[data-theme="system"] .system-icon { display: block; }
+        .theme-toggle[data-theme="dark"] .moon-icon { display: block; }
+
+        .header-left h1 {
+            color: white;
+            margin: 0;
+            font-size: 2.5em;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .header-left .subtitle {
+            color: #9bc2b6;
+            margin: 5px 0 0 0;
+            font-size: 1em;
+            font-weight: 400;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo-link {
+            text-decoration: none;
+            display: block;
+            cursor: pointer;
+        }
+
+        .logo-container {
+            width: 80px;
+            height: auto;
+            padding: 8px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(233, 152, 82, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .logo-container:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(233, 152, 82, 0.5);
+            transform: scale(1.02);
+        }
+
+        .logo-container img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* Workflow Tabs */
+        .workflow-tabs {
+            display: flex;
+            background: var(--bg-secondary);
+            border-bottom: 3px solid var(--border-color);
+            padding: 0 40px;
+            gap: 8px;
+            transition: background 0.3s ease, border-color 0.3s ease;
+        }
+
+        .tab-button {
+            flex: 1;
+            max-width: 300px;
+            padding: 18px 24px;
+            background: transparent;
+            border: none;
+            border-radius: 0;
+            color: var(--text-secondary);
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            border-bottom: 3px solid transparent;
+            margin-bottom: -3px;
+        }
+
+        .tab-button:hover {
+            background: rgba(24, 74, 61, 0.05);
+            color: #184A3D;
+            transform: none;
+            box-shadow: none;
+        }
+
+        html.dark .tab-button:hover {
+            background: rgba(155, 194, 182, 0.1);
+            color: #9bc2b6;
+        }
+
+        .tab-button.active {
+            background: var(--bg-primary);
+            color: #184A3D;
+            border-bottom-color: #184A3D;
+        }
+
+        html.dark .tab-button.active {
+            color: #9bc2b6;
+            border-bottom-color: #9bc2b6;
+        }
+
+        .tab-button .tab-icon {
+            margin-right: 8px;
+            font-size: 18px;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Image Upload Styles */
+        .image-upload-area {
+            border: 3px dashed var(--border-light);
+            border-radius: 12px;
+            padding: 40px;
+            text-align: center;
+            background: var(--bg-tertiary);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            margin-bottom: 24px;
+        }
+
+        .image-upload-area:hover {
+            border-color: #184A3D;
+            background: var(--bg-primary);
+        }
+
+        html.dark .image-upload-area:hover {
+            border-color: #9bc2b6;
+        }
+
+        .image-upload-area.drag-over {
+            border-color: #184A3D;
+            background: #e6f0ed;
+        }
+
+        html.dark .image-upload-area.drag-over {
+            border-color: #9bc2b6;
+            background: rgba(155, 194, 182, 0.1);
+        }
+
+        .image-upload-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+            color: var(--text-muted);
+        }
+
+        .image-upload-area p {
+            color: var(--text-secondary);
+            margin: 8px 0;
+        }
+
+        .image-upload-area .supported-formats {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-top: 12px;
+        }
+
+        .image-preview {
+            display: none;
+            margin-bottom: 24px;
+            padding: 24px;
+            background: var(--bg-primary);
+            border-radius: 12px;
+            border: 2px solid var(--border-color);
+            transition: background 0.3s ease, border-color 0.3s ease;
+        }
+
+        .image-preview.active {
+            display: block;
+        }
+
+        .image-preview img {
+            max-width: 100%;
+            max-height: 400px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            box-shadow: 0 4px 12px var(--shadow-light);
+        }
+
+        .image-metadata {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .image-metadata-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .image-metadata-item strong {
+            color: var(--text-primary);
+        }
+
+        .clear-image-btn {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            padding: 10px 20px;
+            font-size: 14px;
+            width: auto;
+            display: inline-block;
+        }
+
+        .clear-image-btn:hover {
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+        }
+
+        .vision-prompt-section {
+            margin-bottom: 24px;
+        }
+
+        .vision-prompt-section label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .prompt-help {
+            font-size: 12px;
+            color: #57534e;
+            font-weight: normal;
+            margin-left: auto;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .input-section {
+            margin-bottom: 30px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 0.95em;
+            letter-spacing: 0.3px;
+        }
+
+        input, select {
+            width: 100%;
+            height: 52px;
+            padding: 0 16px;
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            font-size: 15px;
+            font-family: 'Inter', 'Space Grotesk', sans-serif;
+            transition: all 0.3s ease;
+            background: var(--input-bg);
+            color: var(--text-primary);
+            line-height: 1.5;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 140px;
+            padding: 14px 16px;
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            font-size: 15px;
+            font-family: 'JetBrains Mono', monospace;
+            transition: all 0.3s ease;
+            background: var(--input-bg);
+            color: var(--text-primary);
+            resize: vertical;
+            line-height: 1.6;
+        }
+
+        textarea::placeholder, input::placeholder {
+            color: var(--text-muted);
+        }
+
+        textarea:focus, input:focus, select:focus {
+            outline: none;
+            border-color: #184A3D;
+            background: var(--bg-primary);
+            box-shadow: 0 0 0 3px rgba(24, 74, 61, 0.1);
+        }
+
+        html.dark textarea:focus, html.dark input:focus, html.dark select:focus {
+            border-color: #9bc2b6;
+            box-shadow: 0 0 0 3px rgba(155, 194, 182, 0.15);
+        }
+
+        select option {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+        }
+
+        .options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+
+        button {
+            background: linear-gradient(135deg, #184A3D 0%, #2A6B5A 100%);
+            color: white;
+            border: none;
+            padding: 16px 32px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            font-family: 'Inter', 'Space Grotesk', sans-serif;
+            letter-spacing: 0.3px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 24px rgba(24, 74, 61, 0.4);
+            background: linear-gradient(135deg, #2A6B5A 0%, #387d6c 100%);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 20px 0;
+            color: #184A3D;
+            font-weight: 600;
+        }
+
+        .loading.active {
+            display: block;
+        }
+
+        .result-section {
+            display: none;
+            margin-top: 30px;
+            padding: 24px;
+            background: linear-gradient(135deg, var(--bg-tertiary) 0%, var(--bg-secondary) 100%);
+            border-radius: 12px;
+            border: 2px solid var(--border-color);
+            transition: background 0.3s ease, border-color 0.3s ease;
+        }
+
+        .result-section.active {
+            display: block;
+        }
+
+        .result-section h2 {
+            color: var(--text-primary);
+            margin-bottom: 20px;
+            font-size: 1.8em;
+            font-weight: 700;
+        }
+
+        .result-section h3 {
+            color: var(--text-primary);
+            margin-bottom: 12px;
+            margin-top: 20px;
+            font-size: 1.2em;
+            font-weight: 600;
+        }
+
+        .beta-disclaimer {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border-left: 4px solid #f59e0b;
+            padding: 16px 20px;
+            border-radius: 8px;
+            margin-bottom: 24px;
+            color: #92400e;
+            font-size: 0.95em;
+            line-height: 1.6;
+        }
+
+        html.dark .beta-disclaimer {
+            background: linear-gradient(135deg, rgba(254, 243, 199, 0.15) 0%, rgba(253, 230, 138, 0.1) 100%);
+            color: #fbbf24;
+        }
+
+        .beta-disclaimer strong {
+            color: #78350f;
+        }
+
+        html.dark .beta-disclaimer strong {
+            color: #fcd34d;
+        }
+
+        .annotation-box {
+            background: var(--bg-primary);
+            padding: 24px;
+            border-radius: 12px;
+            margin: 10px 0;
+            border-left: 5px solid #184A3D;
+            box-shadow: 0 4px 12px var(--shadow-light);
+            transition: background 0.3s ease;
+        }
+
+        html.dark .annotation-box {
+            border-left-color: #9bc2b6;
+        }
+
+        .annotation-text {
+            font-family: 'JetBrains Mono', 'Courier New', monospace;
+            font-size: 14px;
+            color: var(--text-primary);
+            word-break: break-word;
+            line-height: 1.8;
+            background: var(--bg-tertiary);
+            padding: 16px;
+            border-radius: 8px;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 24px;
+            font-size: 13px;
+            font-weight: 600;
+            margin: 5px 8px 5px 0;
+            letter-spacing: 0.3px;
+        }
+
+        .status-valid {
+            background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+            color: #065f46;
+            border: 2px solid #10b981;
+        }
+
+        .status-invalid {
+            background: linear-gradient(135deg, #fecaca 0%, #fca5a5 100%);
+            color: #991b1b;
+            border: 2px solid #ef4444;
+        }
+
+        .status-faithful {
+            background: linear-gradient(135deg, #e6f0ed 0%, #c2d9d2 100%);
+            color: #184A3D;
+            border: 2px solid #2A6B5A;
+        }
+
+        .status-complete {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            color: #92400e;
+            border: 2px solid #f59e0b;
+        }
+
+        .status-badge {
+            position: relative;
+            cursor: help;
+        }
+
+        .info-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            font-size: 11px;
+            font-weight: 700;
+            font-style: normal;
+            margin-left: 6px;
+            background: rgba(255, 255, 255, 0.3);
+            border: 1.5px solid rgba(255, 255, 255, 0.5);
+            transition: all 0.3s ease;
+        }
+
+        .info-icon:hover {
+            background: rgba(255, 255, 255, 0.5);
+            transform: scale(1.05);
+        }
+
+        .tooltip {
+            position: absolute;
+            bottom: calc(100% + 8px);
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #1c1917 0%, #0f172a 100%);
+            color: white;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            pointer-events: none;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+            border: 2px solid #184A3D;
+            max-width: 300px;
+            white-space: normal;
+            line-height: 1.5;
+        }
+
+        .tooltip::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 6px solid transparent;
+            border-top-color: #1c1917;
+        }
+
+        .status-badge:hover .tooltip {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .status-badge:hover .info-icon {
+            background: rgba(255, 255, 255, 0.5);
+            transform: scale(1.05);
+        }
+
+        .feedback {
+            background: var(--bg-primary);
+            padding: 18px;
+            border-radius: 10px;
+            margin: 12px 0;
+            white-space: pre-wrap;
+            font-size: 14px;
+            line-height: 1.7;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 2px 8px var(--shadow-light);
+            color: var(--text-primary);
+            transition: background 0.3s ease, border-color 0.3s ease;
+        }
+
+        .error {
+            background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+            color: #991b1b;
+            padding: 18px;
+            border-radius: 10px;
+            margin: 12px 0;
+            border: 2px solid #ef4444;
+            font-weight: 500;
+        }
+
+        html.dark .error {
+            background: linear-gradient(135deg, rgba(254, 242, 242, 0.1) 0%, rgba(254, 226, 226, 0.05) 100%);
+            color: #fca5a5;
+        }
+
+        .copy-btn {
+            background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+            padding: 10px 20px;
+            font-size: 14px;
+            margin-top: 12px;
+            width: auto;
+            font-weight: 600;
+        }
+
+        .copy-btn:hover {
+            background: linear-gradient(135deg, #047857 0%, #059669 100%);
+            box-shadow: 0 8px 16px rgba(16, 185, 129, 0.3);
+        }
+
+        .feedback-section {
+            margin-top: 24px;
+            padding: 16px;
+            text-align: center;
+            border-top: 1px solid #e7e5e4;
+        }
+
+        .feedback-btn {
+            background: linear-gradient(135deg, #E99852 0%, #D17D36 100%);
+            padding: 10px 24px;
+            font-size: 14px;
+            width: auto;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .feedback-btn:hover {
+            background: linear-gradient(135deg, #D17D36 0%, #c06a25 100%);
+            box-shadow: 0 8px 16px rgba(233, 152, 82, 0.3);
+        }
+
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 24px;
+            padding: 16px;
+            background: linear-gradient(135deg, var(--bg-tertiary) 0%, var(--bg-secondary) 100%);
+            border-radius: 10px;
+            border: 2px solid var(--border-color);
+            transition: background 0.3s ease, border-color 0.3s ease;
+        }
+
+        .checkbox-container input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            margin-right: 12px;
+            cursor: pointer;
+            accent-color: #184A3D;
+        }
+
+        html.dark .checkbox-container input[type="checkbox"] {
+            accent-color: #9bc2b6;
+        }
+
+        .checkbox-container label {
+            margin: 0;
+            font-weight: 600;
+            cursor: pointer;
+            color: var(--text-primary);
+        }
+
+        .checkbox-help {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-left: 30px;
+            font-weight: 400;
+        }
+
+        .progress-status {
+            display: none;
+            padding: 16px;
+            background: linear-gradient(135deg, #e6f0ed 0%, #c2d9d2 100%);
+            border-left: 5px solid #184A3D;
+            border-radius: 10px;
+            margin: 20px 0;
+            font-weight: 600;
+            color: #184A3D;
+            box-shadow: 0 4px 12px rgba(24, 74, 61, 0.15);
+        }
+
+        html.dark .progress-status {
+            background: linear-gradient(135deg, rgba(155, 194, 182, 0.15) 0%, rgba(116, 170, 153, 0.1) 100%);
+            border-left-color: #9bc2b6;
+            color: #9bc2b6;
+        }
+
+        .progress-status.active {
+            display: block;
+        }
+
+        .progress-steps {
+            display: flex;
+            gap: 12px;
+            margin-top: 12px;
+            flex-wrap: wrap;
+        }
+
+        .progress-step {
+            padding: 6px 14px;
+            background: var(--border-color);
+            border-radius: 16px;
+            font-size: 12px;
+            opacity: 0.6;
+            font-weight: 500;
+            border: 2px solid transparent;
+            color: var(--text-secondary);
+        }
+
+        .progress-step.active {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            opacity: 1;
+            border-color: #047857;
+            animation: pulse 2s infinite;
+        }
+
+        .progress-step.completed {
+            background: linear-gradient(135deg, #9bc2b6 0%, #74aa99 100%);
+            opacity: 1;
+            color: #184A3D;
+            border-color: #2A6B5A;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .footer {
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+            border-top: 2px solid var(--border-color);
+            color: var(--text-secondary);
+            font-size: 14px;
+            transition: border-color 0.3s ease, color 0.3s ease;
+        }
+
+        .footer a {
+            color: #184A3D;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        html.dark .footer a {
+            color: #9bc2b6;
+        }
+
+        .footer a:hover {
+            color: #2A6B5A;
+            text-decoration: underline;
+        }
+
+        html.dark .footer a:hover {
+            color: #c2d9d2;
+        }
+
+        .version-info {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 8px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Server Health Indicator */
+        .server-health {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-left: 16px;
+            font-size: 12px;
+            color: #78716c;
+        }
+
+        .health-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .health-dot.checking {
+            background-color: #fbbf24;
+            box-shadow: 0 0 0 2px rgba(251, 191, 36, 0.3);
+            animation: pulse-yellow 1.5s infinite;
+        }
+
+        .health-dot.healthy {
+            background-color: #22c55e;
+            box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.3);
+        }
+
+        .health-dot.degraded {
+            background-color: #f97316;
+            box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.3);
+            animation: pulse-orange 2s infinite;
+        }
+
+        .health-dot.unhealthy {
+            background-color: #ef4444;
+            box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.3);
+        }
+
+        @keyframes pulse-yellow {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        @keyframes pulse-orange {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .health-label {
+            cursor: help;
+        }
+
+        .health-tooltip {
+            position: relative;
+        }
+
+        .health-tooltip .health-tooltip-text {
+            visibility: hidden;
+            width: 200px;
+            background-color: #1c1917;
+            color: #fff;
+            text-align: left;
+            border-radius: 6px;
+            padding: 10px 12px;
+            position: absolute;
+            z-index: 1000;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -100px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 11px;
+            line-height: 1.5;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .health-tooltip .health-tooltip-text::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #1c1917 transparent transparent transparent;
+        }
+
+        .health-tooltip:hover .health-tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        /* Telemetry Notice - fixed at absolute bottom */
+        .telemetry-notice {
+            display: flex;
+            align-items: baseline;
+            justify-content: center;
+            gap: 8px;
+            padding: 4px 16px;
+            font-size: 11px;
+            color: var(--text-muted);
+            border-top: 1px solid var(--border-color);
+            background: var(--bg-tertiary);
+            transition: all 0.3s ease;
+            margin: 0;
+        }
+
+        .telemetry-notice a {
+            color: var(--text-secondary);
+            text-decoration: underline;
+        }
+
+        .telemetry-notice a:hover {
+            color: #184A3D;
+        }
+
+        html.dark .telemetry-notice a:hover {
+            color: #9bc2b6;
+        }
+
+        .telemetry-toggle {
+            display: inline-flex;
+            align-items: baseline;
+            gap: 4px;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .telemetry-toggle input[type="checkbox"] {
+            width: 12px;
+            height: 12px;
+            margin: 0;
+            cursor: pointer;
+            accent-color: #184A3D;
+            position: relative;
+            top: 1px;
+        }
+
+        html.dark .telemetry-toggle input[type="checkbox"] {
+            accent-color: #9bc2b6;
+        }
+
+        .telemetry-toggle-label {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-left">
+                <h1>HEDit</h1>
+                <p class="subtitle">Multi-Agent System for HED Annotation Generation</p>
+            </div>
+            <div class="header-right">
+                <button class="theme-toggle" id="themeToggle" onclick="cycleTheme()" title="Toggle theme (Light/System/Dark)" data-theme="system">
+                    <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                    </svg>
+                    <svg class="system-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                    </svg>
+                    <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                    </svg>
+                </button>
+                <a href="https://annotation.garden" target="_blank" rel="noopener noreferrer" class="logo-link" title="Visit Annotation Garden">
+                    <div class="logo-container">
+                        <img src="assets/AGI-square.svg" alt="Annotation Garden Logo">
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <!-- Workflow Tabs -->
+        <div class="workflow-tabs">
+            <button class="tab-button active" onclick="switchTab('text')">
+                <span class="tab-icon">📝</span> Text Description
+            </button>
+            <button class="tab-button" onclick="switchTab('image')">
+                <span class="tab-icon">🖼️</span> Image Analysis
+            </button>
+        </div>
+
+        <div class="content">
+        <!-- Tab 1: Text Description Workflow -->
+        <div id="text-tab" class="tab-content active">
+        <div class="input-section">
+            <label for="description">Event Description</label>
+            <textarea
+                id="description"
+                placeholder="Enter a natural language event description...
+Example: A red circle appears on the left side of the screen and the participant presses the left mouse button"></textarea>
+        </div>
+
+        <div class="options">
+            <div>
+                <label for="schema">HED Schema Version</label>
+                <select id="schema">
+                    <option value="8.3.0">8.3.0 (Stable)</option>
+                    <option value="8.4.0" selected>8.4.0 (Latest)</option>
+                    <option value="8.2.0">8.2.0</option>
+                </select>
+            </div>
+            <div>
+                <label for="maxAttempts">Max Validation Attempts</label>
+                <input type="number" id="maxAttempts" value="3" min="1" max="10">
+            </div>
+        </div>
+
+        <div class="checkbox-container">
+            <input type="checkbox" id="runAssessment" />
+            <label for="runAssessment">Run detailed assessment (adds ~3 seconds)</label>
+            <div class="checkbox-help">Provides comprehensive completeness feedback</div>
+        </div>
+
+        <button id="generateBtn" onclick="generateAnnotation()">Generate HED Annotation</button>
+        </div>
+        <!-- End Tab 1: Text Description -->
+
+        <!-- Tab 2: Image Analysis Workflow -->
+        <div id="image-tab" class="tab-content">
+            <!-- Image Upload Area -->
+            <div class="image-upload-area" id="imageUploadArea"
+                 onclick="document.getElementById('imageInput').click()"
+                 ondrop="handleDrop(event)"
+                 ondragover="handleDragOver(event)"
+                 ondragleave="handleDragLeave(event)">
+                <div class="image-upload-icon">📸</div>
+                <p><strong>Click to upload</strong> or drag and drop</p>
+                <p class="supported-formats">Supported: PNG, JPG, JPEG, WebP (max 10MB)</p>
+            </div>
+            <input type="file" id="imageInput" accept="image/png,image/jpeg,image/jpg,image/webp" style="display: none;" onchange="handleImageUpload(event)">
+
+            <!-- Image Preview -->
+            <div class="image-preview" id="imagePreview">
+                <h3>Image Preview</h3>
+                <img id="previewImage" src="" alt="Uploaded image preview">
+                <div class="image-metadata" id="imageMetadata"></div>
+                <button class="clear-image-btn" onclick="clearImage()">Clear Image</button>
+            </div>
+
+            <!-- Vision Prompt (Optional) -->
+            <div class="vision-prompt-section">
+                <label for="visionPrompt">
+                    Custom Vision Prompt
+                    <span class="prompt-help">(Optional - Leave blank for default)</span>
+                </label>
+                <textarea
+                    id="visionPrompt"
+                    placeholder="Describe what you see in this image. Include the setting, main elements, colors, lighting, and overall composition..."></textarea>
+            </div>
+
+            <!-- Options (same as text tab) -->
+            <div class="options">
+                <div>
+                    <label for="schema-image">HED Schema Version</label>
+                    <select id="schema-image">
+                        <option value="8.3.0">8.3.0 (Stable)</option>
+                        <option value="8.4.0" selected>8.4.0 (Latest)</option>
+                        <option value="8.2.0">8.2.0</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="maxAttempts-image">Max Validation Attempts</label>
+                    <input type="number" id="maxAttempts-image" value="3" min="1" max="10">
+                </div>
+            </div>
+
+            <div class="checkbox-container">
+                <input type="checkbox" id="runAssessment-image" />
+                <label for="runAssessment-image">Run detailed assessment (adds ~3 seconds)</label>
+                <div class="checkbox-help">Provides comprehensive completeness feedback</div>
+            </div>
+
+            <button id="generateBtn-image" onclick="generateFromImage()">Analyze Image & Generate HED Annotation</button>
+        </div>
+        <!-- End Tab 2: Image Analysis -->
+
+        <!-- Shared Progress and Results -->
+        <div class="progress-status" id="progressStatus">
+            <div id="progressMessage">Initializing...</div>
+            <div class="progress-steps" id="progressSteps"></div>
+        </div>
+
+        <div class="loading" id="loading">
+            <p>Generating annotation... This may take a moment.</p>
+        </div>
+
+        <div class="result-section" id="results">
+            <h2>Results</h2>
+            <p class="beta-disclaimer">
+                <strong>Note:</strong> This is a beta service. Validation may still fail in some cases.
+                Please carefully review the validation results below before using the generated annotation.
+            </p>
+
+            <div class="annotation-box">
+                <h3>Generated HED Annotation</h3>
+                <div class="annotation-text" id="annotationText"></div>
+                <button class="copy-btn" onclick="copyAnnotation()">Copy Annotation</button>
+            </div>
+
+            <div>
+                <h3>Status</h3>
+                <div id="statusBadges"></div>
+                <p style="margin-top: 10px;"><strong>Validation Attempts:</strong> <span id="attempts"></span></p>
+            </div>
+
+            <div id="errorsSection"></div>
+            <div id="warningsSection"></div>
+            <div id="evaluationSection"></div>
+            <div id="assessmentSection"></div>
+
+            <div class="feedback-section">
+                <button class="feedback-btn" onclick="provideFeedback()" title="Submit feedback about this annotation to help improve HEDit">
+                    💬 Provide Feedback
+                </button>
+                <p style="color: #57534e; font-size: 12px; margin-top: 8px;">
+                    Found an issue or have suggestions? Click to send feedback.
+                </p>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="version-info">
+                <span id="versionInfo">Version: Loading...</span>
+                <span class="server-health health-tooltip">
+                    <span class="health-dot checking" id="healthDot"></span>
+                    <span class="health-label" id="healthLabel">Checking...</span>
+                    <span class="health-tooltip-text" id="healthTooltip">Checking server status...</span>
+                </span>
+            </div>
+            <div>
+                &copy; 2025, <a href="https://neuromechanist.github.io" target="_blank" rel="noopener noreferrer">neuromechanist</a> and the HED Working Group
+            </div>
+        </div>
+    </div>
+
+    <!-- Telemetry Notice - outside container for absolute bottom positioning -->
+    <div class="telemetry-notice">
+        <span>Annotations may be recorded to improve the service.</span>
+        <label class="telemetry-toggle" title="Toggle telemetry collection">
+            <input type="checkbox" id="telemetryOptIn" checked onchange="toggleTelemetry(this.checked)">
+            <span class="telemetry-toggle-label">Allow</span>
+        </label>
+        <a href="https://docs.annotation.garden/projects/hedit/telemetry" target="_blank" rel="noopener noreferrer" title="Learn more about telemetry">Learn more</a>
+    </div>
+
+    <script src="config.js"></script>
+    <script>
+        // Theme Toggle Functionality (cycles: light -> system -> dark -> light)
+        const themes = ['light', 'system', 'dark'];
+        let currentTheme = 'system';
+
+        function getSystemTheme() {
+            return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+
+        function applyTheme(theme) {
+            const effectiveTheme = theme === 'system' ? getSystemTheme() : theme;
+            if (effectiveTheme === 'dark') {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+            // Update button icon
+            const toggle = document.getElementById('themeToggle');
+            if (toggle) toggle.setAttribute('data-theme', theme);
+        }
+
+        function cycleTheme() {
+            const currentIndex = themes.indexOf(currentTheme);
+            currentTheme = themes[(currentIndex + 1) % themes.length];
+            localStorage.setItem('theme', currentTheme);
+            applyTheme(currentTheme);
+        }
+
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            currentTheme = savedTheme || 'system'; // Default to system
+            applyTheme(currentTheme);
+        }
+
+        // Listen for system theme changes when in system mode
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+            if (currentTheme === 'system') {
+                applyTheme('system');
+            }
+        });
+
+        // Initialize theme on page load
+        initTheme();
+
+        // Telemetry Toggle Functionality
+        let telemetryEnabled = true;
+
+        function initTelemetry() {
+            const saved = localStorage.getItem('telemetryEnabled');
+            // Default to true (opt-out model)
+            telemetryEnabled = saved === null ? true : saved === 'true';
+            const checkbox = document.getElementById('telemetryOptIn');
+            if (checkbox) {
+                checkbox.checked = telemetryEnabled;
+            }
+        }
+
+        function toggleTelemetry(enabled) {
+            telemetryEnabled = enabled;
+            localStorage.setItem('telemetryEnabled', enabled.toString());
+        }
+
+        function isTelemetryEnabled() {
+            return telemetryEnabled;
+        }
+
+        // Initialize telemetry on page load
+        initTelemetry();
+
+        // Backend API URL - Automatically detect based on environment
+        // For production: Set BACKEND_URL in your environment or use Cloudflare Tunnel URL
+        // For local development: Uses localhost:38427
+        const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+            ? 'http://localhost:38427'
+            : (window.BACKEND_URL || 'https://your-tunnel-url.trycloudflare.com');
+
+        // Store last result for feedback
+        let lastResultData = null;
+        let lastInputDescription = null;
+        let lastImageData = null;
+        let appVersion = null;
+
+        // Turnstile widget ID (set after initialization)
+        let turnstileWidgetId = null;
+
+        // Initialize Turnstile when the script loads
+        function initTurnstile() {
+            if (typeof turnstile === 'undefined') {
+                // Turnstile script not loaded yet, retry
+                setTimeout(initTurnstile, 100);
+                return;
+            }
+
+            // Only initialize once
+            if (turnstileWidgetId !== null) return;
+
+            // Create a hidden container for Turnstile
+            let container = document.getElementById('turnstile-container');
+            if (!container) {
+                container = document.createElement('div');
+                container.id = 'turnstile-container';
+                container.style.display = 'none';
+                document.body.appendChild(container);
+            }
+
+            // Render invisible Turnstile widget
+            turnstileWidgetId = turnstile.render('#turnstile-container', {
+                sitekey: window.TURNSTILE_SITE_KEY,
+                callback: function(token) {
+                    // Token received, stored automatically
+                    console.log('Turnstile token received');
+                },
+                'error-callback': function() {
+                    console.error('Turnstile error');
+                },
+                'expired-callback': function() {
+                    // Token expired, reset widget
+                    turnstile.reset(turnstileWidgetId);
+                },
+                execution: 'render', // Auto-execute on render
+                appearance: 'interaction-only', // Only show if interaction needed
+            });
+        }
+
+        // Get Turnstile token (with automatic refresh if needed)
+        async function getTurnstileToken() {
+            // For localhost development, skip Turnstile
+            if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+                return null;
+            }
+
+            if (typeof turnstile === 'undefined' || turnstileWidgetId === null) {
+                console.warn('Turnstile not initialized');
+                return null;
+            }
+
+            // Get current token
+            let token = turnstile.getResponse(turnstileWidgetId);
+
+            // If no token, wait a bit for challenge to complete
+            if (!token) {
+                // Reset and wait for new token
+                turnstile.reset(turnstileWidgetId);
+                await new Promise(resolve => setTimeout(resolve, 2000));
+                token = turnstile.getResponse(turnstileWidgetId);
+            }
+
+            // Reset widget for next use (tokens are single-use)
+            if (token) {
+                setTimeout(() => turnstile.reset(turnstileWidgetId), 100);
+            }
+
+            return token;
+        }
+
+        // Initialize Turnstile on page load
+        document.addEventListener('DOMContentLoaded', initTurnstile);
+
+        // Tab Switching
+        function switchTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            // Show selected tab
+            document.getElementById(`${tabName}-tab`).classList.add('active');
+            event.target.closest('.tab-button').classList.add('active');
+
+            // Hide results when switching tabs
+            document.getElementById('results').classList.remove('active');
+            document.getElementById('progressStatus').classList.remove('active');
+        }
+
+        // Image Upload Handling
+        let uploadedImageBase64 = null;
+
+        function handleImageUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            // Validate file type
+            const validTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/webp'];
+            if (!validTypes.includes(file.type)) {
+                alert('Please upload a valid image file (PNG, JPG, JPEG, or WebP)');
+                return;
+            }
+
+            // Validate file size (10MB max)
+            const maxSize = 10 * 1024 * 1024;
+            if (file.size > maxSize) {
+                alert('Image size must be less than 10MB');
+                return;
+            }
+
+            // Read and display image
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                uploadedImageBase64 = e.target.result;
+                displayImagePreview(e.target.result, file);
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function displayImagePreview(dataUrl, file) {
+            const preview = document.getElementById('imagePreview');
+            const previewImage = document.getElementById('previewImage');
+            const metadata = document.getElementById('imageMetadata');
+            const uploadArea = document.getElementById('imageUploadArea');
+
+            // Show preview, hide upload area
+            preview.classList.add('active');
+            uploadArea.style.display = 'none';
+
+            // Set image
+            previewImage.src = dataUrl;
+
+            // Display metadata
+            const img = new Image();
+            img.onload = function() {
+                const sizeMB = (file.size / (1024 * 1024)).toFixed(2);
+                metadata.innerHTML = `
+                    <div class="image-metadata-item">
+                        <strong>Format:</strong> ${file.type.split('/')[1].toUpperCase()}
+                    </div>
+                    <div class="image-metadata-item">
+                        <strong>Dimensions:</strong> ${img.width} × ${img.height}
+                    </div>
+                    <div class="image-metadata-item">
+                        <strong>Size:</strong> ${sizeMB} MB
+                    </div>
+                `;
+            };
+            img.src = dataUrl;
+        }
+
+        function clearImage() {
+            uploadedImageBase64 = null;
+            document.getElementById('imagePreview').classList.remove('active');
+            document.getElementById('imageUploadArea').style.display = 'block';
+            document.getElementById('imageInput').value = '';
+            document.getElementById('previewImage').src = '';
+            document.getElementById('imageMetadata').innerHTML = '';
+        }
+
+        // Drag and Drop Handlers
+        function handleDragOver(event) {
+            event.preventDefault();
+            event.stopPropagation();
+            event.currentTarget.classList.add('drag-over');
+        }
+
+        function handleDragLeave(event) {
+            event.preventDefault();
+            event.stopPropagation();
+            event.currentTarget.classList.remove('drag-over');
+        }
+
+        function handleDrop(event) {
+            event.preventDefault();
+            event.stopPropagation();
+            event.currentTarget.classList.remove('drag-over');
+
+            const files = event.dataTransfer.files;
+            if (files.length > 0) {
+                document.getElementById('imageInput').files = files;
+                handleImageUpload({ target: { files: files } });
+            }
+        }
+
+        // Generate from Image
+        async function generateFromImage() {
+            if (!uploadedImageBase64) {
+                alert('Please upload an image first');
+                return;
+            }
+
+            const visionPrompt = document.getElementById('visionPrompt').value.trim();
+            const schema = document.getElementById('schema-image').value;
+            const maxAttempts = parseInt(document.getElementById('maxAttempts-image').value);
+            const runAssessment = document.getElementById('runAssessment-image').checked;
+
+            // Store for feedback
+            lastInputDescription = null; // No text description for image mode
+            lastImageData = uploadedImageBase64;
+
+            // Hide results and show progress
+            document.getElementById('results').classList.remove('active');
+            document.getElementById('generateBtn-image').disabled = true;
+            document.getElementById('progressStatus').classList.add('active');
+
+            updateProgress('Analyzing image...', []);
+
+            try {
+                // Get Turnstile token for bot protection
+                const turnstileToken = await getTurnstileToken();
+
+                const payload = {
+                    image: uploadedImageBase64,
+                    schema_version: schema,
+                    max_validation_attempts: maxAttempts,
+                    run_assessment: runAssessment,
+                    telemetry_enabled: isTelemetryEnabled()
+                };
+
+                if (visionPrompt) {
+                    payload.prompt = visionPrompt;
+                }
+
+                // Include Turnstile token if available
+                if (turnstileToken) {
+                    payload.cf_turnstile_response = turnstileToken;
+                }
+
+                const response = await fetch(`${API_URL}/annotate-from-image`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json().catch(() => ({}));
+                    throw new Error(errorData.detail || `Server error: ${response.status}`);
+                }
+
+                const result = await response.json();
+
+                // Store for feedback
+                lastResultData = result;
+                lastInputDescription = result.image_description; // Use generated description
+
+                // Display results
+                displayImageAnnotationResults(result);
+
+            } catch (error) {
+                displayError(error.message);
+            } finally {
+                document.getElementById('progressStatus').classList.remove('active');
+                document.getElementById('generateBtn-image').disabled = false;
+            }
+        }
+
+        function displayImageAnnotationResults(result) {
+            // Show the image description first
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.classList.add('active');
+
+            // Add image description section before annotation
+            const annotationBox = resultsDiv.querySelector('.annotation-box');
+            let descriptionBox = document.getElementById('imageDescriptionBox');
+
+            if (!descriptionBox) {
+                descriptionBox = document.createElement('div');
+                descriptionBox.id = 'imageDescriptionBox';
+                descriptionBox.className = 'annotation-box';
+                descriptionBox.style.borderLeftColor = '#E99852';
+                annotationBox.parentNode.insertBefore(descriptionBox, annotationBox);
+            }
+
+            descriptionBox.innerHTML = `
+                <h3>Generated Image Description</h3>
+                <div class="annotation-text">${result.image_description}</div>
+            `;
+
+            // Display annotation and other results using existing function
+            displayResults(result);
+        }
+
+        async function generateAnnotation() {
+            const description = document.getElementById('description').value.trim();
+            const schema = document.getElementById('schema').value;
+            const maxAttempts = parseInt(document.getElementById('maxAttempts').value);
+            const runAssessment = document.getElementById('runAssessment').checked;
+
+            if (!description) {
+                alert('Please enter an event description');
+                return;
+            }
+
+            // Store input for feedback
+            lastInputDescription = description;
+
+            // Hide results and show progress
+            document.getElementById('results').classList.remove('active');
+            document.getElementById('generateBtn').disabled = true;
+            document.getElementById('progressStatus').classList.add('active');
+
+            // Initialize progress tracking
+            updateProgress('Connecting to server...', []);
+
+            try {
+                // Use regular fetch (streaming has issues)
+                // Show simulated progress
+                updateProgress('Generating annotation...', getProgressSteps('annotating'));
+
+                await generateAnnotationFallback(description, schema, maxAttempts, runAssessment);
+
+            } catch (error) {
+                displayError(error.message);
+                document.getElementById('progressStatus').classList.remove('active');
+                document.getElementById('generateBtn').disabled = false;
+            }
+        }
+
+        async function generateAnnotationFallback(description, schema, maxAttempts, runAssessment) {
+            updateProgress('Generating annotation...', ['annotating']);
+
+            try {
+                // Get Turnstile token for bot protection
+                const turnstileToken = await getTurnstileToken();
+
+                const payload = {
+                    description: description,
+                    schema_version: schema,
+                    max_validation_attempts: maxAttempts,
+                    run_assessment: runAssessment,
+                    telemetry_enabled: isTelemetryEnabled()
+                };
+
+                // Include Turnstile token if available
+                if (turnstileToken) {
+                    payload.cf_turnstile_response = turnstileToken;
+                }
+
+                const response = await fetch(`${API_URL}/annotate`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                displayResults(data);
+            } catch (error) {
+                displayError(error.message);
+            } finally {
+                document.getElementById('progressStatus').classList.remove('active');
+                document.getElementById('generateBtn').disabled = false;
+            }
+        }
+
+        function updateProgress(message, steps) {
+            document.getElementById('progressMessage').textContent = message;
+
+            const stepsHtml = steps.map(step =>
+                `<span class="progress-step ${step.status}">${step.name}</span>`
+            ).join('');
+            document.getElementById('progressSteps').innerHTML = stepsHtml;
+        }
+
+        function getProgressSteps(currentStage) {
+            const allSteps = [
+                { name: 'Annotating', stage: 'annotating' },
+                { name: 'Validating', stage: 'validating' },
+                { name: 'Evaluating', stage: 'evaluating' },
+                { name: 'Assessing', stage: 'assessing' }
+            ];
+
+            return allSteps.map(step => ({
+                name: step.name,
+                status: step.stage === currentStage ? 'active' :
+                       (allSteps.findIndex(s => s.stage === step.stage) <
+                        allSteps.findIndex(s => s.stage === currentStage) ? 'completed' : '')
+            }));
+        }
+
+        function displayResults(data) {
+            // Store result data for feedback
+            lastResultData = data;
+
+            // Show results section
+            document.getElementById('results').classList.add('active');
+
+            // Display annotation
+            document.getElementById('annotationText').textContent = data.annotation;
+
+            // Display status badges with tooltips
+            const badges = [];
+            badges.push(`
+                <span class="status-badge ${data.is_valid ? 'status-valid' : 'status-invalid'}" role="img" aria-label="Valid badge - hover for more information">
+                    ${data.is_valid ? 'Valid' : 'Invalid'}
+                    <span class="info-icon">i</span>
+                    <span class="tooltip">HED validator returned no errors in the final annotation string</span>
+                </span>
+            `);
+            badges.push(`
+                <span class="status-badge ${data.is_faithful ? 'status-faithful' : 'status-invalid'}" role="img" aria-label="Faithful badge - hover for more information">
+                    ${data.is_faithful ? 'Faithful' : 'Needs Refinement'}
+                    <span class="info-icon">i</span>
+                    <span class="tooltip">Annotation accurately represents the original description without adding unrelated information</span>
+                </span>
+            `);
+            badges.push(`
+                <span class="status-badge ${data.is_complete ? 'status-complete' : 'status-invalid'}" role="img" aria-label="Complete badge - hover for more information">
+                    ${data.is_complete ? 'Complete' : 'Incomplete'}
+                    <span class="info-icon">i</span>
+                    <span class="tooltip">All relevant dimensions and elements from the description are captured in the annotation</span>
+                </span>
+            `);
+            document.getElementById('statusBadges').innerHTML = badges.join('');
+
+            // Display attempts
+            document.getElementById('attempts').textContent = data.validation_attempts;
+
+            // Display errors
+            if (data.validation_errors && data.validation_errors.length > 0) {
+                document.getElementById('errorsSection').innerHTML =
+                    `<h3>Validation Errors</h3><div class="error">${data.validation_errors.join('<br>')}</div>`;
+            } else {
+                document.getElementById('errorsSection').innerHTML = '';
+            }
+
+            // Display warnings
+            if (data.validation_warnings && data.validation_warnings.length > 0) {
+                document.getElementById('warningsSection').innerHTML =
+                    `<h3>Validation Warnings</h3><div class="feedback">${data.validation_warnings.join('<br>')}</div>`;
+            } else {
+                document.getElementById('warningsSection').innerHTML = '';
+            }
+
+            // Display evaluation feedback
+            if (data.evaluation_feedback) {
+                document.getElementById('evaluationSection').innerHTML =
+                    `<h3>Evaluation Feedback</h3><div class="feedback">${data.evaluation_feedback}</div>`;
+            } else {
+                document.getElementById('evaluationSection').innerHTML = '';
+            }
+
+            // Display assessment feedback
+            if (data.assessment_feedback) {
+                document.getElementById('assessmentSection').innerHTML =
+                    `<h3>Assessment Feedback</h3><div class="feedback">${data.assessment_feedback}</div>`;
+            } else {
+                document.getElementById('assessmentSection').innerHTML = '';
+            }
+        }
+
+        function displayError(message) {
+            document.getElementById('results').classList.add('active');
+            document.getElementById('results').innerHTML =
+                `<div class="error"><strong>Error:</strong> ${message}</div>`;
+        }
+
+        function copyAnnotation() {
+            const text = document.getElementById('annotationText').textContent;
+            const button = event.target;
+            const originalText = button.textContent;
+
+            if (!text) {
+                alert('No annotation to copy!');
+                return;
+            }
+
+            // Use navigator.clipboard API with fallback
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text).then(() => {
+                    // Visual feedback
+                    button.textContent = '✓ Copied!';
+                    button.style.background = 'linear-gradient(135deg, #047857 0%, #059669 100%)';
+
+                    setTimeout(() => {
+                        button.textContent = originalText;
+                        button.style.background = '';
+                    }, 2000);
+                }).catch(err => {
+                    console.error('Failed to copy:', err);
+                    fallbackCopy(text, button, originalText);
+                });
+            } else {
+                // Fallback for older browsers
+                fallbackCopy(text, button, originalText);
+            }
+        }
+
+        function fallbackCopy(text, button, originalText) {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            textarea.style.position = 'fixed';
+            textarea.style.left = '-9999px';
+            document.body.appendChild(textarea);
+            textarea.select();
+
+            try {
+                document.execCommand('copy');
+                button.textContent = '✓ Copied!';
+                button.style.background = 'linear-gradient(135deg, #047857 0%, #059669 100%)';
+
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.style.background = '';
+                }, 2000);
+            } catch (err) {
+                console.error('Fallback copy failed:', err);
+                alert('Failed to copy to clipboard. Please copy manually.');
+            } finally {
+                document.body.removeChild(textarea);
+            }
+        }
+
+        async function provideFeedback() {
+            if (!lastResultData) {
+                alert('No annotation results available. Please generate an annotation first.');
+                return;
+            }
+
+            // Declare variables outside try block so they're accessible in catch
+            let isImageMode = false;
+            let feedbackPayload = null;
+
+            try {
+                // Determine if this is text or image mode
+                isImageMode = lastImageData !== null;
+
+                // Prompt for optional user comment
+                const userComment = prompt('Optional: Add your feedback or comments about this annotation:');
+
+                // Create feedback request payload
+                feedbackPayload = {
+                    type: isImageMode ? 'image' : 'text',
+                    version: appVersion || 'unknown',
+                    annotation: lastResultData.annotation,
+                    is_valid: lastResultData.is_valid,
+                    is_faithful: lastResultData.is_faithful,
+                    is_complete: lastResultData.is_complete,
+                    validation_errors: lastResultData.validation_errors || [],
+                    validation_warnings: lastResultData.validation_warnings || [],
+                    evaluation_feedback: lastResultData.evaluation_feedback || '',
+                    assessment_feedback: lastResultData.assessment_feedback || '',
+                    user_comment: userComment && userComment.trim() ? userComment.trim() : null
+                };
+
+                // Add mode-specific fields
+                if (isImageMode) {
+                    feedbackPayload.image_description = lastResultData.image_description || '';
+                    // Note: We don't send the full image to reduce payload size
+                    // The image_description captures the relevant content
+                } else {
+                    feedbackPayload.description = lastInputDescription;
+                }
+
+                // Show submitting state
+                const feedbackBtn = document.querySelector('.feedback-btn');
+                const originalBtnText = feedbackBtn.innerHTML;
+                feedbackBtn.innerHTML = '⏳ Submitting...';
+                feedbackBtn.disabled = true;
+
+                // Submit to backend API
+                const response = await fetch(`${API_URL}/feedback`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(feedbackPayload)
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    feedbackBtn.innerHTML = '✓ Submitted!';
+                    feedbackBtn.style.background = 'linear-gradient(135deg, #059669 0%, #10b981 100%)';
+
+                    // Show success message
+                    setTimeout(() => {
+                        alert('Thank you for your feedback! It has been recorded and will help improve HEDit.');
+                        feedbackBtn.innerHTML = originalBtnText;
+                        feedbackBtn.style.background = '';
+                        feedbackBtn.disabled = false;
+                    }, 500);
+                } else {
+                    // API failed, fall back to email
+                    console.error('Feedback API failed:', response.status);
+                    feedbackBtn.innerHTML = originalBtnText;
+                    feedbackBtn.disabled = false;
+                    fallbackToEmail(feedbackPayload, isImageMode);
+                }
+
+            } catch (error) {
+                console.error('Error submitting feedback:', error);
+                // Fall back to email on network error
+                const feedbackBtn = document.querySelector('.feedback-btn');
+                feedbackBtn.innerHTML = '📧 Provide Feedback';
+                feedbackBtn.disabled = false;
+
+                // Fall back to email with the payload (if available)
+                if (feedbackPayload) {
+                    fallbackToEmail(feedbackPayload, isImageMode);
+                } else {
+                    alert('Failed to prepare feedback. Please try again.');
+                }
+            }
+        }
+
+        function fallbackToEmail(feedbackPayload, isImageMode) {
+            alert('Could not submit feedback to server. Opening email as fallback...');
+
+            const jsonContent = JSON.stringify(feedbackPayload, null, 2);
+            const userComment = feedbackPayload.user_comment || '(No comment provided)';
+            const emailSubject = `[HEDit Feedback] ${isImageMode ? 'Image' : 'Text'} Annotation Feedback - ${new Date().toLocaleString()}`;
+            const emailBody = `USER FEEDBACK:
+${userComment}
+
+========================================
+ANNOTATION DATA (JSON):
+${jsonContent}`;
+
+            const mailtoLink = `mailto:shirazi@ieee.org?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
+            window.location.href = mailtoLink;
+        }
+
+        // Allow Enter to submit (with Shift for new line)
+        document.getElementById('description').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                generateAnnotation();
+            }
+        });
+
+        // Fetch and display version on page load
+        async function fetchVersion() {
+            try {
+                const response = await fetch(`${API_URL}/version`);
+                if (response.ok) {
+                    const data = await response.json();
+                    appVersion = data.version;
+                    document.getElementById('versionInfo').textContent = `v${data.version}`;
+                } else {
+                    document.getElementById('versionInfo').textContent = 'Version: N/A';
+                }
+            } catch (error) {
+                console.error('Failed to fetch version:', error);
+                document.getElementById('versionInfo').textContent = 'Version: N/A';
+            }
+        }
+
+        // Server Health Check
+        async function checkServerHealth() {
+            const healthDot = document.getElementById('healthDot');
+            const healthLabel = document.getElementById('healthLabel');
+            const healthTooltip = document.getElementById('healthTooltip');
+
+            try {
+                const response = await fetch(`${API_URL}/health`, {
+                    method: 'GET',
+                    // Short timeout to avoid hanging
+                    signal: AbortSignal.timeout(10000)
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+
+                    if (data.status === 'healthy') {
+                        // Check if all services are available
+                        const llmOk = data.llm_available !== false;
+                        const validatorOk = data.validator_available !== false;
+
+                        if (llmOk && validatorOk) {
+                            // Fully healthy - green
+                            healthDot.className = 'health-dot healthy';
+                            healthLabel.textContent = 'Online';
+                            healthTooltip.textContent = 'Server is healthy. All services operational.';
+                        } else {
+                            // Degraded - orange
+                            healthDot.className = 'health-dot degraded';
+                            healthLabel.textContent = 'Degraded';
+                            const issues = [];
+                            if (!llmOk) issues.push('LLM unavailable');
+                            if (!validatorOk) issues.push('Validator unavailable');
+                            healthTooltip.textContent = `Server online but degraded: ${issues.join(', ')}`;
+                        }
+                    } else {
+                        // Status is not healthy - orange
+                        healthDot.className = 'health-dot degraded';
+                        healthLabel.textContent = 'Degraded';
+                        healthTooltip.textContent = `Server status: ${data.status}`;
+                    }
+                } else {
+                    // HTTP error - red
+                    healthDot.className = 'health-dot unhealthy';
+                    healthLabel.textContent = 'Offline';
+                    healthTooltip.textContent = `Server returned error: ${response.status}`;
+                }
+            } catch (error) {
+                // Network error or timeout - red
+                healthDot.className = 'health-dot unhealthy';
+                healthLabel.textContent = 'Offline';
+                healthTooltip.textContent = 'Cannot reach server. Check your connection.';
+                console.error('Health check failed:', error);
+            }
+        }
+
+        // Fetch version and check health on page load
+        fetchVersion();
+        checkServerHealth();
+
+        // Periodically check server health (every 30 seconds)
+        setInterval(checkServerHealth, 30000);
+    </script>
+</body>
+</html>

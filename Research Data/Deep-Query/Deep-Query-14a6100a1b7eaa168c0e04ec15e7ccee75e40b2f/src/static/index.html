@@ -1,0 +1,1624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RAG Chat</title>
+    <link rel="icon" type="image/png" href="/assets/logos/logo.png">
+    <style>
+        :root {
+            --bg-primary: #f7f7f8;
+            --bg-secondary: #fff;
+            --text-primary: #333;
+            --text-secondary: #666;
+            --border-color: #e5e5e5;
+            --border-input: #d1d5db;
+            --shadow: rgba(0,0,0,0.1);
+            --user-bg: #10a37f;
+            --user-hover: #0d8a6b;
+            --assistant-bg: #6366f1;
+            --disabled-bg: #d1d5db;
+            --success-bg: #f0fdf4;
+            --success-border: #bbf7d0;
+            --success-text: #166534;
+            --error-bg: #fef2f2;
+            --error-border: #fecaca;
+            --error-text: #dc2626;
+            --info-bg: #f0f9ff;
+            --info-border: #0ea5e9;
+            --info-text: #0369a1;
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: #1a1a1a;
+            --bg-secondary: #2d2d2d;
+            --text-primary: #e5e5e5;
+            --text-secondary: #a3a3a3;
+            --border-color: #404040;
+            --border-input: #525252;
+            --shadow: rgba(0,0,0,0.3);
+            --user-bg: #10a37f;
+            --user-hover: #0d8a6b;
+            --assistant-bg: #6366f1;
+            --disabled-bg: #525252;
+            --success-bg: #064e3b;
+            --success-border: #059669;
+            --success-text: #34d399;
+            --error-bg: #7f1d1d;
+            --error-border: #dc2626;
+            --error-text: #fca5a5;
+            --info-bg: #0c4a6e;
+            --info-border: #0284c7;
+            --info-text: #7dd3fc;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-primary);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .header {
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-color);
+            padding: 16px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 1px 3px var(--shadow);
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .logo {
+            height: 48px;
+            width: 48px;
+            object-fit: contain;
+        }
+
+        .header h1 {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .theme-toggle {
+            background: none;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 6px 8px;
+            cursor: pointer;
+            color: var(--text-secondary);
+            transition: all 0.3s ease;
+            font-size: 16px;
+        }
+
+        .theme-toggle:hover {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+        }
+
+        .session-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .session-info span {
+            font-size: 12px;
+            color: var(--text-secondary);
+            background: var(--bg-primary);
+            padding: 4px 8px;
+            border-radius: 4px;
+            border: 1px solid var(--border-color);
+        }
+
+        .chat-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            max-width: 800px;
+            margin: 0 auto;
+            width: 100%;
+            padding: 0 20px;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .message {
+            display: flex;
+            gap: 12px;
+            max-width: 85%;
+            width: 100%;
+        }
+
+        .message.user {
+            align-self: flex-end;
+            flex-direction: row-reverse;
+            max-width: 80%;
+        }
+
+        .message.assistant {
+            align-self: flex-start;
+            max-width: 90%;
+        }
+
+        .message-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .message.user .message-avatar {
+            background: var(--user-bg);
+            color: white;
+        }
+
+        .message.assistant .message-avatar {
+            background: var(--assistant-bg);
+            color: white;
+        }
+
+        .message-content {
+            background: var(--bg-secondary);
+            padding: 12px 16px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            font-size: 15px;
+            line-height: 1.5;
+            white-space: pre-wrap;
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+            position: relative;
+            flex: 1;
+            min-width: 0;
+            word-wrap: break-word;
+        }
+
+        .message.user .message-content {
+            background: var(--user-bg);
+            color: white;
+            border-color: var(--user-bg);
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            padding: 4px 8px;
+            font-size: 12px;
+            cursor: pointer;
+            color: var(--text-secondary);
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .message-content:hover .copy-btn {
+            opacity: 1;
+        }
+
+        .copy-btn:hover {
+            background: var(--border-color);
+            color: var(--text-primary);
+        }
+
+        .message.user .copy-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.3);
+            color: white;
+        }
+
+        .message.user .copy-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .code-block {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            margin: 8px 0;
+            overflow: hidden;
+            position: relative;
+            width: 100%;
+            max-width: 100%;
+        }
+
+        .code-header {
+            background: var(--border-color);
+            padding: 8px 12px;
+            font-size: 12px;
+            color: var(--text-secondary);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .code-language {
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .code-copy-btn {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            padding: 4px 8px;
+            font-size: 11px;
+            cursor: pointer;
+            color: var(--text-secondary);
+            transition: all 0.2s;
+        }
+
+        .code-copy-btn:hover {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+        }
+
+        .code-content {
+            padding: 12px;
+            font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+            font-size: 13px;
+            line-height: 1.4;
+            overflow-x: auto;
+            white-space: pre;
+            color: var(--text-primary);
+            max-width: 100%;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        /* Markdown styling */
+        .markdown-content {
+            line-height: 1.6;
+        }
+
+        .markdown-content h1,
+        .markdown-content h2,
+        .markdown-content h3,
+        .markdown-content h4,
+        .markdown-content h5,
+        .markdown-content h6 {
+            margin: 16px 0 8px 0;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .markdown-content h1 { font-size: 2em; border-bottom: 2px solid var(--border-color); padding-bottom: 8px; }
+        .markdown-content h2 { font-size: 1.5em; border-bottom: 1px solid var(--border-color); padding-bottom: 6px; }
+        .markdown-content h3 { font-size: 1.25em; }
+        .markdown-content h4 { font-size: 1.1em; }
+        .markdown-content h5 { font-size: 1em; }
+        .markdown-content h6 { font-size: 0.9em; color: var(--text-secondary); }
+
+        .markdown-content p {
+            margin: 8px 0;
+        }
+
+        .markdown-content ul,
+        .markdown-content ol {
+            margin: 8px 0;
+            padding-left: 24px;
+        }
+
+        .markdown-content li {
+            margin: 4px 0;
+        }
+
+        .markdown-content strong {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .markdown-content em {
+            font-style: italic;
+        }
+
+        .markdown-content a {
+            color: var(--user-bg);
+            text-decoration: none;
+            border-bottom: 1px solid transparent;
+            transition: border-color 0.2s;
+        }
+
+        .markdown-content a:hover {
+            border-bottom-color: var(--user-bg);
+        }
+
+        .markdown-content blockquote {
+            border-left: 4px solid var(--border-color);
+            padding-left: 16px;
+            margin: 8px 0;
+            color: var(--text-secondary);
+            font-style: italic;
+        }
+
+        .markdown-content hr {
+            border: none;
+            border-top: 1px solid var(--border-color);
+            margin: 16px 0;
+        }
+
+        .markdown-content table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 8px 0;
+        }
+
+        .markdown-content table th,
+        .markdown-content table td {
+            border: 1px solid var(--border-color);
+            padding: 8px 12px;
+            text-align: left;
+        }
+
+        .markdown-content table th {
+            background: var(--bg-primary);
+            font-weight: 600;
+        }
+
+        .markdown-content code {
+            background: var(--bg-primary);
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, monospace;
+            font-size: 0.9em;
+            color: var(--text-primary);
+        }
+
+        .markdown-content pre {
+            background: var(--bg-primary);
+            padding: 12px;
+            border-radius: 6px;
+            overflow-x: auto;
+            margin: 8px 0;
+        }
+
+        .markdown-content pre code {
+            background: none;
+            padding: 0;
+        }
+
+        .typing-indicator {
+            display: none;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-secondary);
+            font-size: 14px;
+            padding: 12px 0;
+        }
+
+        .typing-dots {
+            display: flex;
+            gap: 4px;
+        }
+
+        .typing-dots span {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--text-secondary);
+            animation: typing 1.4s infinite ease-in-out;
+        }
+
+        .typing-dots span:nth-child(1) { animation-delay: -0.32s; }
+        .typing-dots span:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes typing {
+            0%, 80%, 100% { 
+                transform: scale(0);
+            } 40% { 
+                transform: scale(1);
+            }
+        }
+
+        .input-area {
+            padding: 20px 0;
+            background: var(--bg-primary);
+        }
+
+        .input-container {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-input);
+            border-radius: 12px;
+            padding: 8px;
+            display: flex;
+            align-items: flex-end;
+            gap: 8px;
+            box-shadow: 0 1px 3px var(--shadow);
+            transition: all 0.3s ease;
+        }
+
+        .file-upload-btn {
+            background: none;
+            border: none;
+            padding: 8px;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+        }
+
+        .file-upload-btn:hover {
+            background: var(--bg-primary);
+        }
+
+        .file-upload-btn svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        #messageInput {
+            flex: 1;
+            border: none;
+            outline: none;
+            padding: 8px 12px;
+            font-size: 15px;
+            line-height: 1.5;
+            max-height: 120px;
+            resize: none;
+            font-family: inherit;
+            background: transparent;
+            color: var(--text-primary);
+        }
+
+        #messageInput::placeholder {
+            color: var(--text-secondary);
+        }
+
+        .send-btn {
+            background: var(--user-bg);
+            border: none;
+            border-radius: 6px;
+            padding: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+            color: white;
+        }
+
+        .send-btn:hover:not(:disabled) {
+            background: var(--user-hover);
+        }
+
+        .send-btn:disabled {
+            background: var(--disabled-bg);
+            cursor: not-allowed;
+        }
+
+        .send-btn svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .file-info {
+            display: none;
+            background: var(--info-bg);
+            border: 1px solid var(--info-border);
+            border-radius: 8px;
+            padding: 8px 12px;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: var(--info-text);
+            transition: all 0.3s ease;
+        }
+
+        .file-info .close-btn {
+            background: none;
+            border: none;
+            color: var(--info-text);
+            cursor: pointer;
+            float: right;
+            font-size: 16px;
+            line-height: 1;
+        }
+
+        .welcome-message {
+            text-align: center;
+            color: var(--text-secondary);
+            padding: 40px 20px;
+            font-size: 16px;
+        }
+
+        .welcome-message h2 {
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        #fileInput {
+            display: none;
+        }
+
+        .error-message {
+            background: var(--error-bg);
+            border: 1px solid var(--error-border);
+            color: var(--error-text);
+            padding: 12px;
+            border-radius: 8px;
+            margin: 8px 0;
+            font-size: 14px;
+        }
+
+        .success-message {
+            background: var(--success-bg);
+            border: 1px solid var(--success-border);
+            color: var(--success-text);
+            padding: 12px;
+            border-radius: 8px;
+            margin: 8px 0;
+            font-size: 14px;
+        }
+
+        .deep-research-loading {
+            display: flex;
+            gap: 12px;
+            padding: 20px;
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            border: 2px solid var(--assistant-bg);
+            margin: 10px 0;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .research-status {
+            flex: 1;
+        }
+
+        .research-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 12px;
+        }
+
+        .research-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .research-step {
+            font-size: 14px;
+            color: var(--text-secondary);
+            padding: 6px 12px;
+            border-radius: 6px;
+            background: var(--bg-primary);
+            transition: all 0.3s ease;
+            opacity: 0.5;
+        }
+
+        .research-step.active {
+            opacity: 1;
+            background: var(--info-bg);
+            color: var(--info-text);
+            border-left: 3px solid var(--info-border);
+        }
+
+        .research-progress {
+            height: 4px;
+            background: var(--bg-primary);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--user-bg), var(--assistant-bg));
+            animation: progressAnimation 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.95; }
+        }
+
+        @keyframes progressAnimation {
+            0% { width: 0%; }
+            50% { width: 70%; }
+            100% { width: 100%; }
+        }
+
+        .deep-research-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 6px;
+            padding: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            color: white;
+            font-weight: 600;
+            gap: 6px;
+        }
+
+        .deep-research-btn:hover:not(:disabled) {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .deep-research-btn:disabled {
+            background: var(--disabled-bg);
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .deep-research-btn svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        @media (max-width: 768px) {
+            .chat-container {
+                padding: 0 12px;
+            }
+            
+            .message {
+                max-width: 95%;
+            }
+            
+            .message.user {
+                max-width: 90%;
+            }
+            
+            .message.assistant {
+                max-width: 95%;
+            }
+            
+            .header {
+                padding: 12px;
+            }
+            
+            .code-content {
+                font-size: 12px;
+                padding: 8px;
+            }
+            
+            .logo {
+                height: 40px;
+                width: 40px;
+            }
+            
+            .header-left {
+                gap: 12px;
+            }
+            
+            .header {
+                padding: 14px 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-left">
+            <img src="/assets/logos/logo.png" alt="RAG Chat Logo" class="logo">
+            <h1>RAG Chat</h1>
+        </div>
+        <div class="header-controls">
+            <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Toggle dark mode">
+                🌙
+            </button>
+            <div class="session-info">
+                <span id="sessionDisplay">Session: Loading...</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="chat-container">
+        <div class="chat-messages" id="chatMessages">
+            <div class="welcome-message">
+                <h2>👋 Welcome to RAG Chat</h2>
+                <p>Upload documents for RAG-powered Q&A, or just chat directly!</p>
+                <p style="margin-top: 8px; font-size: 14px;">💡 Use the <strong>🔬 Deep Research</strong> button for comprehensive web-based research on any topic.</p>
+            </div>
+        </div>
+
+        <div class="typing-indicator" id="typingIndicator">
+            <div class="message-avatar">🤖</div>
+            <div class="typing-dots">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <span>AI is thinking...</span>
+        </div>
+
+        <div class="input-area">
+            <div class="file-info" id="fileInfo">
+                <span id="fileName"></span>
+                <button class="close-btn" onclick="clearFile()">×</button>
+            </div>
+            
+                        <div class="input-container">
+                <button class="file-upload-btn" onclick="document.getElementById('fileInput').click()" title="Upload file">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="17 8 12 3 7 8"></polyline>
+                        <line x1="12" y1="3" x2="12" y2="15"></line>
+                    </svg>
+                </button>
+                
+                <textarea 
+                    id="messageInput" 
+                    placeholder="Ask a question or type a message..." 
+                    rows="1"
+                    onkeydown="handleKeyDown(event)"
+                    oninput="autoResize(this)"
+                ></textarea>
+                
+                <button class="deep-research-btn" id="deepResearchBtn" onclick="deepResearch()" disabled title="Deep Research: Comprehensive analysis with web search">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.35-4.35"></path>
+                    </svg>
+                </button>
+                
+                <button class="send-btn" id="sendBtn" onclick="sendMessage()" disabled>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path>
+                    </svg>
+                </button>
+            </div>
+            
+            <input type="file" id="fileInput" accept=".txt,.pdf,.doc,.docx" onchange="handleFileSelect(event)">
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = '/api/v1';
+        let uploadedFileId = null;
+        let isProcessing = false;
+        let sessionId = null;
+        let projectId = null;
+        let hasUploadedFiles = false; // Track if files have been uploaded
+
+        // Generate or retrieve session ID and project ID
+        function initSession() {
+            // Check if we have a stored session
+            sessionId = localStorage.getItem('rag_session_id');
+            
+            if (!sessionId) {
+                // Generate new unique session ID
+                sessionId = 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+                localStorage.setItem('rag_session_id', sessionId);
+            }
+
+            // Convert session ID to a consistent integer project ID
+            projectId = Math.abs(hashCode(sessionId)) % 100000; // Range: 0-99,999
+            
+            // Update display
+            document.getElementById('sessionDisplay').textContent = `Project: ${projectId}`;
+        }
+
+        // Simple hash function to convert string to consistent integer
+        function hashCode(str) {
+            let hash = 0;
+            for (let i = 0; i < str.length; i++) {
+                const char = str.charCodeAt(i);
+                hash = ((hash << 5) - hash) + char;
+                hash = hash & hash; // Convert to 32bit integer
+            }
+            return hash;
+        }
+
+        // Get current project ID
+        function getProjectId() {
+            return projectId;
+        }
+
+        // Copy text to clipboard
+        async function copyToClipboard(text) {
+            try {
+                await navigator.clipboard.writeText(text);
+                return true;
+            } catch (err) {
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = text;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                return true;
+            }
+        }
+
+        // Show copy feedback
+        function showCopyFeedback(button) {
+            const originalText = button.textContent;
+            button.textContent = '✓ Copied';
+            button.style.color = 'var(--success-text)';
+            setTimeout(() => {
+                button.textContent = originalText;
+                button.style.color = '';
+            }, 2000);
+        }
+
+        // Enhanced markdown parser
+        function parseMarkdown(text) {
+            let html = text;
+            
+            // Escape HTML but preserve newlines
+            html = html.replace(/&/g, '&amp;')
+                      .replace(/</g, '&lt;')
+                      .replace(/>/g, '&gt;');
+            
+            // Process line by line for better control
+            const lines = html.split('\n');
+            const processedLines = [];
+            let inList = false;
+            let listType = null;
+            
+            for (let i = 0; i < lines.length; i++) {
+                let line = lines[i];
+                
+                // Headers
+                if (line.match(/^######\s+(.+)$/)) {
+                    line = line.replace(/^######\s+(.+)$/, '<h6>$1</h6>');
+                } else if (line.match(/^#####\s+(.+)$/)) {
+                    line = line.replace(/^#####\s+(.+)$/, '<h5>$1</h5>');
+                } else if (line.match(/^####\s+(.+)$/)) {
+                    line = line.replace(/^####\s+(.+)$/, '<h4>$1</h4>');
+                } else if (line.match(/^###\s+(.+)$/)) {
+                    line = line.replace(/^###\s+(.+)$/, '<h3>$1</h3>');
+                } else if (line.match(/^##\s+(.+)$/)) {
+                    line = line.replace(/^##\s+(.+)$/, '<h2>$1</h2>');
+                } else if (line.match(/^#\s+(.+)$/)) {
+                    line = line.replace(/^#\s+(.+)$/, '<h1>$1</h1>');
+                }
+                // Unordered lists
+                else if (line.match(/^[\*\-]\s+(.+)$/)) {
+                    if (!inList || listType !== 'ul') {
+                        if (inList && listType === 'ol') {
+                            processedLines.push('</ol>');
+                        }
+                        processedLines.push('<ul>');
+                        inList = true;
+                        listType = 'ul';
+                    }
+                    line = line.replace(/^[\*\-]\s+(.+)$/, '<li>$1</li>');
+                }
+                // Ordered lists
+                else if (line.match(/^\d+\.\s+(.+)$/)) {
+                    if (!inList || listType !== 'ol') {
+                        if (inList && listType === 'ul') {
+                            processedLines.push('</ul>');
+                        }
+                        processedLines.push('<ol>');
+                        inList = true;
+                        listType = 'ol';
+                    }
+                    line = line.replace(/^\d+\.\s+(.+)$/, '<li>$1</li>');
+                }
+                // Blockquotes
+                else if (line.match(/^&gt;\s+(.+)$/)) {
+                    line = line.replace(/^&gt;\s+(.+)$/, '<blockquote>$1</blockquote>');
+                }
+                // Horizontal rules
+                else if (line.match(/^(---|\*\*\*|___)\s*$/)) {
+                    line = '<hr>';
+                }
+                // End list if we hit a non-list line
+                else if (inList && line.trim() !== '') {
+                    if (listType === 'ul') {
+                        processedLines.push('</ul>');
+                    } else {
+                        processedLines.push('</ol>');
+                    }
+                    inList = false;
+                    listType = null;
+                }
+                
+                processedLines.push(line);
+            }
+            
+            // Close any open lists
+            if (inList) {
+                if (listType === 'ul') {
+                    processedLines.push('</ul>');
+                } else {
+                    processedLines.push('</ol>');
+                }
+            }
+            
+            html = processedLines.join('\n');
+            
+            // Inline formatting (bold, italic, code, links)
+            // Bold (must come before italic)
+            html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+            html = html.replace(/__(.+?)__/g, '<strong>$1</strong>');
+            
+            // Italic
+            html = html.replace(/\*([^\*]+?)\*/g, '<em>$1</em>');
+            html = html.replace(/_([^_]+?)_/g, '<em>$1</em>');
+            
+            // Inline code
+            html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
+            
+            // Links
+            html = html.replace(/\[([^\]]+)\]\(([^\)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
+            
+            // Line breaks and paragraphs
+            html = html.replace(/\n\n+/g, '</p><p>');
+            html = html.replace(/\n/g, '<br>');
+            
+            // Wrap in paragraph if not already wrapped in block elements
+            if (!html.match(/^<(h[1-6]|ul|ol|blockquote|hr)/)) {
+                html = '<p>' + html + '</p>';
+            }
+            
+            // Clean up
+            html = html.replace(/<p><\/p>/g, '');
+            html = html.replace(/<p>\s*<\/p>/g, '');
+            html = html.replace(/<p>(<h[1-6]>)/g, '$1');
+            html = html.replace(/(<\/h[1-6]>)<\/p>/g, '$1');
+            html = html.replace(/<p>(<ul>|<ol>|<blockquote>|<hr>)/g, '$1');
+            html = html.replace(/(<\/ul>|<\/ol>|<\/blockquote>|<hr>)<\/p>/g, '$1');
+            
+            return html;
+        }
+
+        // Parse and render message content with code blocks
+        function parseMessageContent(content) {
+            const codeBlockRegex = /```(\w+)?\n?([\s\S]*?)```/g;
+            const parts = [];
+            let lastIndex = 0;
+            let match;
+
+            while ((match = codeBlockRegex.exec(content)) !== null) {
+                // Add text before code block
+                if (match.index > lastIndex) {
+                    parts.push({
+                        type: 'text',
+                        content: content.slice(lastIndex, match.index)
+                    });
+                }
+
+                // Add code block
+                parts.push({
+                    type: 'code',
+                    language: match[1] || 'text',
+                    content: match[2].trim()
+                });
+
+                lastIndex = match.index + match[0].length;
+            }
+
+            // Add remaining text
+            if (lastIndex < content.length) {
+                parts.push({
+                    type: 'text',
+                    content: content.slice(lastIndex)
+                });
+            }
+
+            return parts.length > 0 ? parts : [{ type: 'text', content }];
+        }
+
+        // Create code block element
+        function createCodeBlock(language, code) {
+            const codeBlock = document.createElement('div');
+            codeBlock.className = 'code-block';
+
+            const header = document.createElement('div');
+            header.className = 'code-header';
+
+            const languageSpan = document.createElement('span');
+            languageSpan.className = 'code-language';
+            languageSpan.textContent = language;
+
+            const copyBtn = document.createElement('button');
+            copyBtn.className = 'code-copy-btn';
+            copyBtn.textContent = '📋 Copy';
+            copyBtn.onclick = async () => {
+                await copyToClipboard(code);
+                showCopyFeedback(copyBtn);
+            };
+
+            header.appendChild(languageSpan);
+            header.appendChild(copyBtn);
+
+            const content = document.createElement('div');
+            content.className = 'code-content';
+            content.textContent = code;
+
+            codeBlock.appendChild(header);
+            codeBlock.appendChild(content);
+
+            return codeBlock;
+        }
+
+        // Theme management
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            updateThemeIcon(savedTheme);
+        }
+
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeIcon(newTheme);
+        }
+
+        function updateThemeIcon(theme) {
+            const themeButton = document.getElementById('themeToggle');
+            themeButton.textContent = theme === 'dark' ? '☀️' : '🌙';
+            themeButton.title = theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode';
+        }
+
+        // Auto-resize textarea
+        function autoResize(textarea) {
+            textarea.style.height = 'auto';
+            textarea.style.height = Math.min(textarea.scrollHeight, 120) + 'px';
+            
+            // Enable/disable send and deep research buttons
+            const sendBtn = document.getElementById('sendBtn');
+            const deepResearchBtn = document.getElementById('deepResearchBtn');
+            const hasText = textarea.value.trim().length > 0;
+            
+            sendBtn.disabled = !hasText || isProcessing;
+            deepResearchBtn.disabled = !hasText || isProcessing;
+        }
+
+        // Handle Enter key
+        function handleKeyDown(event) {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault();
+                if (!document.getElementById('sendBtn').disabled) {
+                    sendMessage();
+                }
+            }
+        }
+
+        // Handle file selection
+        async function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            // Show file info
+            document.getElementById('fileName').textContent = `📎 ${file.name}`;
+            document.getElementById('fileInfo').style.display = 'block';
+
+            // Upload file
+            await uploadFile(file);
+        }
+
+        // Clear selected file
+        function clearFile() {
+            document.getElementById('fileInput').value = '';
+            document.getElementById('fileInfo').style.display = 'none';
+            uploadedFileId = null;
+        }
+
+        // Upload file
+        async function uploadFile(file) {
+            const projectId = getProjectId();
+            const formData = new FormData();
+            formData.append('file', file);
+
+            try {
+                showMessage('system', `Uploading ${file.name}...`);
+                
+                const response = await fetch(`${API_BASE}/data/upload/${projectId}`, {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                // Check if response is JSON
+                const contentType = response.headers.get('content-type');
+                let result;
+                
+                if (contentType && contentType.includes('application/json')) {
+                    result = await response.json();
+                } else {
+                    // If not JSON, get text response for debugging
+                    const textResponse = await response.text();
+                    console.error('Non-JSON response:', textResponse);
+                    throw new Error(`Server returned non-JSON response: ${response.status} ${response.statusText}`);
+                }
+                
+                if (response.ok) {
+                    uploadedFileId = result.file_id;
+                    hasUploadedFiles = true;
+                    showMessage('system', `✅ File uploaded successfully! Processing...`);
+                    
+                    // Auto-process the file
+                    await processFile();
+                } else {
+                    showMessage('system', `❌ Upload failed: ${result.detail || result.signal || 'Unknown error'}`, true);
+                }
+            } catch (error) {
+                console.error('Upload error:', error);
+                showMessage('system', `❌ Upload error: ${error.message}`, true);
+            }
+        }
+
+        // Process uploaded file
+        async function processFile() {
+            const projectId = getProjectId();
+            
+            try {
+                const response = await fetch(`${API_BASE}/data/process/${projectId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        chunk_size: 200,
+                        overlap_size: 40,
+                        do_reset: 0
+                    })
+                });
+
+                // Check if response is JSON
+                const contentType = response.headers.get('content-type');
+                let result;
+                
+                if (contentType && contentType.includes('application/json')) {
+                    result = await response.json();
+                } else {
+                    // If not JSON, get text response for debugging
+                    const textResponse = await response.text();
+                    console.error('Non-JSON response:', textResponse);
+                    throw new Error(`Server returned non-JSON response: ${response.status} ${response.statusText}`);
+                }
+                
+                if (response.ok) {
+                    showMessage('system', `✅ File processed! Indexing to vector database...`);
+                    
+                    // Auto-index to vector DB
+                    await indexToVectorDB();
+                } else {
+                    showMessage('system', `❌ Processing failed: ${result.detail || result.signal || 'Unknown error'}`, true);
+                }
+            } catch (error) {
+                console.error('Processing error:', error);
+                showMessage('system', `❌ Processing error: ${error.message}`, true);
+            }
+        }
+
+        // Index to vector database
+        async function indexToVectorDB() {
+            const projectId = getProjectId();
+            
+            try {
+                const response = await fetch(`${API_BASE}/nlp/index/push/${projectId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        do_reset: 0
+                    })
+                });
+
+                // Check if response is JSON
+                const contentType = response.headers.get('content-type');
+                let result;
+                
+                if (contentType && contentType.includes('application/json')) {
+                    result = await response.json();
+                } else {
+                    // If not JSON, get text response for debugging
+                    const textResponse = await response.text();
+                    console.error('Non-JSON response:', textResponse);
+                    throw new Error(`Server returned non-JSON response: ${response.status} ${response.statusText}`);
+                }
+                
+                if (response.ok) {
+                    showMessage('system', `🎉 Ready! You can now ask questions about your document.`);
+                } else {
+                    showMessage('system', `❌ Indexing failed: ${result.detail || result.message || 'Unknown error'}`, true);
+                }
+            } catch (error) {
+                console.error('Indexing error:', error);
+                showMessage('system', `❌ Indexing error: ${error.message}`, true);
+            }
+        }
+
+        // Send message
+        async function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const message = input.value.trim();
+            
+            if (!message || isProcessing) return;
+
+            // Show user message
+            showMessage('user', message);
+            
+            // Clear input
+            input.value = '';
+            autoResize(input);
+            
+            // Show typing indicator
+            showTyping(true);
+            isProcessing = true;
+
+            try {
+                // Use chat endpoint if no files uploaded, otherwise use RAG
+                if (hasUploadedFiles) {
+                    await askRAG(message);
+                } else {
+                    await askChat(message);
+                }
+            } catch (error) {
+                showMessage('assistant', `Sorry, I encountered an error: ${error.message}`, true);
+            } finally {
+                showTyping(false);
+                isProcessing = false;
+                document.getElementById('sendBtn').disabled = false;
+            }
+        }
+
+        // Deep Research function
+        async function deepResearch() {
+            const input = document.getElementById('messageInput');
+            const message = input.value.trim();
+            
+            if (!message || isProcessing) return;
+
+            // Show user message
+            showMessage('user', message + ' 🔬');
+            
+            // Clear input
+            input.value = '';
+            autoResize(input);
+            
+            // Show deep research loading indicator
+            showDeepResearchLoading(true);
+            isProcessing = true;
+
+            try {
+                await performDeepResearch(message);
+            } catch (error) {
+                showMessage('assistant', `Sorry, I encountered an error during deep research: ${error.message}`, true);
+            } finally {
+                showDeepResearchLoading(false);
+                isProcessing = false;
+                document.getElementById('sendBtn').disabled = false;
+                document.getElementById('deepResearchBtn').disabled = false;
+            }
+        }
+
+        // Ask RAG (for uploaded documents)
+        async function askRAG(question) {
+            const projectId = getProjectId();
+            
+            const response = await fetch(`${API_BASE}/nlp/index/answer/${projectId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    text: question,
+                    limit: 5
+                })
+            });
+
+            // Check if response is JSON
+            const contentType = response.headers.get('content-type');
+            let result;
+            
+            if (contentType && contentType.includes('application/json')) {
+                result = await response.json();
+            } else {
+                // If not JSON, get text response for debugging
+                const textResponse = await response.text();
+                console.error('Non-JSON response:', textResponse);
+                throw new Error(`Server returned non-JSON response: ${response.status} ${response.statusText}`);
+            }
+            
+            if (response.ok && result.answer) {
+                showMessage('assistant', result.answer);
+            } else {
+                throw new Error(result.detail || result.message || 'Failed to get answer');
+            }
+        }
+
+        // Ask Chat (for general conversation without documents)
+        async function askChat(question) {
+            const projectId = getProjectId();
+            
+            const response = await fetch(`${API_BASE}/nlp/index/chat/${projectId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    query: question
+                })
+            });
+
+            // Check if response is JSON
+            const contentType = response.headers.get('content-type');
+            let result;
+            
+            if (contentType && contentType.includes('application/json')) {
+                result = await response.json();
+            } else {
+                const textResponse = await response.text();
+                console.error('Non-JSON response:', textResponse);
+                throw new Error(`Server returned non-JSON response: ${response.status} ${response.statusText}`);
+            }
+            
+            if (response.ok && result.answer) {
+                showMessage('assistant', result.answer);
+            } else {
+                throw new Error(result.detail || result.message || 'Failed to get answer');
+            }
+        }
+
+        // Perform Deep Research
+        async function performDeepResearch(question) {
+            const projectId = getProjectId();
+            
+            // Create an AbortController for timeout handling (5 minutes)
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 300000); // 5 minutes
+            
+            try {
+                const response = await fetch(`${API_BASE}/nlp/index/deep-research/${projectId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        query: question
+                    }),
+                    signal: controller.signal,
+                    // Disable browser timeout for long requests
+                    keepalive: false
+                });
+
+                clearTimeout(timeoutId);
+
+                // Check if response is JSON
+                const contentType = response.headers.get('content-type');
+                let result;
+                
+                if (contentType && contentType.includes('application/json')) {
+                    result = await response.json();
+                } else {
+                    const textResponse = await response.text();
+                    console.error('Non-JSON response:', textResponse);
+                    throw new Error(`Server returned non-JSON response: ${response.status} ${response.statusText}`);
+                }
+                
+                if (response.ok && result.result) {
+                    // Extract final report from result
+                    const finalReport = result.result.final_report || result.result;
+                    showMessage('assistant', finalReport);
+                } else {
+                    throw new Error(result.detail || result.message || 'Failed to complete deep research');
+                }
+            } catch (error) {
+                clearTimeout(timeoutId);
+                
+                // Handle timeout specifically
+                if (error.name === 'AbortError') {
+                    throw new Error('Deep research took too long (timeout after 5 minutes). Please try a more specific question.');
+                }
+                
+                // Handle network errors with more context
+                if (error.message.includes('NetworkError') || error.message.includes('Failed to fetch')) {
+                    throw new Error('Network connection issue. This could be due to:\n• Server took too long to respond\n• CORS configuration\n• Network connectivity\n\nPlease check the browser console for details and try again.');
+                }
+                
+                throw error;
+            }
+        }
+
+        // Show message in chat
+        function showMessage(sender, content, isError = false) {
+            const chatMessages = document.getElementById('chatMessages');
+            
+            // Remove welcome message if it exists
+            const welcomeMsg = chatMessages.querySelector('.welcome-message');
+            if (welcomeMsg) {
+                welcomeMsg.remove();
+            }
+
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}`;
+            
+            const avatar = document.createElement('div');
+            avatar.className = 'message-avatar';
+            
+            const messageContent = document.createElement('div');
+            messageContent.className = 'message-content';
+            
+            // Add copy button for all messages
+            const copyBtn = document.createElement('button');
+            copyBtn.className = 'copy-btn';
+            copyBtn.textContent = '📋';
+            copyBtn.title = 'Copy message';
+            copyBtn.onclick = async () => {
+                await copyToClipboard(content);
+                showCopyFeedback(copyBtn);
+            };
+            messageContent.appendChild(copyBtn);
+            
+            if (sender === 'user') {
+                avatar.textContent = 'U';
+                messageContent.appendChild(document.createTextNode(content));
+            } else if (sender === 'assistant') {
+                avatar.textContent = '🤖';
+                
+                // Parse content for code blocks
+                const parts = parseMessageContent(content);
+                
+                // Create markdown container
+                const markdownContainer = document.createElement('div');
+                markdownContainer.className = 'markdown-content';
+                
+                parts.forEach(part => {
+                    if (part.type === 'text') {
+                        if (part.content.trim()) {
+                            // Parse markdown and insert as HTML
+                            const markdownHtml = parseMarkdown(part.content);
+                            const tempDiv = document.createElement('div');
+                            tempDiv.innerHTML = markdownHtml;
+                            
+                            // Append all children
+                            while (tempDiv.firstChild) {
+                                markdownContainer.appendChild(tempDiv.firstChild);
+                            }
+                        }
+                    } else if (part.type === 'code') {
+                        const codeBlock = createCodeBlock(part.language, part.content);
+                        markdownContainer.appendChild(codeBlock);
+                    }
+                });
+                
+                messageContent.appendChild(markdownContainer);
+                
+                if (isError) {
+                    messageContent.style.background = 'var(--error-bg)';
+                    messageContent.style.color = 'var(--error-text)';
+                    messageContent.style.borderColor = 'var(--error-border)';
+                }
+            } else if (sender === 'system') {
+                avatar.textContent = '💡';
+                messageContent.appendChild(document.createTextNode(content));
+                messageContent.style.background = isError ? 'var(--error-bg)' : 'var(--success-bg)';
+                messageContent.style.color = isError ? 'var(--error-text)' : 'var(--success-text)';
+                messageContent.style.borderColor = isError ? 'var(--error-border)' : 'var(--success-border)';
+                messageDiv.style.alignSelf = 'center';
+                messageDiv.style.maxWidth = '100%';
+            }
+            
+            messageDiv.appendChild(avatar);
+            messageDiv.appendChild(messageContent);
+            
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        // Show/hide typing indicator
+        function showTyping(show) {
+            document.getElementById('typingIndicator').style.display = show ? 'flex' : 'none';
+            if (show) {
+                const chatMessages = document.getElementById('chatMessages');
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+        }
+
+        // Show/hide deep research loading indicator
+        function showDeepResearchLoading(show) {
+            let loadingDiv = document.getElementById('deepResearchLoading');
+            
+            if (show) {
+                if (!loadingDiv) {
+                    const chatMessages = document.getElementById('chatMessages');
+                    loadingDiv = document.createElement('div');
+                    loadingDiv.id = 'deepResearchLoading';
+                    loadingDiv.className = 'deep-research-loading';
+                    loadingDiv.innerHTML = `
+                        <div class="message-avatar" style="background: var(--assistant-bg);">🔬</div>
+                        <div class="research-status">
+                            <div class="research-title">🧠 Deep Research in Progress...</div>
+                            <div class="research-steps">
+                                <div class="research-step active">📋 Planning research tasks</div>
+                                <div class="research-step">🔍 Conducting web research</div>
+                                <div class="research-step">📊 Analyzing findings</div>
+                                <div class="research-step">📝 Generating comprehensive report</div>
+                            </div>
+                            <div class="research-progress">
+                                <div class="progress-bar"></div>
+                            </div>
+                        </div>
+                    `;
+                    chatMessages.appendChild(loadingDiv);
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                }
+                
+                // Animate progress steps
+                animateResearchSteps();
+            } else {
+                if (loadingDiv) {
+                    loadingDiv.remove();
+                }
+            }
+        }
+
+        // Animate research steps
+        function animateResearchSteps() {
+            const steps = document.querySelectorAll('.research-step');
+            let currentStep = 0;
+            
+            const interval = setInterval(() => {
+                if (currentStep < steps.length) {
+                    steps[currentStep].classList.add('active');
+                    currentStep++;
+                } else {
+                    // Loop back to beginning
+                    steps.forEach(step => step.classList.remove('active'));
+                    currentStep = 0;
+                }
+                
+                // Check if loading indicator still exists
+                if (!document.getElementById('deepResearchLoading')) {
+                    clearInterval(interval);
+                }
+            }, 3000);
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            initTheme();
+            initSession();
+            document.getElementById('messageInput').focus();
+        });
+    </script>
+</body>
+</html>

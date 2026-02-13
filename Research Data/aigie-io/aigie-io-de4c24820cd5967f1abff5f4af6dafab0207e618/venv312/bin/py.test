@@ -1,0 +1,8 @@
+#!/bin/sh
+'''exec' "/Users/jsisson/Research/Research Data/aigie-io/aigie-io-de4c24820cd5967f1abff5f4af6dafab0207e618/venv312/bin/python3.12" "$0" "$@"
+' '''
+import sys
+from pytest import console_main
+if __name__ == '__main__':
+    sys.argv[0] = sys.argv[0].removesuffix('.exe')
+    sys.exit(console_main())

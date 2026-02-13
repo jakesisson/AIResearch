@@ -1,0 +1,65 @@
+version: '3.8'
+
+services:
+  langfuse-db:
+    image: postgres:15-alpine
+    container_name: langfuse_postgres
+    environment:
+      POSTGRES_USER: langfuse
+      POSTGRES_PASSWORD: langfuse_password
+      POSTGRES_DB: langfuse
+    ports:
+      - "5434:5432"  # Different port to avoid conflicts
+    volumes:
+      - langfuse_db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U langfuse"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  clickhouse:
+    image: clickhouse/clickhouse-server:latest
+    container_name: langfuse_clickhouse
+    ports:
+      - "8123:8123"  # HTTP interface
+      - "9000:9000"  # Native interface
+    volumes:
+      - clickhouse_data:/var/lib/clickhouse
+    environment:
+      CLICKHOUSE_DB: langfuse
+      CLICKHOUSE_USER: langfuse
+      CLICKHOUSE_PASSWORD: langfuse_password
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "localhost:8123/ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  langfuse:
+    image: langfuse/langfuse:latest
+    container_name: langfuse_server
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: postgresql://langfuse:langfuse_password@langfuse-db:5432/langfuse
+      CLICKHOUSE_URL: http://langfuse:langfuse_password@clickhouse:8123/langfuse
+      CLICKHOUSE_MIGRATION_URL: clickhouse://langfuse:langfuse_password@clickhouse:9000/langfuse
+      CLICKHOUSE_USER: langfuse
+      CLICKHOUSE_PASSWORD: langfuse_password
+      NEXTAUTH_SECRET: langfuse-secret-key-change-in-production
+      NEXTAUTH_URL: http://localhost:3000
+      SALT: langfuse-salt-change-in-production
+      TELEMETRY_ENABLED: "false"
+    depends_on:
+      langfuse-db:
+        condition: service_healthy
+      clickhouse:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  langfuse_db_data:
+  clickhouse_data:

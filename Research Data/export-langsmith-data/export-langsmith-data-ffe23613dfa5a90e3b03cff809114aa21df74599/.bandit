@@ -1,0 +1,16 @@
+# Bandit Security Scanner Configuration
+# https://bandit.readthedocs.io/en/latest/config.html
+
+[bandit]
+# Exclude directories
+exclude_dirs = ['.venv', '.pytest_cache', '__pycache__']
+
+# Exclude test files from scanning
+exclude = ['/test_*.py', '*/test_*.py']
+
+# Skip B101 (assert_used) check for test files (if not excluded)
+# Asserts are acceptable and expected in test files
+skips = B101
+
+# Only scan specific file patterns
+# (using exclude_dirs above handles most cases)

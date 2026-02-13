@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kisan Dost AI - Voice Assistant</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; margin: 0; background-color: #f7f7f7; display: flex; justify-content: center; align-items: center; height: 100vh; }
+        #chat-container { width: 100%; max-width: 600px; height: 90vh; background-color: #fff; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); display: flex; flex-direction: column; }
+        #chat-history { flex-grow: 1; padding: 1.5em; overflow-y: auto; display: flex; flex-direction: column; gap: 1em; }
+        .message { display: flex; flex-direction: column; max-width: 75%; line-height: 1.5; }
+        .user-message { align-self: flex-end; }
+        .ai-message { align-self: flex-start; }
+        .message-bubble { padding: 0.8em 1.2em; border-radius: 18px; }
+        .user-message .message-bubble { background-color: #007bff; color: white; border-bottom-right-radius: 4px; }
+        .ai-message .message-bubble { background-color: #e9e9eb; color: #333; border-bottom-left-radius: 4px; }
+        .message img { max-width: 100%; border-radius: 10px; margin-top: 8px; }
+        #input-area { display: flex; padding: 1em; border-top: 1px solid #ddd; align-items: center; gap: 10px; }
+        #text-input { flex-grow: 1; border: 1px solid #ccc; border-radius: 20px; padding: 10px 15px; font-size: 1em; }
+        .icon-button { background: none; border: none; font-size: 1.8em; cursor: pointer; color: #007bff; padding: 5px; }
+        #mic-button.recording { color: #dc3545; }
+        #status-bar { padding: 0.5em 1.5em; background-color: #f1f1f1; color: #555; font-style: italic; text-align: center; }
+    </style>
+</head>
+<body>
+
+    <div id="chat-container">
+        <div id="status-bar">Status: Idle</div>
+        <div id="chat-history">
+            <div class="ai-message">
+                <div class="message-bubble">Hello! I am Kisan Dost AI. How can I help you today? Type a message, upload an image, or click the microphone to speak.</div>
+            </div>
+        </div>
+        <div id="input-area">
+            <input type="text" id="text-input" placeholder="Type your message...">
+            <input type="file" id="image-input" accept="image/*" style="display: none;">
+            <button id="image-button" class="icon-button">🖼️</button>
+            <button id="mic-button" class="icon-button">🎤</button>
+        </div>
+    </div>
+
+    <script>
+        const micButton = document.getElementById('mic-button');
+        const imageButton = document.getElementById('image-button');
+        const imageInput = document.getElementById('image-input');
+        const textInput = document.getElementById('text-input');
+        const chatHistory = document.getElementById('chat-history');
+        const statusBar = document.getElementById('status-bar');
+
+        let mediaRecorder;
+        let audioChunks = [];
+        let isRecording = false;
+        let selectedFile = null;
+        const sessionId = "voice_session_" + Date.now();
+
+        function addMessage(sender, text, imageUrl = null) {
+            const messageElement = document.createElement('div');
+            messageElement.className = `message ${sender}-message`;
+
+            const bubble = document.createElement('div');
+            bubble.className = 'message-bubble';
+
+            if (text) {
+                bubble.textContent = text;
+            }
+
+            if (imageUrl) {
+                const img = document.createElement('img');
+                img.src = imageUrl;
+                // If it's a user message, the image goes inside the bubble
+                if (sender === 'user') {
+                    bubble.appendChild(img);
+                } else {
+                    // For AI messages, image could go outside/alongside the bubble if needed
+                    messageElement.appendChild(img);
+                }
+            }
+
+            messageElement.appendChild(bubble);
+            chatHistory.appendChild(messageElement);
+            chatHistory.scrollTop = chatHistory.scrollHeight;
+        }
+
+        function setStatus(text) {
+            statusBar.textContent = `Status: ${text}`;
+        }
+
+        // --- Event Listeners ---
+        imageButton.addEventListener('click', () => imageInput.click());
+        imageInput.addEventListener('change', (event) => {
+            selectedFile = event.target.files[0];
+            if (selectedFile) {
+                setStatus(`Image "${selectedFile.name}" selected. Type a query or press send.`);
+                textInput.focus();
+            }
+        });
+
+        micButton.addEventListener('click', () => {
+            if (isRecording) {
+                stopRecording();
+            } else if (textInput.value.trim() || selectedFile) {
+                handleSendMessage();
+            } else {
+                startRecording();
+            }
+        });
+
+        textInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                handleSendMessage();
+            }
+        });
+
+        async function handleSendMessage() {
+            const query = textInput.value.trim();
+            if (!query && !selectedFile) {
+                setStatus("Cannot send an empty message.");
+                return;
+            }
+
+            // Display user message immediately
+            if (selectedFile) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    addMessage('user', query, e.target.result);
+                };
+                reader.readAsDataURL(selectedFile);
+            } else {
+                addMessage('user', query);
+            }
+
+            // Clear inputs
+            textInput.value = '';
+            const fileToUpload = selectedFile;
+            selectedFile = null;
+            imageInput.value = ''; // Reset file input
+
+            await handleChat(query, fileToUpload);
+        }
+
+        async function startRecording() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                mediaRecorder = new MediaRecorder(stream);
+                mediaRecorder.ondataavailable = event => audioChunks.push(event.data);
+                mediaRecorder.onstop = async () => {
+                    const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                    audioChunks = [];
+                    await handleTranscription(audioBlob);
+                };
+                mediaRecorder.start();
+                isRecording = true;
+                micButton.classList.add('recording');
+                setStatus('Listening...');
+            } catch (error) {
+                console.error("Error accessing microphone:", error);
+                setStatus('Error: Could not access microphone.');
+            }
+        }
+
+        function stopRecording() {
+            if (mediaRecorder && isRecording) {
+                mediaRecorder.stop();
+                isRecording = false;
+                micButton.classList.remove('recording');
+                setStatus('Processing...');
+            }
+        }
+
+        async function handleTranscription(audioBlob) {
+            const formData = new FormData();
+            formData.append('file', audioBlob, 'recording.wav');
+            try {
+                setStatus('Transcribing...');
+                const response = await fetch('/transcribe', { method: 'POST', body: formData });
+                const data = await response.json();
+                if (data.error) throw new Error(data.error);
+
+                addMessage('user', data.text);
+                await handleChat(data.text, null);
+
+            } catch (error) {
+                console.error('Transcription error:', error);
+                setStatus('Error during transcription.');
+                addMessage('ai', `Error during transcription: ${error.message}`);
+            }
+        }
+
+        async function handleChat(query, file) {
+            try {
+                setStatus('Thinking...');
+                const formData = new FormData();
+                formData.append('session_id', sessionId);
+                formData.append('query', query);
+                if (file) {
+                    formData.append('file', file, file.name);
+                }
+
+                const response = await fetch('/chat', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+                if (response.status !== 200) throw new Error(data.error || 'Unknown error from server.');
+
+                const aiText = data.response;
+                addMessage('ai', aiText);
+                await handleSynthesis(aiText);
+
+            } catch (error) {
+                console.error('Chat error:', error);
+                setStatus('Error getting response from AI.');
+                addMessage('ai', `An error occurred: ${error.message}`);
+            }
+        }
+
+        async function handleSynthesis(text) {
+            try {
+                setStatus('Speaking...');
+                const response = await fetch('/synthesize', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ text: text })
+                });
+                if (!response.ok) throw new Error(`Synthesis failed with status ${response.status}`);
+                const audioBlob = await response.blob();
+                const audioUrl = URL.createObjectURL(audioBlob);
+                const audio = new Audio(audioUrl);
+                audio.play();
+                audio.onended = () => setStatus('Idle');
+            } catch (error) {
+                console.error('Synthesis error:', error);
+                setStatus('Error generating speech.');
+            }
+        }
+    </script>
+
+</body>
+</html>

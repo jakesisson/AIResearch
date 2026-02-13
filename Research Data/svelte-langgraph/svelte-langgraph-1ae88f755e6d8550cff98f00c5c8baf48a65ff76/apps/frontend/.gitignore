@@ -1,0 +1,32 @@
+test-results
+node_modules
+coverage
+
+# Output
+.output
+.vercel
+.netlify
+.wrangler
+/.svelte-kit
+/build
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Env
+.env
+.env.*
+!.env.example
+!.env.test
+
+# Vite
+vite.config.js.timestamp-*
+vite.config.ts.timestamp-*
+
+# Paraglide
+project.inlang/cache
+src/lib/paraglide
+
+# Sentry Config File
+.env.sentry-build-plugin

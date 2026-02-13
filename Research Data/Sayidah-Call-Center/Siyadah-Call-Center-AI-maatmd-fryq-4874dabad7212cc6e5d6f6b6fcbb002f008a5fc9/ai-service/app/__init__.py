@@ -1,0 +1,1 @@
+# FastAPI AI Microservice for Siyadah Platform

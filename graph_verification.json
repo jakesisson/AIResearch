@@ -1,0 +1,526 @@
+{
+  "total_verified": 22,
+  "langgraph_found": [
+    {
+      "path": "Research Data/Projectron",
+      "imports": [
+        "StateGraph",
+        "langgraph usage",
+        "langgraph module"
+      ],
+      "files": [
+        "backend/app/services/ai/ai_plan_service.py",
+        "backend/app/services/ai/ai_plan_service.py",
+        "backend/app/services/ai/ai_plan_service.py"
+      ]
+    },
+    {
+      "path": "Research Data/boss-bot",
+      "imports": [
+        "dependency"
+      ],
+      "files": []
+    },
+    {
+      "path": "Research Data/sasya-chikitsa",
+      "imports": [
+        "StateGraph",
+        "langgraph usage",
+        "langgraph module"
+      ],
+      "files": [
+        "engine/fsm_agent/core/langgraph_workflow_refactored.py",
+        "engine/fsm_agent/core/langgraph_workflow_refactored.py",
+        "engine/fsm_agent/core/langgraph_workflow_refactored.py"
+      ]
+    },
+    {
+      "path": "Research Data/ecommerce-chat",
+      "imports": [
+        "langgraph usage",
+        "langgraph module"
+      ],
+      "files": [
+        "backend/services/agent/agent.py",
+        "backend/services/agent/agent.py"
+      ]
+    },
+    {
+      "path": "Research Data/svelte-langgraph",
+      "imports": [
+        "dependency",
+        "StateGraph",
+        "langgraph usage",
+        "langgraph module"
+      ],
+      "files": [
+        "apps/backend/src/graph.py",
+        "apps/backend/src/graph.py",
+        "apps/backend/src/graph.py"
+      ]
+    },
+    {
+      "path": "Research Data/quark-chat",
+      "imports": [
+        "dependency"
+      ],
+      "files": []
+    },
+    {
+      "path": "Research Data/agents",
+      "imports": [
+        "dependency"
+      ],
+      "files": []
+    },
+    {
+      "path": "Research Data/RAG-Demon",
+      "imports": [
+        "dependency",
+        "StateGraph",
+        "langgraph usage",
+        "langgraph module"
+      ],
+      "files": [
+        "tests/test_history.py",
+        "tests/test_history.py",
+        "src/ragdemon/app.py"
+      ]
+    },
+    {
+      "path": "Research Data/ecommerce-chat",
+      "imports": [
+        "langgraph usage",
+        "langgraph module"
+      ],
+      "files": [
+        "backend/services/agent/agent.py",
+        "backend/services/agent/agent.py"
+      ]
+    },
+    {
+      "path": "Research Data/Agente-de-IA-usando-Next-y-Langchain",
+      "imports": [
+        "dependency"
+      ],
+      "files": []
+    }
+  ],
+  "langchain_only": [
+    "Research Data/langflow"
+  ],
+  "other_frameworks": [
+    {
+      "path": "Research Data/Experimental",
+      "frameworks": [
+        "CrewAI"
+      ]
+    }
+  ],
+  "no_graph": [
+    "Research Data/AI-Product-Analyzer",
+    "Research Data/solomon-codes",
+    "Research Data/aruizca-resume",
+    "Research Data/ai-resume-agent",
+    "Research Data/chatluna",
+    "Research Data/nlp",
+    "Research Data/DocRAG-Backend",
+    "Research Data/SSU_RAG",
+    "Research Data/medabot",
+    "Research Data/export-langsmith-data"
+  ],
+  "detailed_results": [
+    {
+      "path": "Research Data/AI-Product-Analyzer",
+      "base_url": "https://github.com/Yaswanth-Mitta/multi",
+      "path_exists": true,
+      "verification": {
+        "langgraph_imports": [],
+        "langgraph_usage": false,
+        "stategraph_usage": false,
+        "langchain_agents": false,
+        "other_graph_frameworks": [],
+        "graph_files": [],
+        "sample_code": []
+      }
+    },
+    {
+      "path": "Research Data/Projectron",
+      "base_url": "https://github.com/Eden-Cohen1/Projectron",
+      "path_exists": true,
+      "verification": {
+        "langgraph_imports": [
+          "StateGraph",
+          "langgraph usage",
+          "langgraph module"
+        ],
+        "langgraph_usage": true,
+        "stategraph_usage": true,
+        "langchain_agents": false,
+        "other_graph_frameworks": [],
+        "graph_files": [
+          "backend/app/services/ai/ai_plan_service.py",
+          "backend/app/services/ai/ai_plan_service.py",
+          "backend/app/services/ai/ai_plan_service.py"
+        ],
+        "sample_code": [
+          "from langgraph.graph import StateGraph, END, START",
+          "from langgraph.graph import StateGraph, END, START",
+          "from langgraph.graph import StateGraph, END, START"
+        ]
+      }
+    },
+    {
+      "path": "Research Data/solomon-codes",
+      "base_url": "https://github.com/RyanLisse/solomon-codes",
+      "path_exists": true,
+      "verification": {
+        "langgraph_imports": [],
+        "langgraph_usage": false,
+        "stategraph_usage": false,
+        "langchain_agents": false,
+        "other_graph_frameworks": [],
+        "graph_files": [],
+        "sample_code": []
+      }
+    },
+    {
+      "path": "Research Data/boss-bot",
+      "base_url": "https://github.com/bossjones/boss-bot",
+      "path_exists": true,
+      "verification": {
+        "langgraph_imports": [
+          "dependency"
+        ],
+        "langgraph_usage": true,
+        "stategraph_usage": false,
+        "langchain_agents": false,
+        "other_graph_frameworks": [],
+        "graph_files": [],
+        "sample_code": []
+      }
+    },
+    {
+      "path": "Research Data/aruizca-resume",
+      "base_url": "https://github.com/aruizca/aruizca-resume",
+      "path_exists": true,
+      "verification": {
+        "langgraph_imports": [],
+        "langgraph_usage": false,
+        "stategraph_usage": false,
+        "langchain_agents": false,
+        "other_graph_frameworks": [],
+        "graph_files": [],
+        "sample_code": []
+      }
+    },
+    {
+      "path": "Research Data/sasya-chikitsa",
+      "base_url": "https://github.com/cds-9-group-6/sasya-chikitsa",
+      "path_exists": true,
+      "verification": {
+        "langgraph_imports": [
+          "StateGraph",
+          "langgraph usage",
+          "langgraph module"
+        ],
+        "langgraph_usage": true,
+        "stategraph_usage": true,
+        "langchain_agents": true,
+        "other_graph_frameworks": [],
+        "graph_files": [
+          "engine/fsm_agent/core/langgraph_workflow_refactored.py",
+          "engine/fsm_agent/core/langgraph_workflow_refactored.py",
+          "engine/fsm_agent/core/langgraph_workflow_refactored.py",
+          "engine/fsm_agent/core/langgraph_workflow.py",
+          "engine/fsm_agent/core/langgraph_workflow.py"
+        ],
+        "sample_code": [
+          "from langgraph.graph import StateGraph, END, START",
+          "diagnosis and prescription using StateGraph with modular node-based architecture.",
+          "from langgraph.graph import StateGraph, END, START"
+        ]
+      }
+    },
+    {
+      "path": "Research Data/ai-resume-agent",
+      "base_url": "https://github.com/aandmaldonado/ai-resume-agent",
+      "path_exists": true,
+      "verification": {
+        "langgraph_imports": [],
+        "langgraph_usage": false,
+        "stategraph_usage": false,
+        "langchain_agents": false,
+        "other_graph_frameworks": [],
+        "graph_files": [],
+        "sample_code": []
+      }
+    },
+    {
+      "path": "Research Data/chatluna",
+      "base_url": "https://github.com/ChatLunaLab/chatluna",
+      "path_exists": true,
+      "verification": {
+        "langgraph_imports": [],
+        "langgraph_usage": false,
+        "stategraph_usage": false,
+        "langchain_agents": false,
+        "other_graph_frameworks": [],
+        "graph_files": [],
+        "sample_code": []
+      }
+    },
+    {
+      "path": "Research Data/nlp",
+      "base_url": "https://github.com/idvorkin/nlp",
+      "path_exists": true,
+      "verification": {
+        "langgraph_imports": [],
+        "langgraph_usage": false,
+        "stategraph_usage": false,
+        "langchain_agents": false,
+        "other_graph_frameworks": [],
+        "graph_files": [],
+        "sample_code": []
+      }
+    },
+    {
+      "path": "Research Data/ecommerce-chat",
+      "base_url": "https://github.com/arthurmorais12/ecommerce-chat",
+      "path_exists": true,
+      "verification": {
+        "langgraph_imports": [
+          "langgraph usage",
+          "langgraph module"
+        ],
+        "langgraph_usage": true,
+        "stategraph_usage": false,
+        "langchain_agents": true,
+        "other_graph_frameworks": [],
+        "graph_files": [
+          "backend/services/agent/agent.py",
+          "backend/services/agent/agent.py"
+        ],
+        "sample_code": [
+          "from langgraph.checkpoint.sqlite.aio import AsyncSqliteSaver",
+          "from langgraph.checkpoint.sqlite.aio import AsyncSqliteSaver"
+        ]
+      }
+    },
+    {
+      "path": "Research Data/DocRAG-Backend",
+      "base_url": "https://github.com/Rajathbharadwaj/DocRAG-Backend",
+      "path_exists": true,
+      "verification": {
+        "langgraph_imports": [],
+        "langgraph_usage": false,
+        "stategraph_usage": false,
+        "langchain_agents": false,
+        "other_graph_frameworks": [],
+        "graph_files": [],
+        "sample_code": []
+      }
+    },
+    {
+      "path": "Research Data/SSU_RAG",
+      "base_url": "https://github.com/Gael-Android/SSU_RAG",
+      "path_exists": true,
+      "verification": {
+        "langgraph_imports": [],
+        "langgraph_usage": false,
+        "stategraph_usage": false,
+        "langchain_agents": false,
+        "other_graph_frameworks": [],
+        "graph_files": [],
+        "sample_code": []
+      }
+    },
+    {
+      "path": "Research Data/Experimental",
+      "base_url": "https://github.com/nguyenhonglich111-1001/Experimental",
+      "path_exists": true,
+      "verification": {
+        "langgraph_imports": [],
+        "langgraph_usage": false,
+        "stategraph_usage": false,
+        "langchain_agents": false,
+        "other_graph_frameworks": [
+          "CrewAI"
+        ],
+        "graph_files": [],
+        "sample_code": []
+      }
+    },
+    {
+      "path": "Research Data/langflow",
+      "base_url": "https://github.com/langflow-ai/langflow",
+      "path_exists": true,
+      "verification": {
+        "langgraph_imports": [],
+        "langgraph_usage": false,
+        "stategraph_usage": false,
+        "langchain_agents": true,
+        "other_graph_frameworks": [
+          "CrewAI"
+        ],
+        "graph_files": [],
+        "sample_code": []
+      }
+    },
+    {
+      "path": "Research Data/svelte-langgraph",
+      "base_url": "https://github.com/synergyai-nl/svelte-langgraph",
+      "path_exists": true,
+      "verification": {
+        "langgraph_imports": [
+          "dependency",
+          "StateGraph",
+          "langgraph usage",
+          "langgraph module"
+        ],
+        "langgraph_usage": true,
+        "stategraph_usage": true,
+        "langchain_agents": true,
+        "other_graph_frameworks": [],
+        "graph_files": [
+          "apps/backend/src/graph.py",
+          "apps/backend/src/graph.py",
+          "apps/backend/src/graph.py"
+        ],
+        "sample_code": [
+          "from langgraph.graph.state import CompiledStateGraph",
+          "from langgraph.graph.state import CompiledStateGraph",
+          "from langgraph.graph.state import CompiledStateGraph"
+        ]
+      }
+    },
+    {
+      "path": "Research Data/quark-chat",
+      "base_url": "https://github.com/anadi45/quark-chat",
+      "path_exists": true,
+      "verification": {
+        "langgraph_imports": [
+          "dependency"
+        ],
+        "langgraph_usage": true,
+        "stategraph_usage": false,
+        "langchain_agents": false,
+        "other_graph_frameworks": [],
+        "graph_files": [],
+        "sample_code": []
+      }
+    },
+    {
+      "path": "Research Data/agents",
+      "base_url": "https://github.com/danny-avila/agents",
+      "path_exists": true,
+      "verification": {
+        "langgraph_imports": [
+          "dependency"
+        ],
+        "langgraph_usage": true,
+        "stategraph_usage": false,
+        "langchain_agents": false,
+        "other_graph_frameworks": [],
+        "graph_files": [],
+        "sample_code": []
+      }
+    },
+    {
+      "path": "Research Data/RAG-Demon",
+      "base_url": "https://github.com/Les-Mills-Ai-Agent/RAG-Demon",
+      "path_exists": true,
+      "verification": {
+        "langgraph_imports": [
+          "dependency",
+          "StateGraph",
+          "langgraph usage",
+          "langgraph module"
+        ],
+        "langgraph_usage": true,
+        "stategraph_usage": true,
+        "langchain_agents": false,
+        "other_graph_frameworks": [],
+        "graph_files": [
+          "tests/test_history.py",
+          "tests/test_history.py",
+          "src/ragdemon/app.py",
+          "src/ragdemon/app.py",
+          "src/ragdemon/app.py"
+        ],
+        "sample_code": [
+          "from langgraph.graph import MessagesState",
+          "from langgraph.graph import MessagesState",
+          "from langgraph.prebuilt import ToolNode, tools_condition, InjectedStore"
+        ]
+      }
+    },
+    {
+      "path": "Research Data/ecommerce-chat",
+      "base_url": "https://github.com/arthurmorais12/ecommerce-chat",
+      "path_exists": true,
+      "verification": {
+        "langgraph_imports": [
+          "langgraph usage",
+          "langgraph module"
+        ],
+        "langgraph_usage": true,
+        "stategraph_usage": false,
+        "langchain_agents": true,
+        "other_graph_frameworks": [],
+        "graph_files": [
+          "backend/services/agent/agent.py",
+          "backend/services/agent/agent.py"
+        ],
+        "sample_code": [
+          "from langgraph.checkpoint.sqlite.aio import AsyncSqliteSaver",
+          "from langgraph.checkpoint.sqlite.aio import AsyncSqliteSaver"
+        ]
+      }
+    },
+    {
+      "path": "Research Data/Agente-de-IA-usando-Next-y-Langchain",
+      "base_url": "https://github.com/Lostovayne/Agente-de-IA-usando-Next-y-Langchain",
+      "path_exists": true,
+      "verification": {
+        "langgraph_imports": [
+          "dependency"
+        ],
+        "langgraph_usage": true,
+        "stategraph_usage": false,
+        "langchain_agents": false,
+        "other_graph_frameworks": [],
+        "graph_files": [],
+        "sample_code": []
+      }
+    },
+    {
+      "path": "Research Data/medabot",
+      "base_url": "https://github.com/luistorres/medabot",
+      "path_exists": true,
+      "verification": {
+        "langgraph_imports": [],
+        "langgraph_usage": false,
+        "stategraph_usage": false,
+        "langchain_agents": false,
+        "other_graph_frameworks": [],
+        "graph_files": [],
+        "sample_code": []
+      }
+    },
+    {
+      "path": "Research Data/export-langsmith-data",
+      "base_url": "https://github.com/stride-nyc/export-langsmith-data",
+      "path_exists": true,
+      "verification": {
+        "langgraph_imports": [],
+        "langgraph_usage": false,
+        "stategraph_usage": false,
+        "langchain_agents": false,
+        "other_graph_frameworks": [],
+        "graph_files": [],
+        "sample_code": []
+      }
+    }
+  ]
+}

@@ -1,0 +1,69 @@
+# 📦 برومت Replit – تفعيل نظام التعلم الذاتي الخاص لكل مستخدم
+
+"""
+🎯 الهدف:
+نظام يتعلم ذاتياً من أي مصدر بيانات يربطه العميل (مثل Google Sheet، CRM، واتساب...)
+بحيث يتعلم النظام من بيانات كل عميل بشكل منفصل، ويطوّر ردوده وتعاملاته مع عملاء ذلك العميل فقط.
+
+💡 مبدأ العمل:
+1. كل عميل يربط داتا معينة (CRM, Sheet, WhatsApp Logs)
+2. يتم حفظ وتحليل هذه البيانات داخل مجلد منفصل أو جدول خاص (user-specific)
+3. يتم تحليل النمط + توليد أوامر ذكية + تخصيص الردود
+4. تُستخدم هذه النتائج حصريًا عند التعامل مع عملاء هذا العميل
+"""
+
+# ✅ الجزء الأول: تعريف الهوية وربط البيانات
+client_id = "company_001"  # يتم تحديده تلقائيًا لكل مستخدم
+linked_data = {
+    "google_sheet": "https://docs.google.com/spreadsheets/d/xxx",
+    "crm_data": "https://api.crm.com/v1/clients?token=yyy",
+    "whatsapp_logs": "gs://siadah-data/company_001/logs.json"
+}
+
+# ✅ الجزء الثاني: حفظ البيانات في وحدة منفصلة لكل مستخدم
+import os
+from pathlib import Path
+
+client_data_dir = Path(f"./data/{client_id}")
+client_data_dir.mkdir(parents=True, exist_ok=True)
+
+# تنزيل البيانات وحفظها مؤقتاً
+import requests
+
+for source_name, url in linked_data.items():
+    response = requests.get(url)  # أو استخدام gspread/BigQuery/CRM API
+    with open(client_data_dir / f"{source_name}.json", "wb") as f:
+        f.write(response.content)
+
+# ✅ الجزء الثالث: تحليل البيانات وتوليد أوامر ذكية خاصة بهذا العميل فقط
+import json
+from openai import OpenAI
+
+openai = OpenAI(api_key="your_openai_key")
+
+all_messages = []
+for file in client_data_dir.glob("*.json"):
+    data = json.load(open(file))
+    all_messages.append(str(data))
+
+analysis_prompt = f"""
+أنت مساعد ذكاء صناعي تتعلم من بيانات هذا العميل فقط.
+حلل هذه البيانات:
+{all_messages[:2]}...
+
+استخرج أهم الأسئلة الشائعة التي يواجهها عملاء هذا العميل.
+اقترح ردودًا مخصصة باللهجة السعودية.
+واكتب أوامر ذكية يمكن تفعيلها تلقائيًا (if → then style).
+"""
+
+result = openai.chat.completions.create(
+    model="gpt-4o",
+    messages=[{"role": "system", "content": analysis_prompt}]
+)
+
+smart_actions = result.choices[0].message.content
+
+with open(client_data_dir / "smart_actions.txt", "w") as f:
+    f.write(smart_actions)
+
+print("✅ تم توليد الردود والأوامر المخصصة بنجاح")

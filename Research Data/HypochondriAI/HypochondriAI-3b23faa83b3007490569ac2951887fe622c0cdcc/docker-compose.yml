@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: hypochondriai_3b23faa83b3007490569ac2951887fe622c0cdcc_postgres
+    environment:
+      POSTGRES_USER: test_user
+      POSTGRES_PASSWORD: test_password
+      POSTGRES_DB: hypochondriai_3b23faa83b3007490569ac2951887fe622c0cdcc_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data_hypochondriai_3b23faa83b3007490569ac2951887fe622c0cdcc:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U test_user"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data_hypochondriai_3b23faa83b3007490569ac2951887fe622c0cdcc:

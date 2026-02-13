@@ -1,0 +1,64 @@
+# Byte-compiled / cache files
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Virtual environments
+venv/
+.env/
+.venv/
+
+# PyCharm project files
+.idea/
+
+# VSCode (just in case)
+.vscode/
+
+# macOS / Windows
+.DS_Store
+Thumbs.db
+
+# Log files
+*.log
+logs/
+
+# Ignore the data folder entirely (mounted volume)
+data/
+
+# Docker stuff (optional)
+*.pid
+*.bak
+*.swp
+
+# Python test cache
+.pytest_cache/
+.coverage
+
+# Build / dist folders
+build/
+dist/
+*.egg-info/
+
+# Local dev environment files
+.env
+.env.*
+
+# ChromaDB generated protobufs (optional if you’re regenerating)
+venv/Lib/site-packages/chromadb/proto/*_pb2.py*
+venv/Lib/site-packages/chromadb/proto/*_pb2_grpc.py
+
+# Configuration
+fly.toml
+
+# Source control junk
+.git/
+.github/
+
+# Build configuration
+Dockerfile
+
+# Other
+knowledgebase/
+README.md
+env.example

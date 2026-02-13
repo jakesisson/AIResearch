@@ -1,0 +1,38 @@
+# Build & packaging
+build/
+dist/
+*.egg-info/
+
+# Byte-compiled / cache
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.pyrightcache/
+
+# Virtual environments
+.venv/
+venv/
+
+# IDE / Editor
+.idea/
+.vscode/
+
+# OS / Misc
+.DS_Store
+.python-version
+
+# Env & secrets
+.env
+
+# Project-specific
+.requirements.utf8.txt
+data/
+db/data/
+logs/
+
+# node stuff
+node_modules/
+package.json
+package-lock.json

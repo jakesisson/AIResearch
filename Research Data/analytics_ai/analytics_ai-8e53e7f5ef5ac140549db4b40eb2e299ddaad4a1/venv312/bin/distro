@@ -1,0 +1,8 @@
+#!/bin/sh
+'''exec' "/Users/jsisson/Research/Research Data/analytics_ai/analytics_ai-8e53e7f5ef5ac140549db4b40eb2e299ddaad4a1/venv312/bin/python3.12" "$0" "$@"
+' '''
+import sys
+from distro.distro import main
+if __name__ == '__main__':
+    sys.argv[0] = sys.argv[0].removesuffix('.exe')
+    sys.exit(main())

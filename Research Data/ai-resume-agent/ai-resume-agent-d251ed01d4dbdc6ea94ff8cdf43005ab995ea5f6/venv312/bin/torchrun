@@ -1,0 +1,8 @@
+#!/bin/sh
+'''exec' "/Users/jsisson/Research/Research Data/ai-resume-agent/ai-resume-agent-d251ed01d4dbdc6ea94ff8cdf43005ab995ea5f6/venv312/bin/python3.12" "$0" "$@"
+' '''
+import sys
+from torch.distributed.run import main
+if __name__ == '__main__':
+    sys.argv[0] = sys.argv[0].removesuffix('.exe')
+    sys.exit(main())

@@ -1,0 +1,987 @@
+import React, { useState } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import {
+  Settings, User, Shield, Bell, Database, Phone, MessageSquare,
+  Mail, Key, Eye, EyeOff, Save, RefreshCw, AlertCircle, CheckCircle,
+  Globe, Palette, Volume2, Camera, FileText, Calendar, Clock,
+  Zap, BarChart3, Users, Lock, Smartphone, Headphones, Monitor,
+  Wifi, Cloud, HardDrive, Download, Upload, Trash2, Plus, X
+} from 'lucide-react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Switch } from '@/components/ui/switch';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Badge } from '@/components/ui/badge';
+import { Separator } from '@/components/ui/separator';
+import { useToast } from '@/hooks/use-toast';
+
+interface SystemSettings {
+  // Profile Settings
+  companyName: string;
+  companyLogo: string;
+  adminEmail: string;
+  adminPhone: string;
+  timezone: string;
+  language: string;
+  currency: string;
+  
+  // AI & Automation
+  openaiApiKey: string;
+  elevenLabsApiKey: string;
+  aiResponseSpeed: 'fast' | 'balanced' | 'accurate';
+  autoExecuteThreshold: number;
+  agentPerformanceTracking: boolean;
+  
+  // Communication
+  twilioAccountSid: string;
+  twilioAuthToken: string;
+  twilioPhoneNumber: string;
+  whatsappApiToken: string;
+  whatsappWebhookUrl: string;
+  emailSmtpServer: string;
+  emailUsername: string;
+  emailPassword: string;
+  
+  // Security
+  twoFactorEnabled: boolean;
+  sessionTimeout: number;
+  passwordPolicy: 'standard' | 'strict' | 'enterprise';
+  ipWhitelist: string[];
+  apiRateLimit: number;
+  
+  // Notifications
+  emailNotifications: boolean;
+  smsNotifications: boolean;
+  browserNotifications: boolean;
+  weeklyReports: boolean;
+  realTimeAlerts: boolean;
+  
+  // Performance
+  databaseBackupFrequency: 'daily' | 'weekly' | 'monthly';
+  logRetentionDays: number;
+  cacheEnabled: boolean;
+  compressionEnabled: boolean;
+  
+  // UI/UX
+  theme: 'light' | 'dark' | 'auto';
+  sidebarCollapsed: boolean;
+  showWelcomeMessage: boolean;
+  animationsEnabled: boolean;
+  soundEnabled: boolean;
+}
+
+export default function EnterpriseSettings() {
+  const [activeTab, setActiveTab] = useState('profile');
+  const [showPasswords, setShowPasswords] = useState<Record<string, boolean>>({});
+  const [unsavedChanges, setUnsavedChanges] = useState(false);
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+
+  const { data: settings, isLoading, error } = useQuery<SystemSettings>({
+    queryKey: ['/api/settings'],
+    queryFn: async () => {
+      console.log('🔄 Fetching settings...');
+      const response = await fetch('/api/settings', {
+        headers: {
+          'Accept': 'application/json',
+          'Cache-Control': 'no-cache'
+        }
+      });
+      console.log('📡 Response status:', response.status);
+      if (!response.ok) throw new Error('فشل في تحميل الإعدادات');
+      const data = await response.json();
+      console.log('✅ Settings data received:', data);
+      console.log('✅ Data keys count:', Object.keys(data).length);
+      return data;
+    },
+    refetchOnWindowFocus: false,
+    staleTime: 0,
+    retry: 1
+  });
+
+  const updateSettingsMutation = useMutation({
+    mutationFn: async (newSettings: Partial<SystemSettings>) => {
+      const response = await fetch('/api/settings', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newSettings)
+      });
+      if (!response.ok) throw new Error('فشل في حفظ الإعدادات');
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/settings'] });
+      setUnsavedChanges(false);
+      toast({
+        title: '✅ تم الحفظ بنجاح',
+        description: 'تم حفظ جميع الإعدادات بنجاح'
+      });
+    },
+    onError: () => {
+      toast({
+        title: '❌ خطأ في الحفظ',
+        description: 'فشل في حفظ الإعدادات، يرجى المحاولة مرة أخرى',
+        variant: 'destructive'
+      });
+    }
+  });
+
+  const testConnectionMutation = useMutation({
+    mutationFn: async (service: string) => {
+      const response = await fetch(`/api/test-connection/${service}`, {
+        method: 'POST'
+      });
+      if (!response.ok) throw new Error('فشل في اختبار الاتصال');
+      return response.json();
+    },
+    onSuccess: (data, service) => {
+      toast({
+        title: '✅ اختبار ناجح',
+        description: `تم اختبار ${service} بنجاح`
+      });
+    },
+    onError: (error, service) => {
+      toast({
+        title: '❌ فشل في الاختبار',
+        description: `فشل في اختبار ${service}`,
+        variant: 'destructive'
+      });
+    }
+  });
+
+  const togglePassword = (field: string) => {
+    setShowPasswords(prev => ({
+      ...prev,
+      [field]: !prev[field]
+    }));
+  };
+
+  const updateSetting = (key: keyof SystemSettings, value: any) => {
+    if (!settings) return;
+    setUnsavedChanges(true);
+    const newSettings = { ...settings, [key]: value };
+    updateSettingsMutation.mutate(newSettings);
+  };
+
+  const saveSettings = () => {
+    if (settings) {
+      updateSettingsMutation.mutate(settings);
+    }
+  };
+
+  // Check if we have valid settings data
+  const hasSettings = settings && typeof settings === 'object' && Object.keys(settings).length > 0;
+  
+  console.log('🔍 Render State:', { isLoading, hasSettings, settingsExists: !!settings });
+  
+  // Force show content if we have any settings data, regardless of loading state
+  if (isLoading && !hasSettings) {
+    return (
+      <div className="min-h-screen bg-slate-900 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto mb-4"></div>
+          <h2 className="text-xl font-bold text-white">جارٍ تحميل الإعدادات...</h2>
+          <p className="text-slate-400 mt-2">يرجى الانتظار</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error && !hasSettings) {
+    return (
+      <div className="min-h-screen bg-slate-900 flex items-center justify-center">
+        <div className="text-center">
+          <AlertCircle className="w-8 h-8 text-red-500 mx-auto mb-4" />
+          <h2 className="text-xl font-bold text-white">خطأ في تحميل الإعدادات</h2>
+          <p className="text-slate-400 mt-2">{error?.message || 'خطأ غير معروف'}</p>
+          <Button 
+            onClick={() => window.location.reload()} 
+            className="mt-4 bg-blue-600 hover:bg-blue-700"
+          >
+            إعادة المحاولة
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  // Proceed with rendering since we have settings or should show content
+
+  return (
+    <div className="min-h-screen bg-slate-900 text-white">
+      {/* Header */}
+      <div className="bg-slate-800 border-b border-slate-700 p-6">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <div className="p-2 bg-blue-500/20 rounded-lg">
+              <Settings className="w-8 h-8 text-blue-400" />
+            </div>
+            <div>
+              <h1 className="text-2xl font-bold">إعدادات سيادة AI</h1>
+              <p className="text-slate-400">إعدادات شاملة للنظام بمعايير عالمية</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-3">
+            {unsavedChanges && (
+              <Badge variant="outline" className="border-yellow-500 text-yellow-400">
+                <AlertCircle className="w-4 h-4 mr-2" />
+                تغييرات غير محفوظة
+              </Badge>
+            )}
+            <Button 
+              onClick={saveSettings}
+              disabled={!unsavedChanges || updateSettingsMutation.isPending}
+              className="bg-blue-600 hover:bg-blue-700"
+            >
+              {updateSettingsMutation.isPending ? (
+                <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
+              ) : (
+                <Save className="w-4 h-4 mr-2" />
+              )}
+              حفظ الإعدادات
+            </Button>
+          </div>
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <div className="p-6">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+          <TabsList className="grid w-full grid-cols-7 bg-slate-800 border-slate-700">
+            <TabsTrigger value="profile" className="data-[state=active]:bg-blue-600">
+              <User className="w-4 h-4 mr-2" />
+              الملف الشخصي
+            </TabsTrigger>
+            <TabsTrigger value="ai" className="data-[state=active]:bg-blue-600">
+              <Zap className="w-4 h-4 mr-2" />
+              الذكاء الاصطناعي
+            </TabsTrigger>
+            <TabsTrigger value="communication" className="data-[state=active]:bg-blue-600">
+              <MessageSquare className="w-4 h-4 mr-2" />
+              الاتصالات
+            </TabsTrigger>
+            <TabsTrigger value="security" className="data-[state=active]:bg-blue-600">
+              <Shield className="w-4 h-4 mr-2" />
+              الأمان
+            </TabsTrigger>
+            <TabsTrigger value="notifications" className="data-[state=active]:bg-blue-600">
+              <Bell className="w-4 h-4 mr-2" />
+              الإشعارات
+            </TabsTrigger>
+            <TabsTrigger value="performance" className="data-[state=active]:bg-blue-600">
+              <BarChart3 className="w-4 h-4 mr-2" />
+              الأداء
+            </TabsTrigger>
+            <TabsTrigger value="ui" className="data-[state=active]:bg-blue-600">
+              <Palette className="w-4 h-4 mr-2" />
+              الواجهة
+            </TabsTrigger>
+          </TabsList>
+
+          {/* Profile Settings */}
+          <TabsContent value="profile" className="space-y-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <Card className="bg-slate-800 border-slate-700">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <User className="w-5 h-5 text-blue-400" />
+                    معلومات الشركة
+                  </CardTitle>
+                  <CardDescription>
+                    البيانات الأساسية للشركة والمؤسسة
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div>
+                    <Label htmlFor="companyName">اسم الشركة</Label>
+                    <Input
+                      id="companyName"
+                      value={settings?.companyName || ''}
+                      onChange={(e) => updateSetting('companyName', e.target.value)}
+                      placeholder="شركة سيادة للذكاء الاصطناعي"
+                      className="bg-slate-700 border-slate-600"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="adminEmail">البريد الإلكتروني للمدير</Label>
+                    <Input
+                      id="adminEmail"
+                      type="email"
+                      value={settings?.adminEmail || ''}
+                      onChange={(e) => updateSetting('adminEmail', e.target.value)}
+                      placeholder="admin@siyadah.ai"
+                      className="bg-slate-700 border-slate-600"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="adminPhone">رقم هاتف المدير</Label>
+                    <Input
+                      id="adminPhone"
+                      value={settings?.adminPhone || ''}
+                      onChange={(e) => updateSetting('adminPhone', e.target.value)}
+                      placeholder="+966 50 123 4567"
+                      className="bg-slate-700 border-slate-600"
+                    />
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="bg-slate-800 border-slate-700">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Globe className="w-5 h-5 text-green-400" />
+                    الإعدادات الإقليمية
+                  </CardTitle>
+                  <CardDescription>
+                    المنطقة الزمنية واللغة والعملة
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div>
+                    <Label htmlFor="timezone">المنطقة الزمنية</Label>
+                    <Select value={settings?.timezone || 'Asia/Riyadh'}>
+                      <SelectTrigger className="bg-slate-700 border-slate-600">
+                        <SelectValue placeholder="اختر المنطقة الزمنية" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Asia/Riyadh">الرياض (GMT+3)</SelectItem>
+                        <SelectItem value="Asia/Dubai">دبي (GMT+4)</SelectItem>
+                        <SelectItem value="Europe/London">لندن (GMT+0)</SelectItem>
+                        <SelectItem value="America/New_York">نيويورك (GMT-5)</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label htmlFor="language">اللغة</Label>
+                    <Select value={settings?.language || 'ar'}>
+                      <SelectTrigger className="bg-slate-700 border-slate-600">
+                        <SelectValue placeholder="اختر اللغة" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="ar">العربية</SelectItem>
+                        <SelectItem value="en">English</SelectItem>
+                        <SelectItem value="fr">Français</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label htmlFor="currency">العملة</Label>
+                    <Select value={settings?.currency || 'SAR'}>
+                      <SelectTrigger className="bg-slate-700 border-slate-600">
+                        <SelectValue placeholder="اختر العملة" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="SAR">ريال سعودي (SAR)</SelectItem>
+                        <SelectItem value="AED">درهم إماراتي (AED)</SelectItem>
+                        <SelectItem value="USD">دولار أمريكي (USD)</SelectItem>
+                        <SelectItem value="EUR">يورو (EUR)</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+
+          {/* AI Settings */}
+          <TabsContent value="ai" className="space-y-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <Card className="bg-slate-800 border-slate-700">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Key className="w-5 h-5 text-purple-400" />
+                    مفاتيح API
+                  </CardTitle>
+                  <CardDescription>
+                    مفاتيح الوصول لخدمات الذكاء الاصطناعي
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div>
+                    <Label htmlFor="openaiKey">مفتاح OpenAI</Label>
+                    <div className="flex gap-2">
+                      <div className="relative flex-1">
+                        <Input
+                          id="openaiKey"
+                          type={showPasswords.openai ? 'text' : 'password'}
+                          value={settings?.openaiApiKey || ''}
+                          onChange={(e) => updateSetting('openaiApiKey', e.target.value)}
+                          placeholder="sk-..."
+                          className="bg-slate-700 border-slate-600 pr-10"
+                        />
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          className="absolute right-2 top-1/2 -translate-y-1/2 h-6 w-6 p-0"
+                          onClick={() => togglePassword('openai')}
+                        >
+                          {showPasswords.openai ? <EyeOff className="h-3 w-3" /> : <Eye className="h-3 w-3" />}
+                        </Button>
+                      </div>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => testConnectionMutation.mutate('openai')}
+                        disabled={testConnectionMutation.isPending}
+                        className="border-slate-600"
+                      >
+                        اختبار
+                      </Button>
+                    </div>
+                  </div>
+                  <div>
+                    <Label htmlFor="elevenLabsKey">مفتاح ElevenLabs</Label>
+                    <div className="flex gap-2">
+                      <div className="relative flex-1">
+                        <Input
+                          id="elevenLabsKey"
+                          type={showPasswords.elevenlabs ? 'text' : 'password'}
+                          value={settings?.elevenLabsApiKey || ''}
+                          onChange={(e) => updateSetting('elevenLabsApiKey', e.target.value)}
+                          placeholder="..."
+                          className="bg-slate-700 border-slate-600 pr-10"
+                        />
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          className="absolute right-2 top-1/2 -translate-y-1/2 h-6 w-6 p-0"
+                          onClick={() => togglePassword('elevenlabs')}
+                        >
+                          {showPasswords.elevenlabs ? <EyeOff className="h-3 w-3" /> : <Eye className="h-3 w-3" />}
+                        </Button>
+                      </div>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => testConnectionMutation.mutate('elevenlabs')}
+                        disabled={testConnectionMutation.isPending}
+                        className="border-slate-600"
+                      >
+                        اختبار
+                      </Button>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="bg-slate-800 border-slate-700">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Zap className="w-5 h-5 text-yellow-400" />
+                    إعدادات الذكاء الاصطناعي
+                  </CardTitle>
+                  <CardDescription>
+                    تحكم في سلوك وأداء الوكلاء الذكيين
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div>
+                    <Label htmlFor="aiSpeed">سرعة الاستجابة</Label>
+                    <Select value={settings?.aiResponseSpeed || 'balanced'}>
+                      <SelectTrigger className="bg-slate-700 border-slate-600">
+                        <SelectValue placeholder="اختر السرعة" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="fast">سريع (أقل دقة)</SelectItem>
+                        <SelectItem value="balanced">متوازن (موصى به)</SelectItem>
+                        <SelectItem value="accurate">دقيق (أبطأ)</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label htmlFor="autoThreshold">حد التنفيذ التلقائي (%)</Label>
+                    <Input
+                      id="autoThreshold"
+                      type="number"
+                      min="50"
+                      max="100"
+                      value={settings?.autoExecuteThreshold || 85}
+                      onChange={(e) => updateSetting('autoExecuteThreshold', parseInt(e.target.value))}
+                      className="bg-slate-700 border-slate-600"
+                    />
+                    <p className="text-xs text-slate-400 mt-1">
+                      نسبة الثقة المطلوبة للتنفيذ التلقائي
+                    </p>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <Label htmlFor="performanceTracking">تتبع أداء الوكلاء</Label>
+                      <p className="text-xs text-slate-400">تسجيل وتحليل أداء الوكلاء الذكيين</p>
+                    </div>
+                    <Switch
+                      id="performanceTracking"
+                      checked={settings?.agentPerformanceTracking || true}
+                      onCheckedChange={(checked) => updateSetting('agentPerformanceTracking', checked)}
+                    />
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+
+          {/* Communication Settings */}
+          <TabsContent value="communication" className="space-y-6">
+            <div className="grid grid-cols-1 gap-6">
+              <Card className="bg-slate-800 border-slate-700">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Phone className="w-5 h-5 text-blue-400" />
+                    إعدادات Twilio
+                  </CardTitle>
+                  <CardDescription>
+                    إعدادات المكالمات الصوتية والرسائل النصية
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="col-span-3 text-center p-6 text-slate-400">
+                    <p>نظام الاتصالات متكامل مع Siyadah VoIP</p>
+                    <p className="text-sm mt-2">لا حاجة لإعدادات إضافية</p>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="bg-slate-800 border-slate-700">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <MessageSquare className="w-5 h-5 text-green-400" />
+                    إعدادات WhatsApp
+                  </CardTitle>
+                  <CardDescription>
+                    إعدادات API واتساب للرسائل التلقائية
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="whatsappToken">API Token</Label>
+                    <div className="flex gap-2">
+                      <div className="relative flex-1">
+                        <Input
+                          id="whatsappToken"
+                          type={showPasswords.whatsapp ? 'text' : 'password'}
+                          value={settings?.whatsappApiToken || ''}
+                          onChange={(e) => updateSetting('whatsappApiToken', e.target.value)}
+                          placeholder="..."
+                          className="bg-slate-700 border-slate-600 pr-10"
+                        />
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          className="absolute right-2 top-1/2 -translate-y-1/2 h-6 w-6 p-0"
+                          onClick={() => togglePassword('whatsapp')}
+                        >
+                          {showPasswords.whatsapp ? <EyeOff className="h-3 w-3" /> : <Eye className="h-3 w-3" />}
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                  <div>
+                    <Label htmlFor="whatsappWebhook">Webhook URL</Label>
+                    <div className="flex gap-2">
+                      <Input
+                        id="whatsappWebhook"
+                        value={settings?.whatsappWebhookUrl || ''}
+                        onChange={(e) => updateSetting('whatsappWebhookUrl', e.target.value)}
+                        placeholder="https://yourapp.com/webhook"
+                        className="bg-slate-700 border-slate-600"
+                      />
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => testConnectionMutation.mutate('whatsapp')}
+                        disabled={testConnectionMutation.isPending}
+                        className="border-slate-600"
+                      >
+                        اختبار
+                      </Button>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+
+          {/* Security Settings */}
+          <TabsContent value="security" className="space-y-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <Card className="bg-slate-800 border-slate-700">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Shield className="w-5 h-5 text-red-400" />
+                    أمان الحساب
+                  </CardTitle>
+                  <CardDescription>
+                    إعدادات الحماية والمصادقة
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <Label htmlFor="twoFactor">المصادقة الثنائية</Label>
+                      <p className="text-xs text-slate-400">طبقة حماية إضافية للحساب</p>
+                    </div>
+                    <Switch
+                      id="twoFactor"
+                      checked={settings?.twoFactorEnabled || false}
+                      onCheckedChange={(checked) => updateSetting('twoFactorEnabled', checked)}
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="sessionTimeout">انتهاء الجلسة (دقائق)</Label>
+                    <Input
+                      id="sessionTimeout"
+                      type="number"
+                      min="5"
+                      max="1440"
+                      value={settings?.sessionTimeout || 60}
+                      onChange={(e) => updateSetting('sessionTimeout', parseInt(e.target.value))}
+                      className="bg-slate-700 border-slate-600"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="passwordPolicy">سياسة كلمة المرور</Label>
+                    <Select value={settings?.passwordPolicy || 'standard'}>
+                      <SelectTrigger className="bg-slate-700 border-slate-600">
+                        <SelectValue placeholder="اختر السياسة" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="standard">عادية (8 أحرف)</SelectItem>
+                        <SelectItem value="strict">صارمة (12 حرف + رموز)</SelectItem>
+                        <SelectItem value="enterprise">مؤسسية (16 حرف + تعقيد)</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="bg-slate-800 border-slate-700">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Lock className="w-5 h-5 text-orange-400" />
+                    أمان API
+                  </CardTitle>
+                  <CardDescription>
+                    إعدادات حماية واجهات البرمجة
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div>
+                    <Label htmlFor="rateLimit">حد الطلبات (في الدقيقة)</Label>
+                    <Input
+                      id="rateLimit"
+                      type="number"
+                      min="10"
+                      max="1000"
+                      value={settings?.apiRateLimit || 100}
+                      onChange={(e) => updateSetting('apiRateLimit', parseInt(e.target.value))}
+                      className="bg-slate-700 border-slate-600"
+                    />
+                  </div>
+                  <div>
+                    <Label>قائمة IP المسموحة</Label>
+                    <div className="space-y-2">
+                      {settings?.ipWhitelist?.map((ip, index) => (
+                        <div key={index} className="flex gap-2">
+                          <Input
+                            value={ip}
+                            onChange={(e) => {
+                              const newList = [...(settings?.ipWhitelist || [])];
+                              newList[index] = e.target.value;
+                              updateSetting('ipWhitelist', newList);
+                            }}
+                            placeholder="192.168.1.1"
+                            className="bg-slate-700 border-slate-600"
+                          />
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => {
+                              const newList = settings?.ipWhitelist?.filter((_, i) => i !== index) || [];
+                              updateSetting('ipWhitelist', newList);
+                            }}
+                            className="border-red-600 text-red-400"
+                          >
+                            <X className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      ))}
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => {
+                          const newList = [...(settings?.ipWhitelist || []), ''];
+                          updateSetting('ipWhitelist', newList);
+                        }}
+                        className="border-slate-600"
+                      >
+                        <Plus className="w-4 h-4 mr-2" />
+                        إضافة IP
+                      </Button>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+
+          {/* Notifications */}
+          <TabsContent value="notifications" className="space-y-6">
+            <Card className="bg-slate-800 border-slate-700">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Bell className="w-5 h-5 text-yellow-400" />
+                  إعدادات الإشعارات
+                </CardTitle>
+                <CardDescription>
+                  تحكم في أنواع الإشعارات ووقتها
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-4">
+                  <h3 className="text-lg font-semibold">أنواع الإشعارات</h3>
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <Label htmlFor="emailNotif">الإشعارات بالإيميل</Label>
+                        <p className="text-xs text-slate-400">إشعارات هامة عبر البريد</p>
+                      </div>
+                      <Switch
+                        id="emailNotif"
+                        checked={settings?.emailNotifications || true}
+                        onCheckedChange={(checked) => updateSetting('emailNotifications', checked)}
+                      />
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <Label htmlFor="smsNotif">الإشعارات بالرسائل</Label>
+                        <p className="text-xs text-slate-400">إشعارات عاجلة عبر SMS</p>
+                      </div>
+                      <Switch
+                        id="smsNotif"
+                        checked={settings?.smsNotifications || false}
+                        onCheckedChange={(checked) => updateSetting('smsNotifications', checked)}
+                      />
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <Label htmlFor="browserNotif">إشعارات المتصفح</Label>
+                        <p className="text-xs text-slate-400">إشعارات فورية في المتصفح</p>
+                      </div>
+                      <Switch
+                        id="browserNotif"
+                        checked={settings?.browserNotifications || true}
+                        onCheckedChange={(checked) => updateSetting('browserNotifications', checked)}
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div className="space-y-4">
+                  <h3 className="text-lg font-semibold">التقارير والملخصات</h3>
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <Label htmlFor="weeklyReports">التقارير الأسبوعية</Label>
+                        <p className="text-xs text-slate-400">ملخص أسبوعي للأنشطة</p>
+                      </div>
+                      <Switch
+                        id="weeklyReports"
+                        checked={settings?.weeklyReports || true}
+                        onCheckedChange={(checked) => updateSetting('weeklyReports', checked)}
+                      />
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <Label htmlFor="realTimeAlerts">التنبيهات الفورية</Label>
+                        <p className="text-xs text-slate-400">تنبيهات للأحداث المهمة</p>
+                      </div>
+                      <Switch
+                        id="realTimeAlerts"
+                        checked={settings?.realTimeAlerts || true}
+                        onCheckedChange={(checked) => updateSetting('realTimeAlerts', checked)}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Performance */}
+          <TabsContent value="performance" className="space-y-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <Card className="bg-slate-800 border-slate-700">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Database className="w-5 h-5 text-blue-400" />
+                    إدارة البيانات
+                  </CardTitle>
+                  <CardDescription>
+                    النسخ الاحتياطي والتخزين
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div>
+                    <Label htmlFor="backupFreq">تكرار النسخ الاحتياطي</Label>
+                    <Select value={settings?.databaseBackupFrequency || 'daily'}>
+                      <SelectTrigger className="bg-slate-700 border-slate-600">
+                        <SelectValue placeholder="اختر التكرار" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="daily">يومي</SelectItem>
+                        <SelectItem value="weekly">أسبوعي</SelectItem>
+                        <SelectItem value="monthly">شهري</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label htmlFor="logRetention">الاحتفاظ بالسجلات (أيام)</Label>
+                    <Input
+                      id="logRetention"
+                      type="number"
+                      min="7"
+                      max="365"
+                      value={settings?.logRetentionDays || 30}
+                      onChange={(e) => updateSetting('logRetentionDays', parseInt(e.target.value))}
+                      className="bg-slate-700 border-slate-600"
+                    />
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="bg-slate-800 border-slate-700">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Zap className="w-5 h-5 text-yellow-400" />
+                    تحسين الأداء
+                  </CardTitle>
+                  <CardDescription>
+                    إعدادات السرعة والتحسين
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <Label htmlFor="cache">تفعيل التخزين المؤقت</Label>
+                      <p className="text-xs text-slate-400">تحسين سرعة الاستجابة</p>
+                    </div>
+                    <Switch
+                      id="cache"
+                      checked={settings?.cacheEnabled || true}
+                      onCheckedChange={(checked) => updateSetting('cacheEnabled', checked)}
+                    />
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <Label htmlFor="compression">ضغط البيانات</Label>
+                      <p className="text-xs text-slate-400">تقليل استخدام البيانات</p>
+                    </div>
+                    <Switch
+                      id="compression"
+                      checked={settings?.compressionEnabled || true}
+                      onCheckedChange={(checked) => updateSetting('compressionEnabled', checked)}
+                    />
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+
+          {/* UI Settings */}
+          <TabsContent value="ui" className="space-y-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <Card className="bg-slate-800 border-slate-700">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Palette className="w-5 h-5 text-purple-400" />
+                    المظهر والواجهة
+                  </CardTitle>
+                  <CardDescription>
+                    تخصيص شكل وسلوك الواجهة
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div>
+                    <Label htmlFor="theme">الثيم</Label>
+                    <Select value={settings?.theme || 'dark'}>
+                      <SelectTrigger className="bg-slate-700 border-slate-600">
+                        <SelectValue placeholder="اختر الثيم" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="light">فاتح</SelectItem>
+                        <SelectItem value="dark">داكن</SelectItem>
+                        <SelectItem value="auto">تلقائي</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <Label htmlFor="sidebarCollapsed">طي القائمة الجانبية</Label>
+                      <p className="text-xs text-slate-400">إخفاء القائمة افتراضياً</p>
+                    </div>
+                    <Switch
+                      id="sidebarCollapsed"
+                      checked={settings?.sidebarCollapsed || false}
+                      onCheckedChange={(checked) => updateSetting('sidebarCollapsed', checked)}
+                    />
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <Label htmlFor="welcomeMessage">رسالة الترحيب</Label>
+                      <p className="text-xs text-slate-400">عرض رسالة ترحيب للمستخدمين الجدد</p>
+                    </div>
+                    <Switch
+                      id="welcomeMessage"
+                      checked={settings?.showWelcomeMessage || true}
+                      onCheckedChange={(checked) => updateSetting('showWelcomeMessage', checked)}
+                    />
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="bg-slate-800 border-slate-700">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Volume2 className="w-5 h-5 text-green-400" />
+                    الصوت والحركة
+                  </CardTitle>
+                  <CardDescription>
+                    إعدادات الصوت والتأثيرات البصرية
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <Label htmlFor="animations">الحركات والتأثيرات</Label>
+                      <p className="text-xs text-slate-400">تفعيل الحركات والانتقالات</p>
+                    </div>
+                    <Switch
+                      id="animations"
+                      checked={settings?.animationsEnabled || true}
+                      onCheckedChange={(checked) => updateSetting('animationsEnabled', checked)}
+                    />
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <Label htmlFor="sound">الأصوات</Label>
+                      <p className="text-xs text-slate-400">أصوات الإشعارات والتنبيهات</p>
+                    </div>
+                    <Switch
+                      id="sound"
+                      checked={settings?.soundEnabled || true}
+                      onCheckedChange={(checked) => updateSetting('soundEnabled', checked)}
+                    />
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+        </Tabs>
+      </div>
+    </div>
+  );
+}

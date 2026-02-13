@@ -1,0 +1,2 @@
+https://github.com/zanekoch/EndPointApp/commit/ce68096815a8a0aaf164ebb6e2393c992910c520
+https://github.com/TzviGreenfeld/ai-cv-agent/commit/e50b85ed673a2612bbec84ba3f211d6ab80f6dd6#diff-b5db45625e4c49352fa48a2b52c3896512fe36e206e0c536647a1e8d2901e313

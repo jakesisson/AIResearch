@@ -1,0 +1,44 @@
+[project]
+name = "general-assistant"
+version = "0.1.0"
+description = "A general-purpose AI assistant built with FastAPI and LlamaIndex."
+authors = [
+    {name = "Oleh Borysevych", email = "borysevych.oleh87@gmail.com"},
+]
+requires-python = ">=3.11,<3.12"
+
+dependencies = [
+    "chainlit>=2.5.5",
+    "datasets>=3.6.0",
+    "debugpy>=1.8.14",
+    "fastapi[standard]>=0.115.12",
+    "httpx>=0.28.1",
+    "huggingface-hub>=0.24.1",
+    "langchain>=0.3.26",
+    "langchain-anthropic>=0.3.16",
+    "langchain-openai>=0.3.27",
+    "langgraph>=0.5.0",
+    "langgraph-cli[inmem]>=0.3.3",
+    "langsmith>=0.4.4",
+    "loguru>=0.7.3",
+    "numpy>=2.3.0",
+    "openinference-instrumentation-llama-index>=4.3.1",
+    "pandas>=2.3.0",
+    "tavily-python>=0.7.8",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pre-commit>=4.2.0",
+    "ruff>=0.11.13",
+    "pytest>=8.3.2",
+    "ty>=0.0.1a9",
+]
+
+[tool.ruff]
+line-length = 88
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B", "C4"]
+ignore = ["B008"]

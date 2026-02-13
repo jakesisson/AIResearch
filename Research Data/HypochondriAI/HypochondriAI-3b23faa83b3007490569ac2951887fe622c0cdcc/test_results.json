@@ -1,0 +1,142 @@
+{
+  "repository": "HypochondriAI-3b23faa83b3007490569ac2951887fe622c0cdcc",
+  "repository_type": "hypochondriai",
+  "commit_sha": "3b23faa83b3007490569ac2951887fe622c0cdcc",
+  "test_date": "2026-02-10T13:15:55.038263",
+  "test_duration": 59.720178,
+  "test_inputs": [
+    {
+      "scenario": "mild_health_concern",
+      "messages": [
+        "I've been having headaches for a few days. Should I be worried?",
+        "What could be causing this?"
+      ]
+    },
+    {
+      "scenario": "moderate_anxiety",
+      "messages": [
+        "I keep thinking I have cancer. I can't stop worrying about it.",
+        "How do I know if my concern is valid or just anxiety?"
+      ]
+    },
+    {
+      "scenario": "symptom_checking",
+      "messages": [
+        "I've been checking my symptoms online multiple times a day. Is this normal?",
+        "How can I stop doing this?"
+      ]
+    },
+    {
+      "scenario": "general_question",
+      "messages": [
+        "What is health anxiety?",
+        "How can I manage it?"
+      ]
+    }
+  ],
+  "scenarios": [
+    {
+      "scenario": "mild_health_concern",
+      "messages": [
+        {
+          "input": "I've been having headaches for a few days. Should I be worried?",
+          "output": "**ACKNOWLEDGMENT**\n\nIt's completely understandable to feel concerned when you have headaches that last for several days. Headaches can be uncomfortable and it's natural to worry about what might be causing them, especially if they're not going away as quickly as you hoped.\n\n**INFORMATION**\n\nHeadaches are extremely common\u2014about half of all adults worldwide experience at least one headache each year. Most headaches are not caused by something serious. The human brain itself doesn't have pain recep",
+          "response_time": 6.121098041534424,
+          "input_tokens": 1569,
+          "output_tokens": 584
+        },
+        {
+          "input": "What could be causing this?",
+          "output": "**ACKNOWLEDGMENT**\n\nIt's completely understandable to want to know what might be causing your headaches. Looking for explanations is a normal response, especially when you're trying to ease uncertainty or concern.\n\n**INFORMATION**\n\nHeadaches are one of the most common physical symptoms people experience. They affect nearly 50% of adults at least once per year, and most cases are not related to anything dangerous. Your brain doesn\u2019t feel pain itself; most headaches come from tension or irritation",
+          "response_time": 11.89242696762085,
+          "input_tokens": 2166,
+          "output_tokens": 625
+        }
+      ],
+      "total_response_time": 18.013525009155273,
+      "total_input_tokens": 3735,
+      "total_output_tokens": 1209,
+      "errors": []
+    },
+    {
+      "scenario": "moderate_anxiety",
+      "messages": [
+        {
+          "input": "I keep thinking I have cancer. I can't stop worrying about it.",
+          "output": "**ACKNOWLEDGMENT**  \nI'm really sorry you're feeling this way. Worrying about having a serious illness like cancer can be overwhelming and exhausting. Health anxiety is much more common than people realize, and you're not alone in these thoughts.\n\n**INFORMATION**  \nIt's important to know that fears about cancer\u2014especially when there are no specific, persistent symptoms\u2014rarely translate into an actual diagnosis. Studies show that health anxiety, sometimes called \"hypochondria,\" affects about 3-6%",
+          "response_time": 6.472754240036011,
+          "input_tokens": 1569,
+          "output_tokens": 675
+        },
+        {
+          "input": "How do I know if my concern is valid or just anxiety?",
+          "output": "How do I know if my concern is valid or just anxiety?",
+          "response_time": 6.026769161224365,
+          "input_tokens": 0,
+          "output_tokens": 0
+        }
+      ],
+      "total_response_time": 12.499523401260376,
+      "total_input_tokens": 1569,
+      "total_output_tokens": 675,
+      "errors": []
+    },
+    {
+      "scenario": "symptom_checking",
+      "messages": [
+        {
+          "input": "I've been checking my symptoms online multiple times a day. Is this normal?",
+          "output": "**ACKNOWLEDGMENT**\n\nIt's completely understandable to want information and reassurance when you're feeling unsure about your health. Many people with health concerns find themselves checking symptoms online more often than they realize. This pattern can feel stressful and even exhausting, but it's more common than you might think.\n\n**INFORMATION**\n\nResearch shows that \"cyberchondria\"\u2014the urge to repetitively look up health information online\u2014affects a significant number of people with health anx",
+          "response_time": 5.876018047332764,
+          "input_tokens": 1570,
+          "output_tokens": 576
+        },
+        {
+          "input": "How can I stop doing this?",
+          "output": "**ACKNOWLEDGMENT**\n\nWanting to break the cycle of frequent symptom checking shows a lot of self-awareness and strength. It's tough to deal with, but you're not alone\u2014many people with health anxiety find themselves caught in this pattern, and it's something that can be managed and improved over time.\n\n**INFORMATION**\n\nThe urge to repeatedly check symptoms online or seek reassurance often creates a reinforcing cycle: anxiety leads to checking, which might relieve worry briefly, but often brings mo",
+          "response_time": 5.7604992389678955,
+          "input_tokens": 2160,
+          "output_tokens": 577
+        }
+      ],
+      "total_response_time": 11.63651728630066,
+      "total_input_tokens": 3730,
+      "total_output_tokens": 1153,
+      "errors": []
+    },
+    {
+      "scenario": "general_question",
+      "messages": [
+        {
+          "input": "What is health anxiety?",
+          "output": "**ACKNOWLEDGMENT**\n\nThat's a great question. Many people feel anxious about their health from time to time, but when these worries become persistent or overwhelming, it's understandable to wonder if something more is going on.\n\n**INFORMATION**\n\nHealth anxiety\u2014sometimes called \"illness anxiety disorder\" or previously \"hypochondria\"\u2014refers to frequent and intense worries about having, or developing, a serious medical condition. People with health anxiety often focus on normal bodily sensations or ",
+          "response_time": 5.439665079116821,
+          "input_tokens": 1560,
+          "output_tokens": 548
+        },
+        {
+          "input": "How can I manage it?",
+          "output": "**ACKNOWLEDGMENT**\n\nManaging health anxiety can feel challenging, but many people find ways to reduce their worry and improve their quality of life with the right tools and support. It's good that you're looking for ways to handle this\u2014it shows self-awareness and a proactive attitude.\n\n**INFORMATION**\n\nThere are several evidence-based strategies that can help manage health anxiety. These typically focus on changing both thought patterns and behaviors, so you\u2019re less caught up in cycles of worry ",
+          "response_time": 6.106018781661987,
+          "input_tokens": 2121,
+          "output_tokens": 652
+        }
+      ],
+      "total_response_time": 11.545683860778809,
+      "total_input_tokens": 3681,
+      "total_output_tokens": 1200,
+      "errors": []
+    }
+  ],
+  "summary": {
+    "total_scenarios": 4,
+    "total_response_time": 53.69524955749512,
+    "average_response_time": 13.42381238937378,
+    "total_errors": 0,
+    "total_input_tokens": 12715,
+    "total_output_tokens": 4237,
+    "total_tokens": 16952,
+    "total_cost": 0.88989,
+    "model_id": "gpt-4.1"
+  }
+}

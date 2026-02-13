@@ -1,0 +1,297 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@100..900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Professional SaaS Login Page Animations */
+@keyframes blob {
+  0% {
+    transform: translate(0px, 0px) scale(1);
+  }
+  33% {
+    transform: translate(30px, -50px) scale(1.1);
+  }
+  66% {
+    transform: translate(-20px, 20px) scale(0.9);
+  }
+  100% {
+    transform: translate(0px, 0px) scale(1);
+  }
+}
+
+.animate-blob {
+  animation: blob 7s infinite;
+}
+
+.animation-delay-2000 {
+  animation-delay: 2s;
+}
+
+.animation-delay-4000 {
+  animation-delay: 4s;
+}
+
+/* Professional SaaS Animations */
+@keyframes blob {
+  0% {
+    transform: translate(0px, 0px) scale(1);
+  }
+  33% {
+    transform: translate(30px, -50px) scale(1.1);
+  }
+  66% {
+    transform: translate(-20px, 20px) scale(0.9);
+  }
+  100% {
+    transform: translate(0px, 0px) scale(1);
+  }
+}
+
+.animate-blob {
+  animation: blob 7s infinite;
+}
+
+.animation-delay-2000 {
+  animation-delay: 2s;
+}
+
+.animation-delay-4000 {
+  animation-delay: 4s;
+}
+
+/* Professional Grid Pattern */
+.bg-grid-pattern {
+  background-image: url("data:image/svg+xml,%3csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3e%3cg fill='none' fill-rule='evenodd'%3e%3cg fill='%239C92AC' fill-opacity='0.1'%3e%3ccircle cx='30' cy='30' r='1.5'/%3e%3c/g%3e%3c/g%3e%3c/svg%3e");
+}
+
+/* Gradient Text Enhancement */
+.text-gradient {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+:root {
+  --background: hsl(224, 71%, 4%);
+  --foreground: hsl(0, 0%, 98%);
+  --muted: hsl(220, 13%, 13%);
+  --muted-foreground: hsl(220, 9%, 46%);
+  --popover: hsl(224, 71%, 4%);
+  --popover-foreground: hsl(0, 0%, 98%);
+  --card: hsl(224, 71%, 4%);
+  --card-foreground: hsl(0, 0%, 98%);
+  --border: hsl(220, 13%, 18%);
+  --input: hsl(220, 13%, 18%);
+  --primary: hsl(217, 91%, 60%);
+  --primary-foreground: hsl(0, 0%, 98%);
+  --secondary: hsl(262, 83%, 58%);
+  --secondary-foreground: hsl(0, 0%, 98%);
+  --accent: hsl(142, 100%, 52%);
+  --accent-foreground: hsl(224, 71%, 4%);
+  --destructive: hsl(0, 85%, 60%);
+  --destructive-foreground: hsl(0, 0%, 98%);
+  --ring: hsl(142, 100%, 52%);
+  --radius: 0.75rem;
+
+  /* Custom colors */
+  --warning: hsl(43, 96%, 49%);
+  --success: hsl(142, 71%, 45%);
+  --error: hsl(0, 85%, 60%);
+  --surface: hsl(220, 13%, 18%);
+  --surface-light: hsl(220, 13%, 28%);
+  --text-primary: hsl(0, 0%, 98%);
+  --text-secondary: hsl(220, 14%, 83%);
+  --text-muted: hsl(220, 9%, 46%);
+}
+
+.dark {
+  --background: hsl(224, 71%, 4%);
+  --foreground: hsl(0, 0%, 98%);
+  --muted: hsl(220, 13%, 13%);
+  --muted-foreground: hsl(220, 9%, 46%);
+  --popover: hsl(224, 71%, 4%);
+  --popover-foreground: hsl(0, 0%, 98%);
+  --card: hsl(224, 71%, 4%);
+  --card-foreground: hsl(0, 0%, 98%);
+  --border: hsl(220, 13%, 18%);
+  --input: hsl(220, 13%, 18%);
+  --primary: hsl(217, 91%, 60%);
+  --primary-foreground: hsl(0, 0%, 98%);
+  --secondary: hsl(262, 83%, 58%);
+  --secondary-foreground: hsl(0, 0%, 98%);
+  --accent: hsl(142, 100%, 52%);
+  --accent-foreground: hsl(224, 71%, 4%);
+  --destructive: hsl(0, 85%, 60%);
+  --destructive-foreground: hsl(0, 0%, 98%);
+  --ring: hsl(142, 100%, 52%);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+    font-family: 'IBM Plex Sans Arabic', 'Inter', system-ui, sans-serif;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    direction: rtl;
+  }
+
+  html {
+    direction: rtl;
+  }
+}
+
+@layer utilities {
+  /* Glass morphism effects */
+  .glass-effect {
+    background: rgba(31, 41, 55, 0.8);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+  }
+
+  .glass-light {
+    background: rgba(55, 65, 81, 0.6);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+
+  /* Custom scrollbar */
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: rgba(156, 163, 175, 0.1);
+    border-radius: 3px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(6, 255, 165, 0.5);
+    border-radius: 3px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: rgba(6, 255, 165, 0.7);
+  }
+
+  /* Custom animations */
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+  }
+
+  @keyframes pulse-glow {
+    0% { box-shadow: 0 0 20px rgba(6, 255, 165, 0.3); }
+    100% { box-shadow: 0 0 30px rgba(6, 255, 165, 0.6); }
+  }
+
+  @keyframes slide-up {
+    0% { transform: translateY(20px); opacity: 0; }
+    100% { transform: translateY(0); opacity: 1; }
+  }
+
+  @keyframes fade-in {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+  }
+
+  @keyframes slide-in {
+    0% { transform: translateX(100%); opacity: 0; }
+    100% { transform: translateX(0); opacity: 1; }
+  }
+
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  .animate-pulse-glow {
+    animation: pulse-glow 2s ease-in-out infinite alternate;
+  }
+
+  .animate-slide-up {
+    animation: slide-up 0.5s ease-out;
+  }
+
+  .animate-fade-in {
+    animation: fade-in 0.3s ease-out;
+  }
+
+  .animate-slide-in {
+    animation: slide-in 0.3s ease-out;
+  }
+
+  /* Shadow effects */
+  .shadow-glow-accent {
+    box-shadow: 0 0 20px rgba(6, 255, 165, 0.3);
+  }
+
+  /* Utility classes for Arabic interface */
+  .text-text-primary {
+    color: var(--text-primary);
+  }
+
+  .text-text-secondary {
+    color: var(--text-secondary);
+  }
+
+  .text-text-muted {
+    color: var(--text-muted);
+  }
+
+  .bg-surface {
+    background-color: var(--surface);
+  }
+
+  .bg-surface-light {
+    background-color: var(--surface-light);
+  }
+
+  .text-warning {
+    color: var(--warning);
+  }
+
+  .text-success {
+    color: var(--success);
+  }
+
+  .text-error {
+    color: var(--error);
+  }
+
+  .bg-warning {
+    background-color: var(--warning);
+  }
+
+  .bg-success {
+    background-color: var(--success);
+  }
+
+  .bg-error {
+    background-color: var(--error);
+  }
+
+  .border-warning {
+    border-color: var(--warning);
+  }
+
+  .border-success {
+    border-color: var(--success);
+  }
+
+  .border-error {
+    border-color: var(--error);
+  }
+
+  /* Arabic typography */
+  .font-heading {
+    font-family: 'IBM Plex Sans Arabic', 'Inter', system-ui, sans-serif;
+    font-weight: 600;
+  }
+
+  .font-arabic {
+    font-family: 'IBM Plex Sans Arabic', 'Inter', system-ui, sans-serif;
+  }
+}

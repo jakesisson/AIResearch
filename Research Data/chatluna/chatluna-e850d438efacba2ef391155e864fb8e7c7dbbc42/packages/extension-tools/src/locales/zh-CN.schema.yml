@@ -1,0 +1,73 @@
+$inner:
+    - {}
+    - $desc: 对话思考功能
+      think: 启用思考功能，可显著提高 Agent 模式的调用质量。
+      send: 启用提前消息发送工具。
+      todos: 启用待办事项功能，可让 Agent 生成多步骤的待办事项，自动拆解任务。
+      chat: 启用交互询问功能。注意：会导致工具链重建。
+    - $desc: 创意生成功能
+      draw: 启用文生图功能，调用 Koishi 文生图插件。
+      music: 启用简易音频生成功能。（需要安装并启用 [@dgck81lnn/music](https://github.com/DGCK81LNN/koishi-plugin-music)
+    - $desc: 系统工具功能
+      request: 启用 request 插件，提供 GET/POST 请求接口。
+      fs: 启用 fs 插件，提供文件读写接口。
+      command: 启用指令辅助功能，允许执行 Koishi 机器人指令。
+      cron: 启用定时提醒功能。
+      codeSandbox: 启用 Python 代码执行功能。(需要申请 API)
+    - $desc: 扩展服务功能
+      group: 启用群管插件，提供群管理能力。
+      knowledge: 启用知识库插件调用功能。(需要安装知识库插件)
+      actions: 启用 OpenAPI 工具调用功能。(需要启用 request 工具才能请求)
+
+    - - $desc: request 插件配置
+        requestMaxOutputLength: request 插件最大输出长度。
+        requestSelector: 触发 request 工具的关键词。为空时始终选中。
+        requestHeaders:
+            $desc: 根据域名匹配设置请求头。
+            $inner:
+                matcher: 域名匹配模式（支持通配符，如 *.example.com, api.github.com）。
+                headers: 该域名匹配时应用的请求头。
+
+    - - $desc: fs 插件配置
+        fsScopePath: fs 插件作用域路径。留空则为系统任意路径。
+        fsSelector: 触发 fs 工具的关键词。为空时始终选中。
+        fsIgnores: 默认忽略的文件夹表达式。
+
+    - - $desc: 指令插件配置
+        commandWithSend: 是否默认发送指令的执行结果。
+        commandList:
+            $desc: 可用指令列表。不填写则默认注册所有一级指令。
+            $inner:
+                command: 需要触发的指令。
+                description: 指令工具的描述。请尽量简洁有力的描述这个指令的用途。
+                selector: 触发指令工具的关键词。
+                confirm: 执行指令时是否需要二次确认。
+        commandBlacklist: 屏蔽的一级指令列表（包括所有子指令）。默认屏蔽敏感的管理类指令。
+
+    - - $desc: 群管插件配置
+        groupScopeSelector:
+            $desc: 允许使用群管功能的成员 ID 列表。
+        groupWhitelist:
+            $desc: 允许使用群管功能的群 ID 白名单。为空时在所有群可用。
+
+    - - $desc: 定时任务插件配置
+        cronScopeSelector:
+            $desc: 允许使用命令类型定时任务的成员 ID 列表。为空时所有人都可以创建提醒任务，但无法创建命令任务。
+
+    - - $desc: 画图插件配置
+        drawPrompt: 画图插件提示 prompt。
+        drawCommand: 绘图执行指令。{prompt} 为调用时的 prompt。
+        drawSelector: 触发绘画工具的关键词。为空时始终选中。
+
+    - - $desc: 音乐生成插件配置
+        musicSelector: 触发音乐生成工具的关键词。为空时始终选中。
+
+    - - $desc: OpenAPI 工具调用插件配置
+        actionsList:
+            $desc: 可用 OpenAPI 工具列表。
+            $inner:
+                name: 工具名称。请使用纯英文的名称。
+                description: 工具描述。
+                headers: 工具请求头。
+                openAPISpec: OpenAPI 规范文件内容。
+                selector: 触发工具的关键词。

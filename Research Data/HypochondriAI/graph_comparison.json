@@ -1,0 +1,469 @@
+{
+  "analysis_date": "2026-02-10T13:59:12.420977",
+  "prior_commit": {
+    "sha": "3b23faa83b3007490569ac2951887fe622c0cdcc",
+    "file": "/Users/jsisson/Research/Research Data/HypochondriAI/HypochondriAI-3b23faa83b3007490569ac2951887fe622c0cdcc/backend/app/services/llm.py",
+    "graph_structure": {
+      "nodes": [
+        {
+          "name": "model",
+          "function_name": "call_model",
+          "function_signature": "call_model(state)",
+          "source_file": "/Users/jsisson/Research/Research Data/HypochondriAI/HypochondriAI-3b23faa83b3007490569ac2951887fe622c0cdcc/backend/app/services/llm.py",
+          "line_number": 252
+        }
+      ],
+      "edges": [
+        {
+          "from_node": "START",
+          "to_node": "model",
+          "edge_type": "direct"
+        },
+        {
+          "from_node": "model",
+          "to_node": "END",
+          "edge_type": "direct"
+        }
+      ],
+      "state_schema": {
+        "messages": {
+          "name": "messages",
+          "annotation": "Annotated[Sequence[BaseMessage], add_messages]"
+        },
+        "user_context": {
+          "name": "user_context",
+          "annotation": "str | None"
+        }
+      }
+    },
+    "functions": {
+      "__init__": {
+        "name": "__init__",
+        "signature": "__init__(self, model_id, model_provider)",
+        "line_number": 46,
+        "decorators": [],
+        "is_method": true,
+        "is_classmethod": false,
+        "is_staticmethod": false,
+        "is_async": false,
+        "source_lines": [
+          "    def __init__(self, model_id: str | None = None, model_provider: str | None = None):",
+          "        \"\"\"",
+          "        Initialize Langchain service with optional model and provider",
+          "",
+          "        Args:",
+          "            model_id: The model ID to use. If None, uses the default from settings.",
+          "            model_provider: The provider of the model. If None, uses the default from settings.",
+          "        \"\"\"",
+          "        logger.debug(\"LangchainSerivice created\")",
+          "        LangchainService.initialize_bedrock_client()"
+        ]
+      },
+      "initialize_bedrock_client": {
+        "name": "initialize_bedrock_client",
+        "signature": "initialize_bedrock_client()",
+        "line_number": 58,
+        "decorators": [
+          "staticmethod"
+        ],
+        "is_method": false,
+        "is_classmethod": false,
+        "is_staticmethod": true,
+        "is_async": false,
+        "source_lines": [
+          "    def initialize_bedrock_client():",
+          "        \"\"\"Create and return an Amazon Bedrock client\"\"\"",
+          "        try:",
+          "            boto3.setup_default_session(",
+          "                region_name=settings.AWS_REGION,",
+          "                aws_access_key_id=settings.AWS_ACCESS_KEY_ID,",
+          "                aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,",
+          "            )",
+          "        except Exception as e:",
+          "            logging.error(f\"Error initializing Bedrock client: {e!s}\")",
+          "            raise"
+        ]
+      },
+      "call_model": {
+        "name": "call_model",
+        "signature": "call_model(state)",
+        "line_number": 71,
+        "decorators": [
+          "staticmethod"
+        ],
+        "is_method": false,
+        "is_classmethod": false,
+        "is_staticmethod": true,
+        "is_async": false,
+        "source_lines": [
+          "    def call_model(state: State):",
+          "        \"\"\"",
+          "        Call the model with the given state.",
+          "",
+          "        Args:",
+          "            state: The state to pass to the model.",
+          "",
+          "        Returns:",
+          "            The response from the model.",
+          "",
+          "        \"\"\"",
+          "",
+          "        # Get the components from the state",
+          "        messages = state[\"messages\"]",
+          "        user_context = state.get(\"user_context\", None)",
+          "        prompt_template = generate_health_anxiety_prompt(user_context)",
+          "        # Invoke the prompt template with the state to get a formatted prompt",
+          "        formatted_prompt = prompt_template.invoke({\"messages\": messages})",
+          "",
+          "        # Now pass the formatted prompt to the model",
+          "        response = LangchainService.model.invoke(formatted_prompt)",
+          "        logger.info(f\"Model response: {response}\")",
+          "        return {\"messages\": [response]}"
+        ]
+      },
+      "_initialize_model": {
+        "name": "_initialize_model",
+        "signature": "_initialize_model(cls, model_id, model_provider)",
+        "line_number": 119,
+        "decorators": [
+          "classmethod"
+        ],
+        "is_method": true,
+        "is_classmethod": true,
+        "is_staticmethod": false,
+        "is_async": false,
+        "source_lines": [
+          "    def _initialize_model(",
+          "        cls, model_id: str | None = None, model_provider: str | None = None",
+          "    ):",
+          "        \"\"\"",
+          "        Initialize the model with the given ID and provider.",
+          "",
+          "        Args:",
+          "            model_id: The ID of the model to use.",
+          "            model_provider: The provider of the model.",
+          "",
+          "        Returns:",
+          "            The initialized model.",
+          "        \"\"\"",
+          "        # Initialize the model",
+          "        cls._model_id = model_id or settings.MODEL_ID",
+          "        cls._model_provider = model_provider or settings.MODEL_PROVIDER",
+          "        try:",
+          "            # Initialize the Bedrock client one extra time for safety",
+          "            # This is a bit redundant but ensures the client is set up before model initialization",
+          "            cls.initialize_bedrock_client()",
+          "            ",
+          "            # Prepare model initialization kwargs",
+          "            model_kwargs = {",
+          "                \"model\": cls._model_id,",
+          "                \"model_provider\": cls._model_provider",
+          "            }",
+          "            ",
+          "            # Add Azure OpenAI credentials if using Azure OpenAI",
+          "            if cls._model_provider == \"azure_openai\":",
+          "                if settings.AZURE_OPENAI_API_KEY:",
+          "                    model_kwargs[\"api_key\"] = settings.AZURE_OPENAI_API_KEY",
+          "                if settings.AZURE_OPENAI_ENDPOINT:",
+          "                    model_kwargs[\"azure_endpoint\"] = settings.AZURE_OPENAI_ENDPOINT",
+          "                if settings.AZURE_OPENAI_API_VERSION:",
+          "                    model_kwargs[\"api_version\"] = settings.AZURE_OPENAI_API_VERSION",
+          "            ",
+          "            cls.model = init_chat_model(**model_kwargs)",
+          "            ",
+          "            # Initialize Langfuse callback for tracking (if available)",
+          "            if LANGFUSE_AVAILABLE and CallbackHandler:",
+          "                try:",
+          "                    langfuse_handler = CallbackHandler(",
+          "                        public_key=os.getenv(\"LANGFUSE_PUBLIC_KEY\"),",
+          "                        secret_key=os.getenv(\"LANGFUSE_SECRET_KEY\"),",
+          "                        host=os.getenv(\"LANGFUSE_HOST\", \"http://localhost:3000\")",
+          "                    )",
+          "                    # Add callback to model if it supports callbacks",
+          "                    if hasattr(cls.model, 'callbacks'):",
+          "                        cls.model.callbacks = [langfuse_handler]",
+          "                    logger.info(\"Langfuse callback initialized\")",
+          "                except Exception as e:",
+          "                    logger.warning(f\"Failed to initialize Langfuse callback: {e}\")",
+          "            ",
+          "            logger.info(",
+          "                f\"Model initialized: {cls._model_id} with provider: {cls._model_provider}\"",
+          "            )",
+          "        except Exception as e:",
+          "            logger.error(f\"Error initializing model: {e!s}\")",
+          "            raise"
+        ]
+      },
+      "_initialize_graph": {
+        "name": "_initialize_graph",
+        "signature": "_initialize_graph(cls)",
+        "line_number": 244,
+        "decorators": [
+          "classmethod"
+        ],
+        "is_method": true,
+        "is_classmethod": true,
+        "is_staticmethod": false,
+        "is_async": false,
+        "source_lines": [
+          "    def _initialize_graph(cls):",
+          "        \"\"\"",
+          "        Initialize the graph with the model and checkpointer.",
+          "        \"\"\"",
+          "        if cls.graph is None:",
+          "            logger.info(\"Initializing graph...\")",
+          "            workflow = StateGraph(state_schema=State)",
+          "            workflow.add_edge(START, \"model\")",
+          "            workflow.add_node(\"model\", cls.call_model)",
+          "            workflow.add_edge(\"model\", END)",
+          "            cls.graph = workflow.compile(checkpointer=cls.checkpointer)",
+          "            cls._initialized = True",
+          "            logger.info(\"Graph initialized.\")",
+          "        else:",
+          "            logger.info(\"Graph already initialized.\")"
+        ]
+      }
+    }
+  },
+  "updated_commit": {
+    "sha": "c24b8d2c2fc40913415a7883c87a5c8185a17a37",
+    "file": "/Users/jsisson/Research/Research Data/HypochondriAI/HypochondriAI-c24b8d2c2fc40913415a7883c87a5c8185a17a37/backend/app/services/llm.py",
+    "graph_structure": {
+      "nodes": [
+        {
+          "name": "model",
+          "function_name": "call_model",
+          "function_signature": "call_model(state)",
+          "source_file": "/Users/jsisson/Research/Research Data/HypochondriAI/HypochondriAI-c24b8d2c2fc40913415a7883c87a5c8185a17a37/backend/app/services/llm.py",
+          "line_number": 87
+        }
+      ],
+      "edges": [
+        {
+          "from_node": "START",
+          "to_node": "model",
+          "edge_type": "direct"
+        },
+        {
+          "from_node": "model",
+          "to_node": "END",
+          "edge_type": "direct"
+        }
+      ],
+      "state_schema": {
+        "messages": {
+          "name": "messages",
+          "annotation": "Annotated[Sequence[BaseMessage], add_messages]"
+        },
+        "user_context": {
+          "name": "user_context",
+          "annotation": "str | None"
+        }
+      }
+    },
+    "functions": {
+      "__init__": {
+        "name": "__init__",
+        "signature": "__init__(self, model_id, model_provider)",
+        "line_number": 36,
+        "decorators": [],
+        "is_method": true,
+        "is_classmethod": false,
+        "is_staticmethod": false,
+        "is_async": false,
+        "source_lines": [
+          "    def __init__(self, model_id: str | None = None, model_provider: str | None = None):",
+          "        LangchainService.initialize_bedrock_client()"
+        ]
+      },
+      "_initialize_graph": {
+        "name": "_initialize_graph",
+        "signature": "_initialize_graph(cls)",
+        "line_number": 79,
+        "decorators": [
+          "classmethod"
+        ],
+        "is_method": true,
+        "is_classmethod": true,
+        "is_staticmethod": false,
+        "is_async": false,
+        "source_lines": [
+          "    def _initialize_graph(cls):",
+          "        \"\"\"",
+          "        model and checkpointer need to be initialized before this method is called.",
+          "        \"\"\"",
+          "        if cls.graph is None:",
+          "            logger.info(\"Initializing graph...\")",
+          "            workflow = StateGraph(state_schema=State)",
+          "            workflow.add_edge(START, \"model\")",
+          "            workflow.add_node(\"model\", cls.call_model)",
+          "            workflow.add_edge(\"model\", END)",
+          "            cls.graph = workflow.compile(checkpointer=cls.checkpointer)",
+          "            cls._initialized = True",
+          "            logger.info(\"Graph initialized.\")",
+          "        else:",
+          "            logger.info(\"Graph already initialized.\")"
+        ]
+      },
+      "call_model": {
+        "name": "call_model",
+        "signature": "call_model(state)",
+        "line_number": 151,
+        "decorators": [
+          "staticmethod"
+        ],
+        "is_method": false,
+        "is_classmethod": false,
+        "is_staticmethod": true,
+        "is_async": false,
+        "source_lines": [
+          "    def call_model(state: State):",
+          "",
+          "        # Get the components from the state",
+          "        messages = state[\"messages\"]",
+          "        user_context = state.get(\"user_context\", None)",
+          "        prompt_template = generate_health_anxiety_prompt(user_context)",
+          "",
+          "        # Invoke the prompt template with the state to get a formatted prompt",
+          "        formatted_prompt = prompt_template.invoke({\"messages\": messages})",
+          "",
+          "        # Now pass the formatted prompt to the model",
+          "        response = LangchainService.model.invoke(formatted_prompt)",
+          "        logger.info(f\"Model response: {response}\")",
+          "        return {\"messages\": [response]}"
+        ]
+      },
+      "_initialize_model": {
+        "name": "_initialize_model",
+        "signature": "_initialize_model(cls, model_id, model_provider)",
+        "line_number": 167,
+        "decorators": [
+          "classmethod"
+        ],
+        "is_method": true,
+        "is_classmethod": true,
+        "is_staticmethod": false,
+        "is_async": false,
+        "source_lines": [
+          "    def _initialize_model(",
+          "        cls, model_id: str | None = None, model_provider: str | None = None",
+          "    ):",
+          "",
+          "        cls._model_id = model_id or settings.MODEL_ID",
+          "        cls._model_provider = model_provider or settings.MODEL_PROVIDER",
+          "        try:",
+          "            # Initialize the Bedrock client one extra time for safety",
+          "            # This is a bit redundant but ensures the client is set up before model initialization",
+          "            cls.initialize_bedrock_client()",
+          "            cls.model = init_chat_model(",
+          "                model=cls._model_id, model_provider=cls._model_provider",
+          "            )",
+          "            logger.info(",
+          "                f\"Model initialized: {cls._model_id} with provider: {cls._model_provider}\"",
+          "            )",
+          "        except Exception as e:",
+          "            logger.error(f\"Error initializing model: {e!s}\")",
+          "            raise"
+        ]
+      },
+      "initialize_bedrock_client": {
+        "name": "initialize_bedrock_client",
+        "signature": "initialize_bedrock_client()",
+        "line_number": 188,
+        "decorators": [
+          "staticmethod"
+        ],
+        "is_method": false,
+        "is_classmethod": false,
+        "is_staticmethod": true,
+        "is_async": false,
+        "source_lines": [
+          "    def initialize_bedrock_client():",
+          "        \"\"\"Create and return an Amazon Bedrock client\"\"\"",
+          "        try:",
+          "            boto3.setup_default_session(",
+          "                region_name=settings.AWS_REGION,",
+          "                aws_access_key_id=settings.AWS_ACCESS_KEY_ID,",
+          "                aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,",
+          "            )",
+          "        except Exception as e:",
+          "            logging.error(f\"Error initializing Bedrock client: {e!s}\")",
+          "            raise"
+        ]
+      }
+    }
+  },
+  "comparison": {
+    "nodes": {
+      "added": [],
+      "removed": [],
+      "modified": [],
+      "unchanged": [
+        "model"
+      ]
+    },
+    "edges": {
+      "added": [],
+      "removed": [],
+      "unchanged": [
+        "START->model",
+        "model->END"
+      ]
+    },
+    "functions": {
+      "note": "Function comparison requires full source code analysis",
+      "prior_functions": 1,
+      "updated_functions": 1
+    },
+    "state_schema": {
+      "added_fields": [],
+      "removed_fields": [],
+      "unchanged_fields": [
+        "user_context",
+        "messages"
+      ]
+    },
+    "summary": {
+      "total_nodes_prior": 1,
+      "total_nodes_updated": 1,
+      "nodes_added": 0,
+      "nodes_removed": 0,
+      "nodes_modified": 0,
+      "total_edges_prior": 2,
+      "total_edges_updated": 2,
+      "edges_added": 0,
+      "edges_removed": 0,
+      "graph_structure_changed": false
+    }
+  },
+  "file_differences": {
+    "lines_added": 90,
+    "lines_removed": 192,
+    "total_lines_prior": 300,
+    "total_lines_updated": 198,
+    "changed_functions": [],
+    "functions_added": [],
+    "functions_removed": [],
+    "functions_modified": [
+      "__init__",
+      "initialize_bedrock_client",
+      "_initialize_graph",
+      "call_model",
+      "_initialize_model"
+    ],
+    "functions_with_changes": [
+      "__init__",
+      "_initialize_graph",
+      "call_model",
+      "_initialize_model"
+    ]
+  },
+  "function_to_node_mapping": {
+    "call_model": [
+      "model"
+    ]
+  },
+  "affected_nodes": {
+    "model": "Function 'call_model' was modified (code changed)"
+  }
+}

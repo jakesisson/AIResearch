@@ -1,0 +1,92 @@
+$schema: 'https://moonrepo.dev/schemas/project.json'
+
+language: typescript
+stack: frontend
+type: application
+
+fileGroups:
+  sources:
+    - 'src/**/*'
+    # Translations
+    - 'messages/*.json'
+    # Configs
+    - '**/*.config.*'
+    # Other files
+    - '**/*.{md,mdx,yml,yaml,json}'
+  tests:
+    - 'tests/**/*'
+    - 'e2e/**/*'
+
+tags: ['vite', 'vitest', 'sveltekit']
+
+tasks:
+  start:
+    command: node --env-file=.env build
+    deps:
+      - build
+    local: true
+    options:
+      envFile: true
+
+  build:
+    outputs:
+      - 'build'
+      - 'src/lib/paraglide'
+
+  check:
+    deps:
+      - build
+
+  lint:
+    command: eslint .
+    inputs:
+      - '@group(sources)'
+      - '@group(tests)'
+      # Root configs, any format
+      # - '/eslint.config.js'
+
+  lint-fix:
+    extends: lint
+    args:
+      - '--cache'
+      - '--fix'
+    local: true
+
+  format:
+    command: prettier .
+    inputs:
+      - '@group(sources)'
+      - '@group(tests)'
+      - '.prettierignore'
+      - '.prettierrc'
+      # Root configs, any format
+      # - '/.prettierignore'
+      # - '/.prettierrc'
+    args:
+      - '--check'
+
+  format-write:
+    command: prettier .
+    inputs:
+      - '@group(sources)'
+      - '@group(tests)'
+      - '.prettierignore'
+      - '.prettierrc'
+      # Root configs, any format
+      # - '/.prettierignore'
+      # - '/.prettierrc'
+    args:
+      - '--cache'
+      - '--write'
+    local: true
+
+  install-playwright:
+    command: npx playwright install chromium --with-deps
+    options:
+      internal: true
+
+  test-e2e:
+    command: playwright test
+    deps:
+      - build
+      - install-playwright

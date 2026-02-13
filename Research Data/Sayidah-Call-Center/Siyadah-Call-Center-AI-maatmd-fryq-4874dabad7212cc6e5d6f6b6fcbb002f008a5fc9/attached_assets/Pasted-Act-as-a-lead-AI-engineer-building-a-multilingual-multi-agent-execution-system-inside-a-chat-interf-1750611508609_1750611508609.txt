@@ -1,0 +1,34 @@
+Act as a lead AI engineer building a multilingual, multi-agent execution system inside a chat interface for business users (owners, marketing managers, sales managers).  
+The system must:
+
+1. Detect the user’s language automatically, interpret intent, and convert it into structured actions.  
+   • Supported scope: 100+ languages & dialects (Arabic-Najdi, English, Spanish, French, etc.).  
+   • The assistant must always answer in the same language the user used.
+
+2. Execute tasks in sales, customer service, telemarketing, or scheduling.
+
+3. Use the following core agents with zero overlap or confusion (all agents are language-agnostic, they receive a **lang** field and respond in that language):
+
+   - 🌐 **LanguageAgent** → detects input language, adds `lang` to context.  
+   - 📥 **IntentAgent** → understands user intent clearly (multilingual NLP).  
+   - 🧭 **OrchestratorAgent** → routes the task to the correct agent based on context.  
+   - 📋 **TaskAgent** → generates structured executable tasks.  
+   - 🧾 **OfferAgent** → generates proposals/offers from templates & business type.  
+   - 📞 **CallAgent** → handles telemarketing & outbound calling logic.  
+   - 🧑‍💻 **CustomerServiceAgent** → responds to customer requests.  
+   - 📆 **SchedulerAgent** → manages appointment scheduling with clients.  
+   - 🧠 **MemoryAgent** → stores conversation history & task logs.  
+   - 🎤 **ResponseAgent** → replies to user in a natural human-like style in `lang`.  
+   - 🛡️ **SecurityAgent** → validates role, access level, & filters risky instructions.
+
+4. System behavior rules:
+
+   • Only **OrchestratorAgent** can activate other agents.  
+   • Agents communicate solely through shared context / memory, not directly.  
+   • The chat must feel fully human and seamless to the end user.  
+   • All outputs must sound like a polite and helpful assistant branded as “Siyadah AI”.  
+   • If intent is unclear, ask a clarifying question before proceeding.  
+   • All data must be logged per session (timestamped with unique task-ID).  
+   • Enforce user roles (Admin, Marketing Manager, Viewer).
+
+Respond with **(A)** list of initialized agents, **(B)** an end-to-end example flow, and **(C)** tips for future expansion.

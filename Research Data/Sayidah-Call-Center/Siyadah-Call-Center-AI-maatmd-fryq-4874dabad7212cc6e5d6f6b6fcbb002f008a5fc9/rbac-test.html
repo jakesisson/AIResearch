@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار نظام RBAC المؤسسي</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #1e293b, #334155);
+            color: white;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #60a5fa;
+        }
+        .button-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        button {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 15px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background: #2563eb;
+        }
+        button:disabled {
+            background: #64748b;
+            cursor: not-allowed;
+        }
+        .result-box {
+            background: #1e293b;
+            border: 1px solid #475569;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        pre {
+            background: #0f172a;
+            padding: 15px;
+            border-radius: 6px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        .status {
+            padding: 10px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+        }
+        .success { background: #065f46; }
+        .error { background: #7f1d1d; }
+        .loading { background: #1e40af; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏢 اختبار نظام RBAC المؤسسي العالمي</h1>
+        
+        <div class="button-grid">
+            <button onclick="testAPI('/api/enterprise-rbac/health')">حالة النظام</button>
+            <button onclick="testAPI('/api/enterprise-rbac/organizations')">المؤسسات</button>
+            <button onclick="testAPI('/api/enterprise-rbac/roles')">الأدوار</button>
+            <button onclick="testAPI('/api/enterprise-rbac/initialize', 'POST')">تهيئة النظام</button>
+            <button onclick="createTestOrg()">إنشاء مؤسسة تجريبية</button>
+            <button onclick="testPermissions()">اختبار الصلاحيات</button>
+        </div>
+
+        <div id="status" class="status loading" style="display: none;">جاري التحميل...</div>
+        
+        <div class="result-box">
+            <h3>النتائج:</h3>
+            <pre id="result">اضغط على أي زر لاختبار النظام</pre>
+        </div>
+    </div>
+
+    <script>
+        async function testAPI(endpoint, method = 'GET', body = null) {
+            const statusDiv = document.getElementById('status');
+            const resultPre = document.getElementById('result');
+            
+            statusDiv.style.display = 'block';
+            statusDiv.className = 'status loading';
+            statusDiv.textContent = 'جاري التحميل...';
+            
+            try {
+                const options = {
+                    method,
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                };
+                
+                if (body) {
+                    options.body = JSON.stringify(body);
+                }
+                
+                const response = await fetch(endpoint, options);
+                const data = await response.json();
+                
+                statusDiv.className = 'status success';
+                statusDiv.textContent = `✅ نجح الطلب - ${endpoint}`;
+                resultPre.textContent = JSON.stringify(data, null, 2);
+                
+            } catch (error) {
+                statusDiv.className = 'status error';
+                statusDiv.textContent = `❌ خطأ: ${error.message}`;
+                resultPre.textContent = `خطأ في الاتصال: ${error.message}`;
+            }
+        }
+
+        async function createTestOrg() {
+            const orgData = {
+                name: "شركة الاختبار التقنية",
+                domain: "test-tech.com",
+                plan: "trial"
+            };
+            
+            await testAPI('/api/enterprise-rbac/organizations', 'POST', orgData);
+        }
+
+        async function testPermissions() {
+            const permissionData = {
+                userId: "test_user_001",
+                resource: "users",
+                action: "read",
+                scope: "organization"
+            };
+            
+            await testAPI('/api/enterprise-rbac/test-permission', 'POST', permissionData);
+        }
+
+        // Auto-test system health on load
+        window.onload = function() {
+            testAPI('/api/enterprise-rbac/health');
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,34 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Python: Juliet SFT Gen (small)",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/data_collections/syth_data_gen/juliet_sft_gen.py",
+      "console": "integratedTerminal",
+      "args": [
+        "--variations", "2",
+        "--limit", "2",
+        "--size", "small"
+      ]
+    },
+    {
+      "name": "Python: LLM API(SERVER)",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/llm/server_api.py",
+      "console": "integratedTerminal",
+      "args": [
+        "server"
+      ]
+    },
+    {
+      "name": "Python: LLM API(LOCAL)",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/llm/server_api.py",
+      "console": "integratedTerminal"
+    }
+  ]
+}

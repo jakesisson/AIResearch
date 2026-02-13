@@ -1,0 +1,127 @@
+-- Seed data for LawTime application
+-- User ID: 1ee69ac6-395a-4982-af46-f107f99ad49a
+
+-- Insert clients for the user
+INSERT INTO public.clients (user_id, client_name, created_at) VALUES
+('1ee69ac6-395a-4982-af46-f107f99ad49a', 'Johnson & Associates LLC', '2025-04-15 09:00:00+00'),
+('1ee69ac6-395a-4982-af46-f107f99ad49a', 'Smith Construction Inc', '2025-05-01 14:30:00+00'),
+('1ee69ac6-395a-4982-af46-f107f99ad49a', 'Maria Rodriguez', '2025-06-10 11:20:00+00'),
+('1ee69ac6-395a-4982-af46-f107f99ad49a', 'Tech Startup Ventures', '2025-07-28 16:45:00+00'),
+('1ee69ac6-395a-4982-af46-f107f99ad49a', 'Downtown Property Group', '2025-08-05 10:15:00+00');
+
+-- Insert diverse tasks covering different scenarios
+INSERT INTO public.tasks (user_id, client_id, title, event_time, location, note, completed_at, source_type, notification_sent, created_at) VALUES
+
+-- Upcoming court hearings and meetings
+('1ee69ac6-395a-4982-af46-f107f99ad49a', 
+ (SELECT id FROM public.clients WHERE user_id = '1ee69ac6-395a-4982-af46-f107f99ad49a' AND client_name = 'Johnson & Associates LLC'), 
+ 'Contract Dispute Hearing', 
+ '2025-10-20 14:00:00+00', 
+ 'Superior Court, Room 312', 
+ 'Bring original contracts and witness statements. Judge Martinez presiding.', 
+ NULL, 
+ 'ocr', 
+ false, 
+ '2025-09-01 10:30:00+00'),
+
+('1ee69ac6-395a-4982-af46-f107f99ad49a', 
+ (SELECT id FROM public.clients WHERE user_id = '1ee69ac6-395a-4982-af46-f107f99ad49a' AND client_name = 'Smith Construction Inc'), 
+ 'Deposition - Safety Inspector', 
+ '2025-09-23 10:00:00+00', 
+ '1200 Main St, Conference Room B', 
+ 'Workers compensation case. Review incident reports before meeting.', 
+ NULL, 
+ 'manual', 
+ false, 
+ '2025-08-28 15:45:00+00'),
+
+('1ee69ac6-395a-4982-af46-f107f99ad49a', 
+ (SELECT id FROM public.clients WHERE user_id = '1ee69ac6-395a-4982-af46-f107f99ad49a' AND client_name = 'Maria Rodriguez'), 
+ 'Immigration Interview Preparation', 
+ '2025-09-25 13:30:00+00', 
+ 'Law Office Conference Room', 
+ 'Final prep for U.S. Citizenship and Immigration Services interview scheduled for Sept 22. Review all supporting documents.', 
+ NULL, 
+ 'asr', 
+ false, 
+ '2025-09-02 09:20:00+00'),
+
+-- Contract deadlines and renewals
+('1ee69ac6-395a-4982-af46-f107f99ad49a', 
+ (SELECT id FROM public.clients WHERE user_id = '1ee69ac6-395a-4982-af46-f107f99ad49a' AND client_name = 'Tech Startup Ventures'), 
+ 'Software License Renewal Deadline', 
+ '2025-12-31 23:59:00+00', 
+ NULL, 
+ 'Microsoft Enterprise license expires. Client needs decision on renewal vs migration to alternatives.', 
+ NULL, 
+ 'ocr', 
+ false, 
+ '2025-09-12 11:10:00+00'),
+
+('1ee69ac6-395a-4982-af46-f107f99ad49a', 
+ (SELECT id FROM public.clients WHERE user_id = '1ee69ac6-395a-4982-af46-f107f99ad49a' AND client_name = 'Downtown Property Group'), 
+ 'Lease Agreement Review', 
+ '2025-09-22 15:00:00+00', 
+ 'Client Office - 450 Business Plaza', 
+ 'Commercial lease for new retail space. Terms negotiation with landlord attorney.', 
+ NULL, 
+ 'manual', 
+ false, 
+ '2025-09-03 14:25:00+00'),
+
+-- Recently completed tasks
+('1ee69ac6-395a-4982-af46-f107f99ad49a', 
+ (SELECT id FROM public.clients WHERE user_id = '1ee69ac6-395a-4982-af46-f107f99ad49a' AND client_name = 'Johnson & Associates LLC'), 
+ 'Discovery Motion Filing', 
+ '2025-09-10 17:00:00+00', 
+ 'County Courthouse Clerk Office', 
+ 'Motion to compel discovery responses. Filed successfully with tracking number DC-2025-0910.', 
+ '2025-09-10 16:45:00+00', 
+ 'manual', 
+ true, 
+ '2025-08-20 12:15:00+00'),
+
+('1ee69ac6-395a-4982-af46-f107f99ad49a', 
+ (SELECT id FROM public.clients WHERE user_id = '1ee69ac6-395a-4982-af46-f107f99ad49a' AND client_name = 'Maria Rodriguez'), 
+ 'Document Translation Coordination', 
+ '2025-09-11 12:00:00+00', 
+ 'Certified Translation Services', 
+ 'Birth certificate and marriage certificate translation for immigration case completed.', 
+ '2025-09-11 11:30:00+00', 
+ 'asr', 
+ true, 
+ '2025-08-25 16:40:00+00'),
+
+-- Unscheduled tasks (no event_time)
+('1ee69ac6-395a-4982-af46-f107f99ad49a', 
+ (SELECT id FROM public.clients WHERE user_id = '1ee69ac6-395a-4982-af46-f107f99ad49a' AND client_name = 'Smith Construction Inc'), 
+ 'Review OSHA Violation Response', 
+ NULL, 
+ NULL, 
+ 'Client received OSHA citation. Need to review violation details and prepare response strategy.', 
+ NULL, 
+ 'ocr', 
+ false, 
+ '2025-09-04 08:15:00+00'),
+
+('1ee69ac6-395a-4982-af46-f107f99ad49a', 
+ (SELECT id FROM public.clients WHERE user_id = '1ee69ac6-395a-4982-af46-f107f99ad49a' AND client_name = 'Tech Startup Ventures'), 
+ 'Draft Employment Agreement Template', 
+ NULL, 
+ NULL, 
+ 'Create standardized employment agreement for startup hiring. Include equity compensation clauses.', 
+ NULL, 
+ 'manual', 
+ false, 
+ '2025-09-05 13:50:00+00'),
+
+('1ee69ac6-395a-4982-af46-f107f99ad49a', 
+ NULL, 
+ 'Bar Association CLE Requirements', 
+ NULL, 
+ NULL, 
+ 'Complete 12 hours of continuing legal education by end of year. Research available courses.', 
+ NULL, 
+ 'asr', 
+ false, 
+ '2025-09-06 10:05:00+00');

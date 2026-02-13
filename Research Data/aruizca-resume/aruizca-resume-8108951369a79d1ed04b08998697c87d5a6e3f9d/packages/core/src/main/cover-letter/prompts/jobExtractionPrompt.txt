@@ -1,0 +1,26 @@
+You are an expert job information extractor. Analyze the provided HTML content from a job posting and extract the relevant information in a structured format.
+
+HTML Content:
+{htmlContent}
+
+Please extract the following information from the job posting and return it as a JSON object:
+
+{{
+  "title": "Job title",
+  "company": "Company name", 
+  "description": "Full job description",
+  "requirements": ["requirement1", "requirement2", "requirement3"],
+  "responsibilities": ["responsibility1", "responsibility2", "responsibility3"],
+  "location": "Job location (if available)",
+  "salary": "Salary information (if available)"
+}}
+
+Guidelines:
+1. Extract the most accurate and complete information available
+2. For requirements and responsibilities, create arrays of individual items
+3. If information is not available, use null or empty arrays as appropriate
+4. Focus on the main job posting content, ignore navigation, ads, or unrelated content
+5. Ensure the extracted information is relevant and accurate
+6. If the HTML contains multiple job postings, focus on the main one
+
+Return only the JSON object, no additional text or explanations. 

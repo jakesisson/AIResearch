@@ -1,0 +1,15 @@
+$inner:
+    - {}
+    - $desc: 'API Configuration'
+      appConfigs:
+          $desc: 'iFLYTEK Spark platform config （API Password)'
+          $inner:
+              - 'API Password for new OpenAI-compatible HTTP API (optional)'
+      assistants:
+          $desc: 'Spark assistant config (name, API link). Note: Use one API Key per assistant'
+          $inner:
+              - 'Spark assistant name'
+              - 'Spark assistant link'
+
+    - $desc: 'Model Parameters'
+      maxContextRatio: 'Maximum context usage ratio (0-1). Controls the maximum percentage of model context window available for use. For example, 0.35 means at most 35% of the model context can be used.'

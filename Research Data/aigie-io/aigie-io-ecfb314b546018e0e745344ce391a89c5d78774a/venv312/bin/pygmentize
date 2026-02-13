@@ -1,0 +1,8 @@
+#!/bin/sh
+'''exec' "/Users/jsisson/Research/Research Data/aigie-io/aigie-io-ecfb314b546018e0e745344ce391a89c5d78774a/venv312/bin/python3.12" "$0" "$@"
+' '''
+import sys
+from pygments.cmdline import main
+if __name__ == '__main__':
+    sys.argv[0] = sys.argv[0].removesuffix('.exe')
+    sys.exit(main())

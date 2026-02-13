@@ -1,0 +1,1073 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RAG Chat</title>
+    <link rel="icon" type="image/png" href="/assets/logos/logo.png">
+    <style>
+        :root {
+            --bg-primary: #f7f7f8;
+            --bg-secondary: #fff;
+            --text-primary: #333;
+            --text-secondary: #666;
+            --border-color: #e5e5e5;
+            --border-input: #d1d5db;
+            --shadow: rgba(0,0,0,0.1);
+            --user-bg: #10a37f;
+            --user-hover: #0d8a6b;
+            --assistant-bg: #6366f1;
+            --disabled-bg: #d1d5db;
+            --success-bg: #f0fdf4;
+            --success-border: #bbf7d0;
+            --success-text: #166534;
+            --error-bg: #fef2f2;
+            --error-border: #fecaca;
+            --error-text: #dc2626;
+            --info-bg: #f0f9ff;
+            --info-border: #0ea5e9;
+            --info-text: #0369a1;
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: #1a1a1a;
+            --bg-secondary: #2d2d2d;
+            --text-primary: #e5e5e5;
+            --text-secondary: #a3a3a3;
+            --border-color: #404040;
+            --border-input: #525252;
+            --shadow: rgba(0,0,0,0.3);
+            --user-bg: #10a37f;
+            --user-hover: #0d8a6b;
+            --assistant-bg: #6366f1;
+            --disabled-bg: #525252;
+            --success-bg: #064e3b;
+            --success-border: #059669;
+            --success-text: #34d399;
+            --error-bg: #7f1d1d;
+            --error-border: #dc2626;
+            --error-text: #fca5a5;
+            --info-bg: #0c4a6e;
+            --info-border: #0284c7;
+            --info-text: #7dd3fc;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-primary);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .header {
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-color);
+            padding: 16px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 1px 3px var(--shadow);
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .logo {
+            height: 48px;
+            width: 48px;
+            object-fit: contain;
+        }
+
+        .header h1 {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .theme-toggle {
+            background: none;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 6px 8px;
+            cursor: pointer;
+            color: var(--text-secondary);
+            transition: all 0.3s ease;
+            font-size: 16px;
+        }
+
+        .theme-toggle:hover {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+        }
+
+        .session-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .session-info span {
+            font-size: 12px;
+            color: var(--text-secondary);
+            background: var(--bg-primary);
+            padding: 4px 8px;
+            border-radius: 4px;
+            border: 1px solid var(--border-color);
+        }
+
+        .chat-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            max-width: 800px;
+            margin: 0 auto;
+            width: 100%;
+            padding: 0 20px;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .message {
+            display: flex;
+            gap: 12px;
+            max-width: 85%;
+            width: 100%;
+        }
+
+        .message.user {
+            align-self: flex-end;
+            flex-direction: row-reverse;
+            max-width: 80%;
+        }
+
+        .message.assistant {
+            align-self: flex-start;
+            max-width: 90%;
+        }
+
+        .message-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .message.user .message-avatar {
+            background: var(--user-bg);
+            color: white;
+        }
+
+        .message.assistant .message-avatar {
+            background: var(--assistant-bg);
+            color: white;
+        }
+
+        .message-content {
+            background: var(--bg-secondary);
+            padding: 12px 16px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            font-size: 15px;
+            line-height: 1.5;
+            white-space: pre-wrap;
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+            position: relative;
+            flex: 1;
+            min-width: 0;
+            word-wrap: break-word;
+        }
+
+        .message.user .message-content {
+            background: var(--user-bg);
+            color: white;
+            border-color: var(--user-bg);
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            padding: 4px 8px;
+            font-size: 12px;
+            cursor: pointer;
+            color: var(--text-secondary);
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .message-content:hover .copy-btn {
+            opacity: 1;
+        }
+
+        .copy-btn:hover {
+            background: var(--border-color);
+            color: var(--text-primary);
+        }
+
+        .message.user .copy-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.3);
+            color: white;
+        }
+
+        .message.user .copy-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .code-block {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            margin: 8px 0;
+            overflow: hidden;
+            position: relative;
+            width: 100%;
+            max-width: 100%;
+        }
+
+        .code-header {
+            background: var(--border-color);
+            padding: 8px 12px;
+            font-size: 12px;
+            color: var(--text-secondary);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .code-language {
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .code-copy-btn {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            padding: 4px 8px;
+            font-size: 11px;
+            cursor: pointer;
+            color: var(--text-secondary);
+            transition: all 0.2s;
+        }
+
+        .code-copy-btn:hover {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+        }
+
+        .code-content {
+            padding: 12px;
+            font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+            font-size: 13px;
+            line-height: 1.4;
+            overflow-x: auto;
+            white-space: pre;
+            color: var(--text-primary);
+            max-width: 100%;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        .typing-indicator {
+            display: none;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-secondary);
+            font-size: 14px;
+            padding: 12px 0;
+        }
+
+        .typing-dots {
+            display: flex;
+            gap: 4px;
+        }
+
+        .typing-dots span {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--text-secondary);
+            animation: typing 1.4s infinite ease-in-out;
+        }
+
+        .typing-dots span:nth-child(1) { animation-delay: -0.32s; }
+        .typing-dots span:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes typing {
+            0%, 80%, 100% { 
+                transform: scale(0);
+            } 40% { 
+                transform: scale(1);
+            }
+        }
+
+        .input-area {
+            padding: 20px 0;
+            background: var(--bg-primary);
+        }
+
+        .input-container {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-input);
+            border-radius: 12px;
+            padding: 8px;
+            display: flex;
+            align-items: flex-end;
+            gap: 8px;
+            box-shadow: 0 1px 3px var(--shadow);
+            transition: all 0.3s ease;
+        }
+
+        .file-upload-btn {
+            background: none;
+            border: none;
+            padding: 8px;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+        }
+
+        .file-upload-btn:hover {
+            background: var(--bg-primary);
+        }
+
+        .file-upload-btn svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        #messageInput {
+            flex: 1;
+            border: none;
+            outline: none;
+            padding: 8px 12px;
+            font-size: 15px;
+            line-height: 1.5;
+            max-height: 120px;
+            resize: none;
+            font-family: inherit;
+            background: transparent;
+            color: var(--text-primary);
+        }
+
+        #messageInput::placeholder {
+            color: var(--text-secondary);
+        }
+
+        .send-btn {
+            background: var(--user-bg);
+            border: none;
+            border-radius: 6px;
+            padding: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+            color: white;
+        }
+
+        .send-btn:hover:not(:disabled) {
+            background: var(--user-hover);
+        }
+
+        .send-btn:disabled {
+            background: var(--disabled-bg);
+            cursor: not-allowed;
+        }
+
+        .send-btn svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .file-info {
+            display: none;
+            background: var(--info-bg);
+            border: 1px solid var(--info-border);
+            border-radius: 8px;
+            padding: 8px 12px;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: var(--info-text);
+            transition: all 0.3s ease;
+        }
+
+        .file-info .close-btn {
+            background: none;
+            border: none;
+            color: var(--info-text);
+            cursor: pointer;
+            float: right;
+            font-size: 16px;
+            line-height: 1;
+        }
+
+        .welcome-message {
+            text-align: center;
+            color: var(--text-secondary);
+            padding: 40px 20px;
+            font-size: 16px;
+        }
+
+        .welcome-message h2 {
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        #fileInput {
+            display: none;
+        }
+
+        .error-message {
+            background: var(--error-bg);
+            border: 1px solid var(--error-border);
+            color: var(--error-text);
+            padding: 12px;
+            border-radius: 8px;
+            margin: 8px 0;
+            font-size: 14px;
+        }
+
+        .success-message {
+            background: var(--success-bg);
+            border: 1px solid var(--success-border);
+            color: var(--success-text);
+            padding: 12px;
+            border-radius: 8px;
+            margin: 8px 0;
+            font-size: 14px;
+        }
+
+        @media (max-width: 768px) {
+            .chat-container {
+                padding: 0 12px;
+            }
+            
+            .message {
+                max-width: 95%;
+            }
+            
+            .message.user {
+                max-width: 90%;
+            }
+            
+            .message.assistant {
+                max-width: 95%;
+            }
+            
+            .header {
+                padding: 12px;
+            }
+            
+            .code-content {
+                font-size: 12px;
+                padding: 8px;
+            }
+            
+            .logo {
+                height: 40px;
+                width: 40px;
+            }
+            
+            .header-left {
+                gap: 12px;
+            }
+            
+            .header {
+                padding: 14px 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-left">
+            <img src="/assets/logos/logo.png" alt="RAG Chat Logo" class="logo">
+            <h1>RAG Chat</h1>
+        </div>
+        <div class="header-controls">
+            <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Toggle dark mode">
+                🌙
+            </button>
+            <div class="session-info">
+                <span id="sessionDisplay">Session: Loading...</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="chat-container">
+        <div class="chat-messages" id="chatMessages">
+            <div class="welcome-message">
+                <h2>👋 Welcome to RAG Chat</h2>
+                <p>Upload your documents and start asking questions!</p>
+            </div>
+        </div>
+
+        <div class="typing-indicator" id="typingIndicator">
+            <div class="message-avatar">🤖</div>
+            <div class="typing-dots">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <span>AI is thinking...</span>
+        </div>
+
+        <div class="input-area">
+            <div class="file-info" id="fileInfo">
+                <span id="fileName"></span>
+                <button class="close-btn" onclick="clearFile()">×</button>
+            </div>
+            
+            <div class="input-container">
+                <button class="file-upload-btn" onclick="document.getElementById('fileInput').click()" title="Upload file">
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 4V2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V9h2v4h4v2z"/>
+                    </svg>
+                </button>
+                
+                <textarea 
+                    id="messageInput" 
+                    placeholder="Ask anything about your documents..." 
+                    rows="1"
+                    onkeydown="handleKeyDown(event)"
+                    oninput="autoResize(this)"
+                ></textarea>
+                
+                <button class="send-btn" id="sendBtn" onclick="sendMessage()" disabled>
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+                    </svg>
+                </button>
+            </div>
+            
+            <input type="file" id="fileInput" accept=".txt,.pdf,.doc,.docx" onchange="handleFileSelect(event)">
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = '/api/v1';
+        let uploadedFileId = null;
+        let isProcessing = false;
+        let sessionId = null;
+        let projectId = null;
+
+        // Generate or retrieve session ID and project ID
+        function initSession() {
+            // Check if we have a stored session
+            sessionId = localStorage.getItem('rag_session_id');
+            
+            if (!sessionId) {
+                // Generate new unique session ID
+                sessionId = 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+                localStorage.setItem('rag_session_id', sessionId);
+            }
+
+            // Convert session ID to a consistent integer project ID
+            projectId = Math.abs(hashCode(sessionId)) % 100000; // Range: 0-99,999
+            
+            // Update display
+            document.getElementById('sessionDisplay').textContent = `Project: ${projectId}`;
+        }
+
+        // Simple hash function to convert string to consistent integer
+        function hashCode(str) {
+            let hash = 0;
+            for (let i = 0; i < str.length; i++) {
+                const char = str.charCodeAt(i);
+                hash = ((hash << 5) - hash) + char;
+                hash = hash & hash; // Convert to 32bit integer
+            }
+            return hash;
+        }
+
+        // Get current project ID
+        function getProjectId() {
+            return projectId;
+        }
+
+        // Copy text to clipboard
+        async function copyToClipboard(text) {
+            try {
+                await navigator.clipboard.writeText(text);
+                return true;
+            } catch (err) {
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = text;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                return true;
+            }
+        }
+
+        // Show copy feedback
+        function showCopyFeedback(button) {
+            const originalText = button.textContent;
+            button.textContent = '✓ Copied';
+            button.style.color = 'var(--success-text)';
+            setTimeout(() => {
+                button.textContent = originalText;
+                button.style.color = '';
+            }, 2000);
+        }
+
+        // Parse and render message content with code blocks
+        function parseMessageContent(content) {
+            const codeBlockRegex = /```(\w+)?\n?([\s\S]*?)```/g;
+            const parts = [];
+            let lastIndex = 0;
+            let match;
+
+            while ((match = codeBlockRegex.exec(content)) !== null) {
+                // Add text before code block
+                if (match.index > lastIndex) {
+                    parts.push({
+                        type: 'text',
+                        content: content.slice(lastIndex, match.index)
+                    });
+                }
+
+                // Add code block
+                parts.push({
+                    type: 'code',
+                    language: match[1] || 'text',
+                    content: match[2].trim()
+                });
+
+                lastIndex = match.index + match[0].length;
+            }
+
+            // Add remaining text
+            if (lastIndex < content.length) {
+                parts.push({
+                    type: 'text',
+                    content: content.slice(lastIndex)
+                });
+            }
+
+            return parts.length > 0 ? parts : [{ type: 'text', content }];
+        }
+
+        // Create code block element
+        function createCodeBlock(language, code) {
+            const codeBlock = document.createElement('div');
+            codeBlock.className = 'code-block';
+
+            const header = document.createElement('div');
+            header.className = 'code-header';
+
+            const languageSpan = document.createElement('span');
+            languageSpan.className = 'code-language';
+            languageSpan.textContent = language;
+
+            const copyBtn = document.createElement('button');
+            copyBtn.className = 'code-copy-btn';
+            copyBtn.textContent = '📋 Copy';
+            copyBtn.onclick = async () => {
+                await copyToClipboard(code);
+                showCopyFeedback(copyBtn);
+            };
+
+            header.appendChild(languageSpan);
+            header.appendChild(copyBtn);
+
+            const content = document.createElement('div');
+            content.className = 'code-content';
+            content.textContent = code;
+
+            codeBlock.appendChild(header);
+            codeBlock.appendChild(content);
+
+            return codeBlock;
+        }
+
+        // Theme management
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            updateThemeIcon(savedTheme);
+        }
+
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeIcon(newTheme);
+        }
+
+        function updateThemeIcon(theme) {
+            const themeButton = document.getElementById('themeToggle');
+            themeButton.textContent = theme === 'dark' ? '☀️' : '🌙';
+            themeButton.title = theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode';
+        }
+
+        // Auto-resize textarea
+        function autoResize(textarea) {
+            textarea.style.height = 'auto';
+            textarea.style.height = Math.min(textarea.scrollHeight, 120) + 'px';
+            
+            // Enable/disable send button
+            const sendBtn = document.getElementById('sendBtn');
+            sendBtn.disabled = !textarea.value.trim() || isProcessing;
+        }
+
+        // Handle Enter key
+        function handleKeyDown(event) {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault();
+                if (!document.getElementById('sendBtn').disabled) {
+                    sendMessage();
+                }
+            }
+        }
+
+        // Handle file selection
+        async function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            // Show file info
+            document.getElementById('fileName').textContent = `📎 ${file.name}`;
+            document.getElementById('fileInfo').style.display = 'block';
+
+            // Upload file
+            await uploadFile(file);
+        }
+
+        // Clear selected file
+        function clearFile() {
+            document.getElementById('fileInput').value = '';
+            document.getElementById('fileInfo').style.display = 'none';
+            uploadedFileId = null;
+        }
+
+        // Upload file
+        async function uploadFile(file) {
+            const projectId = getProjectId();
+            const formData = new FormData();
+            formData.append('file', file);
+
+            try {
+                showMessage('system', `Uploading ${file.name}...`);
+                
+                const response = await fetch(`${API_BASE}/data/upload/${projectId}`, {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                // Check if response is JSON
+                const contentType = response.headers.get('content-type');
+                let result;
+                
+                if (contentType && contentType.includes('application/json')) {
+                    result = await response.json();
+                } else {
+                    // If not JSON, get text response for debugging
+                    const textResponse = await response.text();
+                    console.error('Non-JSON response:', textResponse);
+                    throw new Error(`Server returned non-JSON response: ${response.status} ${response.statusText}`);
+                }
+                
+                if (response.ok) {
+                    uploadedFileId = result.file_id;
+                    showMessage('system', `✅ File uploaded successfully! Processing...`);
+                    
+                    // Auto-process the file
+                    await processFile();
+                } else {
+                    showMessage('system', `❌ Upload failed: ${result.detail || result.signal || 'Unknown error'}`, true);
+                }
+            } catch (error) {
+                console.error('Upload error:', error);
+                showMessage('system', `❌ Upload error: ${error.message}`, true);
+            }
+        }
+
+        // Process uploaded file
+        async function processFile() {
+            const projectId = getProjectId();
+            
+            try {
+                const response = await fetch(`${API_BASE}/data/process/${projectId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        chunk_size: 200,
+                        overlap_size: 40,
+                        do_reset: 0
+                    })
+                });
+
+                // Check if response is JSON
+                const contentType = response.headers.get('content-type');
+                let result;
+                
+                if (contentType && contentType.includes('application/json')) {
+                    result = await response.json();
+                } else {
+                    // If not JSON, get text response for debugging
+                    const textResponse = await response.text();
+                    console.error('Non-JSON response:', textResponse);
+                    throw new Error(`Server returned non-JSON response: ${response.status} ${response.statusText}`);
+                }
+                
+                if (response.ok) {
+                    showMessage('system', `✅ File processed! Indexing to vector database...`);
+                    
+                    // Auto-index to vector DB
+                    await indexToVectorDB();
+                } else {
+                    showMessage('system', `❌ Processing failed: ${result.detail || result.signal || 'Unknown error'}`, true);
+                }
+            } catch (error) {
+                console.error('Processing error:', error);
+                showMessage('system', `❌ Processing error: ${error.message}`, true);
+            }
+        }
+
+        // Index to vector database
+        async function indexToVectorDB() {
+            const projectId = getProjectId();
+            
+            try {
+                const response = await fetch(`${API_BASE}/nlp/index/push/${projectId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        do_reset: 0
+                    })
+                });
+
+                // Check if response is JSON
+                const contentType = response.headers.get('content-type');
+                let result;
+                
+                if (contentType && contentType.includes('application/json')) {
+                    result = await response.json();
+                } else {
+                    // If not JSON, get text response for debugging
+                    const textResponse = await response.text();
+                    console.error('Non-JSON response:', textResponse);
+                    throw new Error(`Server returned non-JSON response: ${response.status} ${response.statusText}`);
+                }
+                
+                if (response.ok) {
+                    showMessage('system', `🎉 Ready! You can now ask questions about your document.`);
+                } else {
+                    showMessage('system', `❌ Indexing failed: ${result.detail || result.message || 'Unknown error'}`, true);
+                }
+            } catch (error) {
+                console.error('Indexing error:', error);
+                showMessage('system', `❌ Indexing error: ${error.message}`, true);
+            }
+        }
+
+        // Send message
+        async function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const message = input.value.trim();
+            
+            if (!message || isProcessing) return;
+
+            // Show user message
+            showMessage('user', message);
+            
+            // Clear input
+            input.value = '';
+            autoResize(input);
+            
+            // Show typing indicator
+            showTyping(true);
+            isProcessing = true;
+
+            try {
+                await askRAG(message);
+            } catch (error) {
+                showMessage('assistant', `Sorry, I encountered an error: ${error.message}`, true);
+            } finally {
+                showTyping(false);
+                isProcessing = false;
+                document.getElementById('sendBtn').disabled = false;
+            }
+        }
+
+        // Ask RAG
+        async function askRAG(question) {
+            const projectId = getProjectId();
+            
+            const response = await fetch(`${API_BASE}/nlp/index/answer/${projectId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    text: question,
+                    limit: 5
+                })
+            });
+
+            // Check if response is JSON
+            const contentType = response.headers.get('content-type');
+            let result;
+            
+            if (contentType && contentType.includes('application/json')) {
+                result = await response.json();
+            } else {
+                // If not JSON, get text response for debugging
+                const textResponse = await response.text();
+                console.error('Non-JSON response:', textResponse);
+                throw new Error(`Server returned non-JSON response: ${response.status} ${response.statusText}`);
+            }
+            
+            if (response.ok && result.answer) {
+                showMessage('assistant', result.answer);
+            } else {
+                throw new Error(result.detail || result.message || 'Failed to get answer');
+            }
+        }
+
+        // Show message in chat
+        function showMessage(sender, content, isError = false) {
+            const chatMessages = document.getElementById('chatMessages');
+            
+            // Remove welcome message if it exists
+            const welcomeMsg = chatMessages.querySelector('.welcome-message');
+            if (welcomeMsg) {
+                welcomeMsg.remove();
+            }
+
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}`;
+            
+            const avatar = document.createElement('div');
+            avatar.className = 'message-avatar';
+            
+            const messageContent = document.createElement('div');
+            messageContent.className = 'message-content';
+            
+            // Add copy button for all messages
+            const copyBtn = document.createElement('button');
+            copyBtn.className = 'copy-btn';
+            copyBtn.textContent = '📋';
+            copyBtn.title = 'Copy message';
+            copyBtn.onclick = async () => {
+                await copyToClipboard(content);
+                showCopyFeedback(copyBtn);
+            };
+            messageContent.appendChild(copyBtn);
+            
+            if (sender === 'user') {
+                avatar.textContent = 'U';
+                messageContent.appendChild(document.createTextNode(content));
+            } else if (sender === 'assistant') {
+                avatar.textContent = '🤖';
+                
+                // Parse content for code blocks
+                const parts = parseMessageContent(content);
+                
+                parts.forEach(part => {
+                    if (part.type === 'text') {
+                        if (part.content.trim()) {
+                            const textNode = document.createElement('span');
+                            textNode.style.whiteSpace = 'pre-wrap';
+                            textNode.textContent = part.content;
+                            messageContent.appendChild(textNode);
+                        }
+                    } else if (part.type === 'code') {
+                        const codeBlock = createCodeBlock(part.language, part.content);
+                        messageContent.appendChild(codeBlock);
+                    }
+                });
+                
+                if (isError) {
+                    messageContent.style.background = 'var(--error-bg)';
+                    messageContent.style.color = 'var(--error-text)';
+                    messageContent.style.borderColor = 'var(--error-border)';
+                }
+            } else if (sender === 'system') {
+                avatar.textContent = '💡';
+                messageContent.appendChild(document.createTextNode(content));
+                messageContent.style.background = isError ? 'var(--error-bg)' : 'var(--success-bg)';
+                messageContent.style.color = isError ? 'var(--error-text)' : 'var(--success-text)';
+                messageContent.style.borderColor = isError ? 'var(--error-border)' : 'var(--success-border)';
+                messageDiv.style.alignSelf = 'center';
+                messageDiv.style.maxWidth = '100%';
+            }
+            
+            messageDiv.appendChild(avatar);
+            messageDiv.appendChild(messageContent);
+            
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        // Show/hide typing indicator
+        function showTyping(show) {
+            document.getElementById('typingIndicator').style.display = show ? 'flex' : 'none';
+            if (show) {
+                const chatMessages = document.getElementById('chatMessages');
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            initTheme();
+            initSession();
+            document.getElementById('messageInput').focus();
+        });
+    </script>
+</body>
+</html>

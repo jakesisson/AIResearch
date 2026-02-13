@@ -1,0 +1,8 @@
+#!/bin/sh
+'''exec' "/Users/jsisson/Research/Research Data/ai-resume-agent/ai-resume-agent-0ad71e1993b2e1361290dc93d5d04a11b66c8bdf/venv312/bin/python3.12" "$0" "$@"
+' '''
+import sys
+from dotenv.__main__ import cli
+if __name__ == '__main__':
+    sys.argv[0] = sys.argv[0].removesuffix('.exe')
+    sys.exit(cli())

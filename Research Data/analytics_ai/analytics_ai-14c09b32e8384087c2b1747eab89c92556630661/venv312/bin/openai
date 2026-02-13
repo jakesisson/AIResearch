@@ -1,0 +1,8 @@
+#!/bin/sh
+'''exec' "/Users/jsisson/Research/Research Data/analytics_ai/analytics_ai-14c09b32e8384087c2b1747eab89c92556630661/venv312/bin/python3.12" "$0" "$@"
+' '''
+import sys
+from openai.cli import main
+if __name__ == '__main__':
+    sys.argv[0] = sys.argv[0].removesuffix('.exe')
+    sys.exit(main())

@@ -1,0 +1,58 @@
+Section A. Core Scanner ("Core Software") – MIT License
+-------------------------------------------------------
+MIT License
+
+Copyright (c) 2025 J-mazz
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE CORE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE CORE SOFTWARE.
+
+Section B. Proprietary Intelligence Layer ("Intelligence Layer")
+----------------------------------------------------------------
+Directory: `agent/` (and its subdirectories) plus generated enriched artifacts (HTML, diff markdown) unless a file explicitly declares an SPDX MIT header.
+
+License: Restricted Proprietary License
+
+Copyright (c) 2025 J-mazz. All rights reserved.
+
+Grant: Limited, non-transferable, non-sublicensable right to internally run and evaluate the Intelligence Layer with the Core Software. Any external redistribution (source or binary), offering as a service (SaaS/managed), sublicensing, commercialization, or publication requires a separate written agreement.
+
+Prohibited Without Commercial Agreement:
+1. Public redistribution of source or derivative works.
+2. Offering the Intelligence Layer (or substantial functionality) as a hosted or managed service to third parties.
+3. Removing or altering proprietary notices.
+
+Internal Derivatives: You may create internal patches/extensions for organizational use only; they must not be distributed externally.
+
+NO WARRANTY: Provided "AS IS"; same warranty disclaimer as Section A applies.
+
+Combination: Running the Core Software together with the Intelligence Layer does not change the license of either component.
+
+Third-Party Components: Remain under their respective original licenses.
+
+Contributions: Core contributions accepted under MIT. Intelligence Layer contributions are not accepted unless explicitly requested; unsolicited submissions become project property without obligation.
+
+Commercial / Licensing Contact: Joseph@Mazzlabs.works
+
+SPDX Summary Tags:
+	Core: MIT
+	Intelligence Layer: LicenseRef-Proprietary-Intelligence
+
+Files may include an SPDX header specifying one of the above.
+
+END OF LICENSE

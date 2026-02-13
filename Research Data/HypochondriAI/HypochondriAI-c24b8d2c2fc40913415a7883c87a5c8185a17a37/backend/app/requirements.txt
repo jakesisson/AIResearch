@@ -1,0 +1,38 @@
+# Core Framework & Server
+fastapi[standard] # FastAPI with standard extras (like CORS, GZip, etc.)
+uvicorn[standard] # Includes standard extras like websockets, http-tools
+
+# Database, ORM & Migrations
+sqlmodel          # Handles data validation (Pydantic) and DB interaction (SQLAlchemy)
+sqlalchemy        # Also imported directly, especially for Alembic and specific functions
+alembic           # For database migrations
+psycopg-binary    # PostgreSQL database driver (used by SQLAlchemy/SQLModel)
+psycopg-pool      # Used directly in LangchainService for async connections
+
+# AWS / Bedrock Integration
+boto3             # AWS SDK for Python (used for Bedrock client)
+
+# Langchain / LangGraph
+langchain         # Core library
+langchain-core    # Core abstractions (messages, prompts)
+langchain-openai  # OpenAI and Azure OpenAI integration
+langgraph         # For building stateful multi-actor applications
+langgraph-checkpoint-postgres # For saving LangGraph state to Postgres
+
+# Configuration & Settings
+pydantic-settings # For loading configuration from environment variables/.env file
+
+# Security
+passlib[bcrypt]   # For password hashing (includes bcrypt extras)
+
+# Utilities & Typing
+python-dotenv     # Used by pydantic-settings to load .env files
+email-validator   # Required by pydantic for EmailStr validation (used in models.py)
+typing_extensions # Used for advanced typing features (Annotated, TypedDict) often required by modern libraries
+
+# Linting & Formatting
+ruff             # Linter for Python code
+black
+
+#pre-commit
+pre-commit

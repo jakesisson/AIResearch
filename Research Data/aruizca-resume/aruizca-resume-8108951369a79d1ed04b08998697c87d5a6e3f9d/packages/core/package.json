@@ -1,0 +1,42 @@
+{
+  "name": "@aruizca-resume/core",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Core resume and cover letter generation functionality",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc && esbuild src/main/index.ts --bundle --platform=node --format=esm --outfile=dist/index.js --external:@langchain/* --external:openai --external:playwright --external:papaparse && esbuild src/main/resume/service/resume-generation-script.ts --bundle --platform=node --format=esm --outfile=dist/resume.js && esbuild src/main/cover-letter/service/cover-letter-generation-script.ts --bundle --platform=node --format=esm --outfile=dist/cover-letter.js",
+    "build:lib": "esbuild src/main/index.ts --bundle --platform=node --format=esm --outfile=dist/index.js --external:@langchain/* --external:openai --external:playwright --external:papaparse",
+    "build:lib:watch": "esbuild src/main/index.ts --bundle --platform=node --format=esm --outfile=dist/index.js --external:@langchain/* --external:openai --external:playwright --external:papaparse --watch",
+    "build:types": "tsc",
+    "build:types:watch": "tsc --watch",
+    "dev": "concurrently \"npm run build:types:watch\" \"npm run build:lib:watch\" --names \"TYPES,LIB\" --prefix-colors \"blue,green\"",
+    "test": "vitest run",
+    "test:unit": "vitest run src/test/unit",
+    "test:watch": "vitest",
+    "test:watch:unit": "vitest src/test/unit",
+    "clean": "rm -rf dist",
+    "lint": "echo 'Linting not configured yet'"
+  },
+  "dependencies": {
+    "@jsonresume/schema": "^1.2.1",
+    "@langchain/core": "^0.3.66",
+    "@langchain/openai": "^0.6.3",
+    "@types/jszip": "^3.4.0",
+    "ajv": "^8.17.1",
+    "jsonresume-theme-even": "^0.23.0",
+    "jszip": "^3.10.1",
+    "langchain": "^0.3.30",
+    "papaparse": "^5.5.3",
+    "playwright": "^1.54.2"
+  },
+  "devDependencies": {
+    "@types/node": "^24.2.0",
+    "@types/papaparse": "^5.3.16",
+    "concurrently": "^8.2.2",
+    "esbuild": "^0.21.5",
+    "typescript": "^5.0.0",
+    "vitest": "^1.0.0"
+  }
+}

@@ -1,0 +1,403 @@
+{
+  "total": 44,
+  "successful": 0,
+  "failed": 44,
+  "results": [
+    {
+      "path": "/Users/jsisson/Research/Research Data/HypochondriAI/HypochondriAI-c24b8d2c2fc40913415a7883c87a5c8185a17a37",
+      "success": false,
+      "build_command": null,
+      "output": "",
+      "error": "No build command detected",
+      "duration": 0,
+      "skipped": false
+    },
+    {
+      "path": "/Users/jsisson/Research/Research Data/AI-Product-Analyzer/AI-Product-Analyzer-6779ffda3a8a21dec8afb5b57bfee345a8a19798",
+      "success": false,
+      "build_command": null,
+      "output": "",
+      "error": "Python project - dependencies check skipped (use --install to install)",
+      "duration": 0,
+      "skipped": true
+    },
+    {
+      "path": "/Users/jsisson/Research/Research Data/knowledge-agent/knowledge_agent-ef77bb2ccb38eee7f8a5e2374edb418adac4473b",
+      "success": false,
+      "build_command": "python3 -m build",
+      "output": "/Library/Frameworks/Python.framework/Versions/3.14/bin/python3: No module named build\n",
+      "error": "Build failed with exit code 1",
+      "duration": 0.023953914642333984,
+      "skipped": false
+    },
+    {
+      "path": "/Users/jsisson/Research/Research Data/Projectron/Projectron-b0c6e9a966b61ae3f72057f07e3c20c6cc0d8ebe",
+      "success": false,
+      "build_command": null,
+      "output": "",
+      "error": "No build command detected",
+      "duration": 0,
+      "skipped": false
+    },
+    {
+      "path": "/Users/jsisson/Research/Research Data/cm3070-lawtime/cm3070-lawtime-c72917ff1975277c7462ab0babc37b69d0a49fba",
+      "success": false,
+      "build_command": null,
+      "output": "",
+      "error": "No build command detected",
+      "duration": 0,
+      "skipped": false
+    },
+    {
+      "path": "/Users/jsisson/Research/Research Data/solomon-codes/solomon-codes-262c51c5f63369ace7e4c94874a4a4a21d84e75b",
+      "success": false,
+      "build_command": "npm run build",
+      "output": "\n> solomon_codes@0.1.0 build\n> turbo build\n\nsh: turbo: command not found\n",
+      "error": "Build failed with exit code 127",
+      "duration": 0.21935200691223145,
+      "skipped": false
+    },
+    {
+      "path": "/Users/jsisson/Research/Research Data/boss-bot/boss-bot-f4877dc71af4bc6a2405aaf844c535cec788dde3",
+      "success": false,
+      "build_command": "python3 -m build",
+      "output": "/Library/Frameworks/Python.framework/Versions/3.14/bin/python3: No module named build\n",
+      "error": "Build failed with exit code 1",
+      "duration": 0.027394771575927734,
+      "skipped": false
+    },
+    {
+      "path": "/Users/jsisson/Research/Research Data/sys-scan-graph/sys-scan-graph-b9a4506472e8dd660ce3d5d2e2b4f2d076a4d16f",
+      "success": false,
+      "build_command": null,
+      "output": "",
+      "error": "No build command detected",
+      "duration": 0,
+      "skipped": false
+    },
+    {
+      "path": "/Users/jsisson/Research/Research Data/cybershield/cybershield-07608050ca98ff61c92beec7c15b9a666d735139",
+      "success": false,
+      "build_command": "python3 -m build",
+      "output": "/Library/Frameworks/Python.framework/Versions/3.14/bin/python3: No module named build\n",
+      "error": "Build failed with exit code 1",
+      "duration": 0.02686786651611328,
+      "skipped": false
+    },
+    {
+      "path": "/Users/jsisson/Research/Research Data/RAGveda/RAGveda-a11d83969234368fd6c7a4a3118a23177b5e7ec8",
+      "success": false,
+      "build_command": null,
+      "output": "",
+      "error": "Python project - dependencies check skipped (use --install to install)",
+      "duration": 0,
+      "skipped": true
+    },
+    {
+      "path": "/Users/jsisson/Research/Research Data/JAA/JAA-c373419d444a224aaf561b032ba5446e00138286",
+      "success": false,
+      "build_command": null,
+      "output": "",
+      "error": "No build command detected",
+      "duration": 0,
+      "skipped": false
+    },
+    {
+      "path": "/Users/jsisson/Research/Research Data/aruizca-resume/aruizca-resume-8108951369a79d1ed04b08998697c87d5a6e3f9d",
+      "success": false,
+      "build_command": "npm run build",
+      "output": "\n> aruizca-resume@1.0.0 build\n> turbo run build\n\nsh: turbo: command not found\n",
+      "error": "Build failed with exit code 127",
+      "duration": 0.19878482818603516,
+      "skipped": false
+    },
+    {
+      "path": "/Users/jsisson/Research/Research Data/data-cleaning-agent/data-cleaning-agent-ad59db504daa798862aeafb880b9f357691b1812",
+      "success": false,
+      "build_command": null,
+      "output": "",
+      "error": "Python project - dependencies check skipped (use --install to install)",
+      "duration": 0,
+      "skipped": true
+    },
+    {
+      "path": "/Users/jsisson/Research/Research Data/Deep-Query/Deep-Query-14a6100a1b7eaa168c0e04ec15e7ccee75e40b2f",
+      "success": false,
+      "build_command": null,
+      "output": "",
+      "error": "No build command detected",
+      "duration": 0,
+      "skipped": false
+    },
+    {
+      "path": "/Users/jsisson/Research/Research Data/RAGveda/RAGveda-a11d83969234368fd6c7a4a3118a23177b5e7ec8",
+      "success": false,
+      "build_command": null,
+      "output": "",
+      "error": "Python project - dependencies check skipped (use --install to install)",
+      "duration": 0,
+      "skipped": true
+    },
+    {
+      "path": "/Users/jsisson/Research/Research Data/sasya-chikitsa/sasya-chikitsa-7600564b2048f95d4e1e7e22ad67a0417cade07d",
+      "success": false,
+      "build_command": null,
+      "output": "",
+      "error": "Python project - dependencies check skipped (use --install to install)",
+      "duration": 0,
+      "skipped": true
+    },
+    {
+      "path": "/Users/jsisson/Research/Research Data/ai-resume-agent/ai-resume-agent-0ad71e1993b2e1361290dc93d5d04a11b66c8bdf",
+      "success": false,
+      "build_command": "python3 -m build",
+      "output": "/Library/Frameworks/Python.framework/Versions/3.14/bin/python3: No module named build\n",
+      "error": "Build failed with exit code 1",
+      "duration": 0.01980423927307129,
+      "skipped": false
+    },
+    {
+      "path": "/Users/jsisson/Research/Research Data/chatluna/chatluna-9f7332529850cceb0b1ab8138540796c6a47890e",
+      "success": false,
+      "build_command": "npm run build",
+      "output": "\n> @root/chatluna-koishi@1.0.0 build\n> yarn process-dynamic-import --lint && yarn fast-build shared-prompt-renderer && yarn fast-build core && yarn fast-build\n\nsh: yarn: command not found\n",
+      "error": "Build failed with exit code 127",
+      "duration": 0.17491888999938965,
+      "skipped": false
+    },
+    {
+      "path": "/Users/jsisson/Research/Research Data/nlp/nlp-ed783b2aebf9bdad2de7fedcec3a9ba9e723e7f8",
+      "success": false,
+      "build_command": "python3 -m build",
+      "output": "/Library/Frameworks/Python.framework/Versions/3.14/bin/python3: No module named build\n",
+      "error": "Build failed with exit code 1",
+      "duration": 0.02520895004272461,
+      "skipped": false
+    },
+    {
+      "path": "/Users/jsisson/Research/Research Data/genesis/genesis-25d916b0f6920e360f0b7bbcc4c03a13d767596f",
+      "success": false,
+      "build_command": null,
+      "output": "",
+      "error": "No build command detected",
+      "duration": 0,
+      "skipped": false
+    },
+    {
+      "path": "/Users/jsisson/Research/Research Data/analytics_ai/analytics_ai-8e53e7f5ef5ac140549db4b40eb2e299ddaad4a1",
+      "success": false,
+      "build_command": null,
+      "output": "",
+      "error": "Python project - dependencies check skipped (use --install to install)",
+      "duration": 0,
+      "skipped": true
+    },
+    {
+      "path": "/Users/jsisson/Research/Research Data/bt-servant-engine/bt-servant-engine-231d4f2d2c062c04a233a788fd99f487ba4866bf",
+      "success": false,
+      "build_command": "python3 -m build",
+      "output": "/Library/Frameworks/Python.framework/Versions/3.14/bin/python3: No module named build\n",
+      "error": "Build failed with exit code 1",
+      "duration": 0.025725841522216797,
+      "skipped": false
+    },
+    {
+      "path": "/Users/jsisson/Research/Research Data/ecommerce-chat/ecommerce-chat-3e924091a8e3713a712fb8bcc187696d02c5b3fb",
+      "success": false,
+      "build_command": null,
+      "output": "",
+      "error": "No build command detected",
+      "duration": 0,
+      "skipped": false
+    },
+    {
+      "path": "/Users/jsisson/Research/Research Data/DocRAG-Backend/DocRAG-Backend-cbe1f370adbd46b191523631613b6afd9ff213bb",
+      "success": false,
+      "build_command": "python3 -m build",
+      "output": "/Library/Frameworks/Python.framework/Versions/3.14/bin/python3: No module named build\n",
+      "error": "Build failed with exit code 1",
+      "duration": 0.03230404853820801,
+      "skipped": false
+    },
+    {
+      "path": "/Users/jsisson/Research/Research Data/MemGPT-Discord/MemGPT-Discord-9eb09b5b228db748c740c20b656691b156ee3dd4",
+      "success": false,
+      "build_command": "python3 -m build",
+      "output": "/Library/Frameworks/Python.framework/Versions/3.14/bin/python3: No module named build\n",
+      "error": "Build failed with exit code 1",
+      "duration": 0.02671527862548828,
+      "skipped": false
+    },
+    {
+      "path": "/Users/jsisson/Research/Research Data/SSU_RAG/SSU_RAG-4228e4e133cd201ebb2e04d0e40c3bf27b775b4c",
+      "success": false,
+      "build_command": "python3 -m build",
+      "output": "/Library/Frameworks/Python.framework/Versions/3.14/bin/python3: No module named build\n",
+      "error": "Build failed with exit code 1",
+      "duration": 0.027718305587768555,
+      "skipped": false
+    },
+    {
+      "path": "/Users/jsisson/Research/Research Data/Experimental/Experimental-3e970bfea0fb85405b07cd96dfc6e1d1ca862ed2",
+      "success": false,
+      "build_command": null,
+      "output": "",
+      "error": "Python project - dependencies check skipped (use --install to install)",
+      "duration": 0,
+      "skipped": true
+    },
+    {
+      "path": "/Users/jsisson/Research/Research Data/langflow/langflow-7aeb687533e53027aa477722d06d337b1a210ac6",
+      "success": false,
+      "build_command": "python3 -m build",
+      "output": "/Library/Frameworks/Python.framework/Versions/3.14/bin/python3: No module named build\n",
+      "error": "Build failed with exit code 1",
+      "duration": 0.028126955032348633,
+      "skipped": false
+    },
+    {
+      "path": "/Users/jsisson/Research/Research Data/svelte-langgraph/svelte-langgraph-1ae88f755e6d8550cff98f00c5c8baf48a65ff76",
+      "success": false,
+      "build_command": null,
+      "output": "",
+      "error": "No build command detected",
+      "duration": 0,
+      "skipped": false
+    },
+    {
+      "path": "/Users/jsisson/Research/Research Data/Kisan_Dost_AI/Kisan_Dost_AI-55c162e2d02236f2d6a133c34f4ca3cb4a5d3824",
+      "success": false,
+      "build_command": null,
+      "output": "",
+      "error": "Python project - dependencies check skipped (use --install to install)",
+      "duration": 0,
+      "skipped": true
+    },
+    {
+      "path": "/Users/jsisson/Research/Research Data/quark-chat/quark-chat-b49fe1ece02ea9d12a3ecb8c1ad251aa0d482501",
+      "success": false,
+      "build_command": "npm run build",
+      "output": "\n> @kronos/source@0.0.0 build\n> nx run-many --target=build --projects=tag:type:lib --parallel=false && nx run-many --target=build --projects=tag:type:app --parallel=true\n\nsh: nx: command not found\n",
+      "error": "Build failed with exit code 127",
+      "duration": 0.21570301055908203,
+      "skipped": false
+    },
+    {
+      "path": "/Users/jsisson/Research/Research Data/EchoBrandAI-Mind-Backup/EchoBrandAI-Mind-Backup-362b4c1fcc3129b7ac0ec6f22f75674f9c5cf6a6",
+      "success": false,
+      "build_command": null,
+      "output": "",
+      "error": "Python project - dependencies check skipped (use --install to install)",
+      "duration": 0,
+      "skipped": true
+    },
+    {
+      "path": "/Users/jsisson/Research/Research Data/agents/agents-399dbb01547de86c1b159c30c2e139093628988f",
+      "success": false,
+      "build_command": "npm run build",
+      "output": "\n> @librechat/agents@3.0.00-rc1 build\n> NODE_ENV=production rollup -c && tsc -p tsconfig.build.json\n\nsh: rollup: command not found\n",
+      "error": "Build failed with exit code 127",
+      "duration": 0.20603203773498535,
+      "skipped": false
+    },
+    {
+      "path": "/Users/jsisson/Research/Research Data/RAG-Demon/RAG-Demon-b7bca5a1310bdbfdd98023ad28e98954b063367c",
+      "success": false,
+      "build_command": null,
+      "output": "",
+      "error": "Python project - dependencies check skipped (use --install to install)",
+      "duration": 0,
+      "skipped": true
+    },
+    {
+      "path": "/Users/jsisson/Research/Research Data/psychological-agent/psychological-agent-efcab0a6ae2707f8c9ab8b35a3eeddf8ca0e8565",
+      "success": false,
+      "build_command": null,
+      "output": "",
+      "error": "Python project - dependencies check skipped (use --install to install)",
+      "duration": 0,
+      "skipped": true
+    },
+    {
+      "path": "/Users/jsisson/Research/Research Data/general-assistant/general-assistant-c83e2588e088adf5f4803dff9688ef07f5e925f3",
+      "success": false,
+      "build_command": "python3 -m build",
+      "output": "/Library/Frameworks/Python.framework/Versions/3.14/bin/python3: No module named build\n",
+      "error": "Build failed with exit code 1",
+      "duration": 0.025709867477416992,
+      "skipped": false
+    },
+    {
+      "path": "/Users/jsisson/Research/Research Data/ecommerce-chat",
+      "success": false,
+      "build_command": null,
+      "output": "",
+      "error": "No build command detected",
+      "duration": 0,
+      "skipped": false
+    },
+    {
+      "path": "/Users/jsisson/Research/Research Data/Agente-de-IA-usando-Next-y-Langchain/Agente-de-IA-usando-Next-y-Langchain-e7cd19cc538f3f5156dd717c457d73df6b6dae67",
+      "success": false,
+      "build_command": "npm run build",
+      "output": "\n> agent-ai-langchain@0.1.0 build\n> next build\n\nsh: next: command not found\n",
+      "error": "Build failed with exit code 127",
+      "duration": 0.20768117904663086,
+      "skipped": false
+    },
+    {
+      "path": "/Users/jsisson/Research/Research Data/medabot/medabot-b44b80ae3991ac76872bec46e622c51bb5ab4cea",
+      "success": false,
+      "build_command": "npm run build",
+      "output": "\n> medabot@1.0.0 build\n> npm run copy-pdf-worker && vinxi build\n\n\n> medabot@1.0.0 copy-pdf-worker\n> node scripts/copy-pdf-worker.js\n\n\u2717 PDF.js worker source file not found: /Users/jsisson/Research/Research Data/medabot/medabot-b44b80ae3991ac76872bec46e622c51bb5ab4cea/node_modules/react-pdf/node_modules/pdfjs-dist/build/pdf.worker.min.mjs\n  Make sure pdfjs-dist is installed: npm install pdfjs-dist\n",
+      "error": "Build failed with exit code 1",
+      "duration": 0.383148193359375,
+      "skipped": false
+    },
+    {
+      "path": "/Users/jsisson/Research/Research Data/llmmllab",
+      "success": false,
+      "build_command": null,
+      "output": "",
+      "error": "No build command detected",
+      "duration": 0,
+      "skipped": false
+    },
+    {
+      "path": "/Users/jsisson/Research/Research Data/hikizan-emacs/hikizan-emacs-84365f48d52394fe39ed9ad9e8174a26ba1b9a8f",
+      "success": false,
+      "build_command": null,
+      "output": "",
+      "error": "No build command detected",
+      "duration": 0,
+      "skipped": false
+    },
+    {
+      "path": "/Users/jsisson/Research/Research Data/aigie-io/aigie-io-de4c24820cd5967f1abff5f4af6dafab0207e618",
+      "success": false,
+      "build_command": "python3 setup.py build",
+      "output": "Traceback (most recent call last):\n  File \"/Users/jsisson/Research/Research Data/aigie-io/aigie-io-de4c24820cd5967f1abff5f4af6dafab0207e618/setup.py\", line 1, in <module>\n    from setuptools import setup, find_packages\nModuleNotFoundError: No module named 'setuptools'\n",
+      "error": "Build failed with exit code 1",
+      "duration": 0.05072307586669922,
+      "skipped": false
+    },
+    {
+      "path": "/Users/jsisson/Research/Research Data/HEDit/HEDit-ef6ed6fa475a79cf6a52c3a5bf405c8d3a94414b",
+      "success": false,
+      "build_command": "python3 -m build",
+      "output": "/Library/Frameworks/Python.framework/Versions/3.14/bin/python3: No module named build\n",
+      "error": "Build failed with exit code 1",
+      "duration": 0.027849912643432617,
+      "skipped": false
+    },
+    {
+      "path": "/Users/jsisson/Research/Research Data/export-langsmith-data/export-langsmith-data-ffe23613dfa5a90e3b03cff809114aa21df74599",
+      "success": false,
+      "build_command": null,
+      "output": "",
+      "error": "Python project - dependencies check skipped (use --install to install)",
+      "duration": 0,
+      "skipped": true
+    }
+  ]
+}
