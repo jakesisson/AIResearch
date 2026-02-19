@@ -32,8 +32,10 @@ Requirements:
 import os
 import sys
 import asyncio
+import json
 import sqlite3
 import logging
+import time
 from typing import Dict, Any, List, Optional, Literal, TypedDict, Annotated
 from dataclasses import dataclass
 from datetime import datetime
@@ -53,6 +55,9 @@ logger = logging.getLogger(__name__)
 # ============================================================================
 # Advanced State Management with Typing
 # ============================================================================
+
+from langchain_core.callbacks import BaseCallbackHandler
+
 
 class ResearchState(TypedDict):
     """Advanced state schema with proper typing."""
@@ -108,6 +113,21 @@ class AdvancedConfig:
     # Error handling
     MAX_RECOVERY_ATTEMPTS: int = 3
     AUTO_RECOVERY_ENABLED: bool = True
+
+
+def get_llm():
+    """Create LLM from env: Azure OpenAI if credentials set, else Google Gemini."""
+    if os.getenv("AZURE_OPENAI_API_KEY") and os.getenv("AZURE_OPENAI_ENDPOINT"):
+        from langchain_openai import AzureChatOpenAI
+        deployment = os.getenv("AZURE_OPENAI_API_DEPLOYMENT") or os.getenv("MODEL_ID", "gpt-4.1")
+        return AzureChatOpenAI(
+            azure_deployment=deployment,
+            api_version=os.getenv("AZURE_OPENAI_API_VERSION", "2025-01-01-preview"),
+            temperature=0.1,
+        )
+    from langchain_google_genai import ChatGoogleGenerativeAI
+    return ChatGoogleGenerativeAI(model="gemini-1.5-flash", temperature=0.1)
+
 
 # ============================================================================
 # Advanced Research Tools with Error Simulation
@@ -231,6 +251,8 @@ def synthesis_engine(analysis_results: List[Dict[str, Any]], synthesis_mode: str
 
 def require_human_approval(action: str, details: Dict[str, Any], risk_level: Literal["low", "medium", "high"]) -> bool:
     """Request human approval for actions based on risk level."""
+    if os.environ.get("COST_PERF"):
+        return True
     config = AdvancedConfig()
     
     # Auto-approve low-risk actions if configured
@@ -270,6 +292,8 @@ def require_human_approval(action: str, details: Dict[str, Any], risk_level: Lit
 
 def collect_human_feedback(context: str) -> str:
     """Collect feedback from human user."""
+    if os.environ.get("COST_PERF"):
+        return ""
     print(f"\n💬 FEEDBACK REQUEST")
     print(f"Context: {context}")
     print(f"Your feedback (or press Enter to skip): ")
@@ -294,7 +318,6 @@ async def create_advanced_research_workflow(config: AdvancedConfig, lg_intercept
     """Create an advanced research workflow with all modern LangGraph features."""
     try:
         # Import all required LangGraph components
-        from langchain_google_genai import ChatGoogleGenerativeAI
         from langchain_core.tools import tool
         from langchain_core.messages import HumanMessage, AIMessage, SystemMessage
         from langgraph.graph import StateGraph, START, END
@@ -304,21 +327,9 @@ async def create_advanced_research_workflow(config: AdvancedConfig, lg_intercept
         
         logger.info("🏗️ Creating advanced research workflow...")
         
-        # Initialize model
-        try:
-            # Parse model string (e.g., "google:gemini-1.5-flash" -> ChatGoogleGenerativeAI with gemini-1.5-flash)
-            if config.PRIMARY_MODEL.startswith("google:"):
-                model_name = config.PRIMARY_MODEL.split(":", 1)[1]
-                model = ChatGoogleGenerativeAI(model=model_name, temperature=0.1)
-                logger.info(f"✅ Primary model: {config.PRIMARY_MODEL}")
-            else:
-                # Fallback to default Gemini model
-                model = ChatGoogleGenerativeAI(model="gemini-2.5-flash", temperature=0.1)
-                logger.info(f"✅ Using fallback model: gemini-2.5-flash")
-        except Exception as e:
-            # Fallback to default Gemini model
-            model = ChatGoogleGenerativeAI(model="gemini-2.5-flash", temperature=0.1)
-            logger.info(f"✅ Using fallback model: gemini-2.5-flash (error: {e})")
+        # Initialize model (Azure OpenAI if env set, else Gemini)
+        model = get_llm()
+        logger.info("✅ LLM configured (Azure OpenAI or Gemini from env)")
         
         # Create advanced checkpointer
         if config.USE_SQLITE_CHECKPOINT:
@@ -951,5 +962,104 @@ async def main():
         print(f"• Ensure SQLite permissions for checkpointing")
         print(f"• Verify network connectivity for tools")
 
+
+class UsageAggregator(BaseCallbackHandler):
+    """Callback handler that aggregates LLM token usage from on_llm_end."""
+
+    def __init__(self):
+        super().__init__()
+        self.input_tokens = 0
+        self.output_tokens = 0
+
+    def on_llm_end(self, response, **kwargs):
+        try:
+            out = getattr(response, "llm_output", None) or {}
+            usage = out.get("token_usage") or out.get("usage") or {}
+            if isinstance(usage, dict):
+                self.input_tokens += int(usage.get("input_tokens") or usage.get("prompt_tokens") or 0)
+                self.output_tokens += int(usage.get("output_tokens") or usage.get("completion_tokens") or 0)
+            for gen_list in getattr(response, "generations", []) or []:
+                for gen in gen_list:
+                    msg = getattr(gen, "message", None)
+                    if msg and hasattr(msg, "response_metadata"):
+                        meta = msg.response_metadata or {}
+                        u = meta.get("token_usage") or meta.get("usage_metadata") or {}
+                        if isinstance(u, dict):
+                            self.input_tokens += int(u.get("input_tokens") or u.get("prompt_tokens") or 0)
+                            self.output_tokens += int(u.get("output_tokens") or u.get("completion_tokens") or 0)
+        except Exception:
+            pass
+
+
+async def run_cost_perf_mode():
+    """Run the LangGraph workflow once and write cost-perf-results.json to clone root."""
+    try:
+        from dotenv import load_dotenv
+        env_path = os.getenv("COST_PERF_ENV")
+        if env_path and os.path.isfile(env_path):
+            load_dotenv(env_path)
+        else:
+            clone_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+            for rel in ["../../../master.env", "../../master.env", "master.env"]:
+                p = os.path.join(clone_root, rel)
+                if os.path.isfile(p):
+                    load_dotenv(p)
+                    break
+    except Exception:
+        pass
+    config = AdvancedConfig(REQUIRE_HUMAN_APPROVAL=False)
+    error_detector = ErrorDetector()
+    aigie_logger = AigieLogger()
+    lg_interceptor = LangGraphInterceptor(error_detector, aigie_logger)
+    compiled_workflow, checkpointer = await create_advanced_research_workflow(config, lg_interceptor)
+    usage = UsageAggregator()
+    thread_id = f"cost-perf-{datetime.now().strftime('%Y%m%d%H%M%S')}"
+    initial_state = {
+        "messages": [],
+        "query": "What is 2+2? Reply briefly.",
+        "current_step": "planning",
+        "search_results": [],
+        "analysis_results": [],
+        "pending_approval": None,
+        "user_feedback": [],
+        "approval_history": [],
+        "active_agents": ["research", "analysis", "synthesis"],
+        "agent_outputs": {},
+        "coordination_log": [f"Workflow started for cost-perf"],
+        "error_count": 0,
+        "recovery_attempts": [],
+        "last_error": None,
+        "execution_id": thread_id,
+        "start_time": datetime.now(),
+        "last_update": datetime.now(),
+    }
+    start = time.perf_counter()
+    await compiled_workflow.ainvoke(
+        initial_state,
+        config={
+            "configurable": {"thread_id": thread_id},
+            "callbacks": [usage],
+        },
+    )
+    duration_ms = (time.perf_counter() - start) * 1000
+    total = usage.input_tokens + usage.output_tokens
+    out = {
+        "durationMs": round(duration_ms, 2),
+        "usage": {
+            "inputTokens": usage.input_tokens,
+            "outputTokens": usage.output_tokens,
+            "totalTokens": total,
+        },
+    }
+    clone_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    results_path = os.path.join(clone_root, "cost-perf-results.json")
+    with open(results_path, "w") as f:
+        json.dump(out, f, indent=2)
+    logger.info("Cost-perf run complete: %s", results_path)
+
+
 if __name__ == "__main__":
+    if os.environ.get("COST_PERF"):
+        asyncio.run(run_cost_perf_mode())
+        sys.exit(0)
     asyncio.run(main())

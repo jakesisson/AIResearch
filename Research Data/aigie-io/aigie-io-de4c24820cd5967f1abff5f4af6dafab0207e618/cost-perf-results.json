@@ -1,0 +1,10 @@
+{
+  "durationMs": 17580.36,
+  "usage": {
+    "inputTokens": 2786,
+    "outputTokens": 3910,
+    "totalTokens": 6696
+  },
+  "timestamp": "2026-02-19T09:57:56Z",
+  "variant": "researched"
+}

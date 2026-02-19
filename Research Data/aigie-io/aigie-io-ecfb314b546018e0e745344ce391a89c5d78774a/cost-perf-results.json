@@ -1,0 +1,10 @@
+{
+  "durationMs": 7646.05,
+  "usage": {
+    "inputTokens": 0,
+    "outputTokens": 0,
+    "totalTokens": 0
+  },
+  "variant": "prior",
+  "timestamp": null
+}

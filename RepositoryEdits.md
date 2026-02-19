@@ -370,6 +370,34 @@ Python library for real-time error detection and monitoring in LangChain and Lan
   - Added PostgreSQL database URLs from master.env
   - Added Aigie-specific configuration (AIGIE_ENABLE_GEMINI, AIGIE_LOG_LEVEL)
 
+#### 7. LangGraph Example: Azure OpenAI and Cost-Perf Mode (prior and researched)
+- **File Modified**: `examples/advanced_langgraph_features.py` (both clones)
+- **Change**: Use Azure OpenAI in the example when env is set; add cost-perf mode that runs the LangGraph flow and writes token/duration results.
+- **Details**:
+  - **get_llm()**: Added helper that returns `AzureChatOpenAI` when `AZURE_OPENAI_API_KEY` and `AZURE_OPENAI_ENDPOINT` are set (deployment from `AZURE_OPENAI_API_DEPLOYMENT` or `MODEL_ID`, version from `AZURE_OPENAI_API_VERSION`), otherwise returns `ChatGoogleGenerativeAI` (Gemini).
+  - **Workflow model**: Replaced inline Gemini model creation with `model = get_llm()` in `create_advanced_research_workflow`. Researched clone also replaced all helper fallbacks (`advanced_web_search_with_llm`, `deep_analysis_with_llm`, `synthesis_engine_with_llm`, etc.) to use `get_llm()` when `model` is None.
+  - **Cost-perf mode**: Added `UsageAggregator` (BaseCallbackHandler) to aggregate LLM token usage; added `run_cost_perf_mode()` that loads env (e.g. from `COST_PERF_ENV` or master.env), builds workflow with `REQUIRE_HUMAN_APPROVAL=False`, invokes it with a short query and callbacks, writes `cost-perf-results.json` (durationMs, usage: inputTokens, outputTokens, totalTokens) to the clone root. When `COST_PERF` is set, `__main__` runs `run_cost_perf_mode()` and exits.
+  - **Non-interactive in cost-perf**: When `COST_PERF` is set, `require_human_approval()` and `collect_human_feedback()` return immediately (auto-approve / no feedback) so the flow runs without prompts.
+  - **Async fix**: `run_cost_perf_mode()` uses `await create_advanced_research_workflow(...)` in both clones.
+
+#### 8. Cost-Perf Runner and Compare (prior and researched)
+- **File Modified**: `run_cost_perf.py` (both clones)
+- **Change**: Run the LangGraph example in cost-perf mode instead of a single Azure OpenAI call.
+- **Details**:
+  - Loads master.env; sets `COST_PERF=1`, `COST_PERF_VARIANT`, and `COST_PERF_ENV` (and uses `COST_PERF_PYTHON` when provided by compare script).
+  - Executes `python examples/advanced_langgraph_features.py` with cwd = clone root so the example writes `cost-perf-results.json` there.
+  - After run, merges `variant` (and optional `timestamp`) into the result file and prints it.
+
+#### 9. Compare Script and Docs (Research Data/aigie-io)
+- **File Modified**: `compare-cost-perf.py`
+- **Details**:
+  - Uses venv Python path as-is (no `resolve()`) so the subprocess uses the venv and not the system Python.
+  - Sets `COST_PERF_PYTHON` so each clone’s `run_cost_perf.py` uses the same venv for its subprocess.
+- **File Modified**: `README-cost-perf.md`
+- **Details**:
+  - Updated to describe cost-perf as running the LangGraph example with Azure OpenAI (prior: mock tools / no LLM tokens; researched: real LLM tools and token usage).
+  - Documented venv requirements (langchain, langgraph, langchain-openai, etc.) and how to run compare or a single clone.
+
 ### Build Status
 - Dependencies: ✅ Installed successfully for both versions (replaced Gemini packages with openai)
 - Code modifications: ✅ Completed for both commit versions
@@ -382,8 +410,8 @@ Python library for real-time error detection and monitoring in LangChain and Lan
 - Note: The project maintains backward compatibility by keeping the `GeminiAnalyzer` class name and `enable_gemini_analysis` method names, but all functionality now uses Azure OpenAI. The project provides intelligent error analysis and remediation for LangChain/LangGraph applications.
 
 ### Versions Modified
-- **researched_commit** (de4c24820cd5967f1abff5f4af6dafab0207e618): ✅ All changes applied, dependencies installed, Azure OpenAI integrated (replaced Gemini), **builds and imports successfully with Python 3.12**
-- **prior_commit** (ecfb314b546018e0e745344ce391a89c5d78774a): ✅ All changes applied, dependencies installed, Azure OpenAI integrated (replaced Gemini), **builds and imports successfully with Python 3.12**
+- **researched_commit** (de4c24820cd5967f1abff5f4af6dafab0207e618): ✅ All changes applied, dependencies installed, Azure OpenAI integrated (replaced Gemini), **LangGraph example uses Azure via get_llm()**, **cost-perf runs full LangGraph flow**, builds and imports successfully with Python 3.12
+- **prior_commit** (ecfb314b546018e0e745344ce391a89c5d78774a): ✅ All changes applied, dependencies installed, Azure OpenAI integrated (replaced Gemini), **LangGraph example uses Azure via get_llm()**, **cost-perf runs full LangGraph flow**, builds and imports successfully with Python 3.12
 
 ---
 

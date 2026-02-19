@@ -2,11 +2,13 @@
   "name": "agent-ai-langchain",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "next dev ",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test:cost-perf": "npx tsx tests/run-cost-perf.ts"
   },
   "dependencies": {
     "@clerk/clerk-react": "^5.25.6",
@@ -40,6 +42,9 @@
     "eslint-config-next": "^15.2.4",
     "postcss": "^8.5.3",
     "tailwindcss": "^4.1.3",
-    "typescript": "^5.8.2"
+    "typescript": "^5.8.2",
+    "@langfuse/core": "^4",
+    "@langfuse/langchain": "^4",
+    "tsx": "^4.19.2"
   }
 }

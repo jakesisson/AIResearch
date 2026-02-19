@@ -8,7 +8,11 @@
       "prior_commit": "3b23faa83b3007490569ac2951887fe622c0cdcc",
       "researched_commit": "c24b8d2c2fc40913415a7883c87a5c8185a17a37",
       "diffs_file": "diffs/HypochondriAI/researched_vs_prior.json",
-      "files_count": 2
+      "files_count": 2,
+      "category_cost": false,
+      "category_performance": true,
+      "category": "performance",
+      "tech_debt": "Maintainability/Performance/Scalability"
     },
     {
       "path": "Research Data/AI-Product-Analyzer",
@@ -16,7 +20,11 @@
       "prior_commit": "cfe471701dd29b6c354874ad9015bf8957dc69b5",
       "researched_commit": "6779ffda3a8a21dec8afb5b57bfee345a8a19798",
       "diffs_file": "diffs/AI-Product-Analyzer/researched_vs_prior.json",
-      "files_count": 3
+      "files_count": 3,
+      "category_cost": true,
+      "category_performance": true,
+      "category": "both",
+      "tech_debt": "Performance/Cost"
     },
     {
       "path": "Research Data/knowledge-agent",
@@ -24,7 +32,11 @@
       "prior_commit": "e4c81ec2352265ce89233400995dfca1c9101f94",
       "researched_commit": "ef77bb2ccb38eee7f8a5e2374edb418adac4473b",
       "diffs_file": "diffs/knowledge-agent/researched_vs_prior.json",
-      "files_count": 29
+      "files_count": 29,
+      "category_cost": false,
+      "category_performance": true,
+      "category": "performance",
+      "tech_debt": "Maintainability/Scalability/Understandability/Performance"
     },
     {
       "path": "Research Data/Projectron",
@@ -32,7 +44,11 @@
       "prior_commit": "2cddc9edf806a39818e5cdf698fe4dd7ac764931",
       "researched_commit": "b0c6e9a966b61ae3f72057f07e3c20c6cc0d8ebe",
       "diffs_file": "diffs/Projectron/researched_vs_prior.json",
-      "files_count": 155
+      "files_count": 155,
+      "category_cost": true,
+      "category_performance": true,
+      "category": "both",
+      "tech_debt": "Performance/Cost"
     },
     {
       "path": "Research Data/Siyadah-Call-Center",
@@ -40,7 +56,11 @@
       "prior_commit": "4874dabad7212cc6e5d6f6b6fcbb002f008a5fc9",
       "researched_commit": "57f9fd5529a48d9d4a79ece65d082c0d0e87d192",
       "diffs_file": "diffs/Siyadah-Call-Center/researched_vs_prior.json",
-      "files_count": 2
+      "files_count": 2,
+      "category_cost": false,
+      "category_performance": true,
+      "category": "performance",
+      "tech_debt": "Performance"
     },
     {
       "path": "Research Data/cm3070-lawtime",
@@ -48,7 +68,11 @@
       "prior_commit": "331aa34eb5e6f7447e4276a816095d8c4c440ed5",
       "researched_commit": "c72917ff1975277c7462ab0babc37b69d0a49fba",
       "diffs_file": "diffs/cm3070-lawtime/researched_vs_prior.json",
-      "files_count": 1
+      "files_count": 1,
+      "category_cost": false,
+      "category_performance": true,
+      "category": "performance",
+      "tech_debt": "Performance"
     },
     {
       "path": "Research Data/solomon-codes",
@@ -56,7 +80,11 @@
       "prior_commit": "40ac1a659bf1b382cfb9900d82b8d2963cf04cbb",
       "researched_commit": "262c51c5f63369ace7e4c94874a4a4a21d84e75b",
       "diffs_file": "diffs/solomon-codes/researched_vs_prior.json",
-      "files_count": 12
+      "files_count": 12,
+      "category_cost": false,
+      "category_performance": true,
+      "category": "performance",
+      "tech_debt": "Maintainability/Performance/Scalability"
     },
     {
       "path": "Research Data/boss-bot",
@@ -64,7 +92,11 @@
       "prior_commit": "426a3505432ca841d8d0d8569a53c6d534852535",
       "researched_commit": "f4877dc71af4bc6a2405aaf844c535cec788dde3",
       "diffs_file": "diffs/boss-bot/researched_vs_prior.json",
-      "files_count": 1
+      "files_count": 1,
+      "category_cost": false,
+      "category_performance": true,
+      "category": "performance",
+      "tech_debt": "Maintainability/Reliability/Scalability/Performance"
     },
     {
       "path": "Research Data/sys-scan-graph",
@@ -72,7 +104,11 @@
       "prior_commit": "d0e0ea8a9d030175fb196f8f4f30ecf378bd0f10",
       "researched_commit": "b9a4506472e8dd660ce3d5d2e2b4f2d076a4d16f",
       "diffs_file": "diffs/sys-scan-graph/researched_vs_prior.json",
-      "files_count": 300
+      "files_count": 300,
+      "category_cost": false,
+      "category_performance": true,
+      "category": "performance",
+      "tech_debt": "Performance"
     },
     {
       "path": "Research Data/cybershield",
@@ -80,7 +116,11 @@
       "prior_commit": "c6c2d98169d6f2a6b0fd1132ed7771a69770e39f",
       "researched_commit": "07608050ca98ff61c92beec7c15b9a666d735139",
       "diffs_file": "diffs/cybershield/researched_vs_prior.json",
-      "files_count": 11
+      "files_count": 11,
+      "category_cost": true,
+      "category_performance": true,
+      "category": "both",
+      "tech_debt": "Cost/Performance"
     },
     {
       "path": "Research Data/RAGveda",
@@ -88,7 +128,11 @@
       "prior_commit": "1de749ce978d3c0911743ba07dbf89dbba3088db",
       "researched_commit": "a11d83969234368fd6c7a4a3118a23177b5e7ec8",
       "diffs_file": "diffs/RAGveda/researched_vs_prior.json",
-      "files_count": 4
+      "files_count": 4,
+      "category_cost": false,
+      "category_performance": true,
+      "category": "performance",
+      "tech_debt": "Maintainability/Scalability/Performance"
     },
     {
       "path": "Research Data/pathwise-app",
@@ -96,7 +140,11 @@
       "prior_commit": "24278341077550d220fac6044f520646522fc799",
       "researched_commit": "7e4670094d0cd943e5eac928352881126862a350",
       "diffs_file": "diffs/pathwise-app/researched_vs_prior.json",
-      "files_count": 4
+      "files_count": 4,
+      "category_cost": false,
+      "category_performance": true,
+      "category": "performance",
+      "tech_debt": "Performance"
     },
     {
       "path": "Research Data/JAA",
@@ -104,7 +152,11 @@
       "prior_commit": "bcd9c1c5414efe14115e5f05a62d2e4b5b7d9b5e",
       "researched_commit": "c373419d444a224aaf561b032ba5446e00138286",
       "diffs_file": "diffs/JAA/researched_vs_prior.json",
-      "files_count": 1
+      "files_count": 1,
+      "category_cost": false,
+      "category_performance": true,
+      "category": "performance",
+      "tech_debt": "Scalability/Performance/Reliability/Maintainability"
     },
     {
       "path": "Research Data/aruizca-resume",
@@ -112,7 +164,11 @@
       "prior_commit": "efde30ea49726f13e830963f6d971117387bc2c8",
       "researched_commit": "8108951369a79d1ed04b08998697c87d5a6e3f9d",
       "diffs_file": "diffs/aruizca-resume/researched_vs_prior.json",
-      "files_count": 4
+      "files_count": 4,
+      "category_cost": false,
+      "category_performance": true,
+      "category": "performance",
+      "tech_debt": "Performance/Maintainability"
     },
     {
       "path": "Research Data/data-cleaning-agent",
@@ -120,7 +176,11 @@
       "prior_commit": "0796e3380ee3e1cf6866137c80c0d293faedbbe4",
       "researched_commit": "ad59db504daa798862aeafb880b9f357691b1812",
       "diffs_file": "diffs/data-cleaning-agent/researched_vs_prior.json",
-      "files_count": 3
+      "files_count": 3,
+      "category_cost": false,
+      "category_performance": true,
+      "category": "performance",
+      "tech_debt": "Performance/Maintainability/Scalability"
     },
     {
       "path": "Research Data/Deep-Query",
@@ -128,7 +188,11 @@
       "prior_commit": "cff22449ff1f8213488a681f1b0766ccfa85cf28",
       "researched_commit": "14a6100a1b7eaa168c0e04ec15e7ccee75e40b2f",
       "diffs_file": "diffs/Deep-Query/researched_vs_prior.json",
-      "files_count": 19
+      "files_count": 19,
+      "category_cost": false,
+      "category_performance": true,
+      "category": "performance",
+      "tech_debt": "Reliability/Performance/Scalability/Maintainability"
     },
     {
       "path": "Research Data/RAGveda2",
@@ -136,7 +200,11 @@
       "prior_commit": "1de749ce978d3c0911743ba07dbf89dbba3088db",
       "researched_commit": "a11d83969234368fd6c7a4a3118a23177b5e7ec8",
       "diffs_file": "diffs/RAGveda2/researched_vs_prior.json",
-      "files_count": 4
+      "files_count": 4,
+      "category_cost": false,
+      "category_performance": true,
+      "category": "performance",
+      "tech_debt": "Maintainability/Scalability/Performance"
     },
     {
       "path": "Research Data/sasya-chikitsa",
@@ -144,7 +212,11 @@
       "prior_commit": "c4dae086a9b7d91697e5350ec97a6df299a2b380",
       "researched_commit": "7600564b2048f95d4e1e7e22ad67a0417cade07d",
       "diffs_file": "diffs/sasya-chikitsa/researched_vs_prior.json",
-      "files_count": 4
+      "files_count": 4,
+      "category_cost": false,
+      "category_performance": true,
+      "category": "performance",
+      "tech_debt": "Performance/Maintainability"
     },
     {
       "path": "Research Data/ai-resume-agent",
@@ -152,7 +224,11 @@
       "prior_commit": "d251ed01d4dbdc6ea94ff8cdf43005ab995ea5f6",
       "researched_commit": "0ad71e1993b2e1361290dc93d5d04a11b66c8bdf",
       "diffs_file": "diffs/ai-resume-agent/researched_vs_prior.json",
-      "files_count": 61
+      "files_count": 61,
+      "category_cost": false,
+      "category_performance": true,
+      "category": "performance",
+      "tech_debt": "Reliability/Performance"
     },
     {
       "path": "Research Data/chatluna",
@@ -160,7 +236,11 @@
       "prior_commit": "e850d438efacba2ef391155e864fb8e7c7dbbc42",
       "researched_commit": "9f7332529850cceb0b1ab8138540796c6a47890e",
       "diffs_file": "diffs/chatluna/researched_vs_prior.json",
-      "files_count": 32
+      "files_count": 32,
+      "category_cost": true,
+      "category_performance": false,
+      "category": "cost",
+      "tech_debt": "Reliability/Cost"
     },
     {
       "path": "Research Data/nlp",
@@ -168,7 +248,11 @@
       "prior_commit": "f236b3158fdabab625e74a52b251832bdac1816f",
       "researched_commit": "ed783b2aebf9bdad2de7fedcec3a9ba9e723e7f8",
       "diffs_file": "diffs/nlp/researched_vs_prior.json",
-      "files_count": 2
+      "files_count": 2,
+      "category_cost": true,
+      "category_performance": false,
+      "category": "cost",
+      "tech_debt": "Reliability/Cost"
     },
     {
       "path": "Research Data/genesis",
@@ -176,7 +260,11 @@
       "prior_commit": "38f2556b0f7f6ebc079b9e4e774c71402a002665",
       "researched_commit": "25d916b0f6920e360f0b7bbcc4c03a13d767596f",
       "diffs_file": "diffs/genesis/researched_vs_prior.json",
-      "files_count": 2
+      "files_count": 2,
+      "category_cost": false,
+      "category_performance": true,
+      "category": "performance",
+      "tech_debt": "Reliability/Scalability/Performance"
     },
     {
       "path": "Research Data/analytics_ai",
@@ -184,7 +272,11 @@
       "prior_commit": "14c09b32e8384087c2b1747eab89c92556630661",
       "researched_commit": "8e53e7f5ef5ac140549db4b40eb2e299ddaad4a1",
       "diffs_file": "diffs/analytics_ai/researched_vs_prior.json",
-      "files_count": 2
+      "files_count": 2,
+      "category_cost": true,
+      "category_performance": false,
+      "category": "cost",
+      "tech_debt": "Reliability/Cost"
     },
     {
       "path": "Research Data/bt-servant-engine",
@@ -192,7 +284,11 @@
       "prior_commit": "64e8ae1443de945f9d01633685d106326b3c558b",
       "researched_commit": "231d4f2d2c062c04a233a788fd99f487ba4866bf",
       "diffs_file": "diffs/bt-servant-engine/researched_vs_prior.json",
-      "files_count": 11
+      "files_count": 11,
+      "category_cost": true,
+      "category_performance": true,
+      "category": "both",
+      "tech_debt": "Cost/Performance"
     },
     {
       "path": "Research Data/ecommerce-chat",
@@ -200,7 +296,11 @@
       "prior_commit": "bc7575e0392e83d44472161298df08c9baf08b83",
       "researched_commit": "3e924091a8e3713a712fb8bcc187696d02c5b3fb",
       "diffs_file": "diffs/ecommerce-chat/researched_vs_prior.json",
-      "files_count": 6
+      "files_count": 6,
+      "category_cost": false,
+      "category_performance": true,
+      "category": "performance",
+      "tech_debt": "Performance"
     },
     {
       "path": "Research Data/DocRAG-Backend",
@@ -208,7 +308,11 @@
       "prior_commit": "8c0d68755d31ad633fc8c026bc8e866c836149ad",
       "researched_commit": "cbe1f370adbd46b191523631613b6afd9ff213bb",
       "diffs_file": "diffs/DocRAG-Backend/researched_vs_prior.json",
-      "files_count": 16
+      "files_count": 16,
+      "category_cost": false,
+      "category_performance": true,
+      "category": "performance",
+      "tech_debt": "Maintainability/Reliability/Performance"
     },
     {
       "path": "Research Data/MemGPT-Discord",
@@ -216,7 +320,11 @@
       "prior_commit": "77cff2f5636ae3b322d9e3b2cca1a1de5a90a4e9",
       "researched_commit": "9eb09b5b228db748c740c20b656691b156ee3dd4",
       "diffs_file": "diffs/MemGPT-Discord/researched_vs_prior.json",
-      "files_count": 5
+      "files_count": 5,
+      "category_cost": false,
+      "category_performance": true,
+      "category": "performance",
+      "tech_debt": "Performance/Reliability/Maintainability"
     },
     {
       "path": "Research Data/SSU_RAG",
@@ -224,7 +332,11 @@
       "prior_commit": "b9b2befc1271c08e73efc34212c8d4ea229f1b63",
       "researched_commit": "4228e4e133cd201ebb2e04d0e40c3bf27b775b4c",
       "diffs_file": "diffs/SSU_RAG/researched_vs_prior.json",
-      "files_count": 4
+      "files_count": 4,
+      "category_cost": false,
+      "category_performance": true,
+      "category": "performance",
+      "tech_debt": "Reliability/Performance"
     },
     {
       "path": "Research Data/Experimental",
@@ -232,7 +344,11 @@
       "prior_commit": "2954648d4d35e4014a65fee1737259e7e5ef525c",
       "researched_commit": "3e970bfea0fb85405b07cd96dfc6e1d1ca862ed2",
       "diffs_file": "diffs/Experimental/researched_vs_prior.json",
-      "files_count": 1
+      "files_count": 1,
+      "category_cost": false,
+      "category_performance": true,
+      "category": "performance",
+      "tech_debt": "Maintainability/Performance"
     },
     {
       "path": "Research Data/langflow",
@@ -240,7 +356,11 @@
       "prior_commit": "30c678b2937656e9f1b53c6d80123f84779d8ad1",
       "researched_commit": "7aeb687533e53027aa477722d06d337b1a210ac6",
       "diffs_file": "diffs/langflow/researched_vs_prior.json",
-      "files_count": 26
+      "files_count": 26,
+      "category_cost": false,
+      "category_performance": true,
+      "category": "performance",
+      "tech_debt": "Maintainability/Performance"
     },
     {
       "path": "Research Data/svelte-langgraph",
@@ -248,7 +368,11 @@
       "prior_commit": "80f19464f7b79708c75473f5be407035bd5d0ff3",
       "researched_commit": "1ae88f755e6d8550cff98f00c5c8baf48a65ff76",
       "diffs_file": "diffs/svelte-langgraph/researched_vs_prior.json",
-      "files_count": 29
+      "files_count": 29,
+      "category_cost": false,
+      "category_performance": true,
+      "category": "performance",
+      "tech_debt": "Performance/Maintainability"
     },
     {
       "path": "Research Data/Kisan_Dost_AI",
@@ -256,7 +380,11 @@
       "prior_commit": "d4c2e4ce3a82de7a357034d0b09532ddfc56a4fe",
       "researched_commit": "55c162e2d02236f2d6a133c34f4ca3cb4a5d3824",
       "diffs_file": "diffs/Kisan_Dost_AI/researched_vs_prior.json",
-      "files_count": 1
+      "files_count": 1,
+      "category_cost": false,
+      "category_performance": true,
+      "category": "performance",
+      "tech_debt": "Maintainability/Performance"
     },
     {
       "path": "Research Data/quark-chat",
@@ -264,7 +392,11 @@
       "prior_commit": "c2a6dc9e713d4f553298f88d8e916603af84d29a",
       "researched_commit": "b49fe1ece02ea9d12a3ecb8c1ad251aa0d482501",
       "diffs_file": "diffs/quark-chat/researched_vs_prior.json",
-      "files_count": 2
+      "files_count": 2,
+      "category_cost": false,
+      "category_performance": true,
+      "category": "performance",
+      "tech_debt": "Performance"
     },
     {
       "path": "Research Data/EchoBrandAI-Mind-Backup",
@@ -272,7 +404,11 @@
       "prior_commit": "0e97698ec2a3a1362c650eedb3a46862f37152c4",
       "researched_commit": "362b4c1fcc3129b7ac0ec6f22f75674f9c5cf6a6",
       "diffs_file": "diffs/EchoBrandAI-Mind-Backup/researched_vs_prior.json",
-      "files_count": 14
+      "files_count": 14,
+      "category_cost": true,
+      "category_performance": false,
+      "category": "cost",
+      "tech_debt": "Scalability/Reliability/Cost"
     },
     {
       "path": "Research Data/agents",
@@ -280,7 +416,11 @@
       "prior_commit": "ce19a8b87353f038fb99122ed66f0bbd2a9f977f",
       "researched_commit": "399dbb01547de86c1b159c30c2e139093628988f",
       "diffs_file": "diffs/agents/researched_vs_prior.json",
-      "files_count": 53
+      "files_count": 53,
+      "category_cost": false,
+      "category_performance": true,
+      "category": "performance",
+      "tech_debt": "Scalability/Performance/Maintainability"
     },
     {
       "path": "Research Data/RAG-Demon",
@@ -288,7 +428,11 @@
       "prior_commit": "de66a26cac71261a4803b93484248a9a5b0514aa",
       "researched_commit": "b7bca5a1310bdbfdd98023ad28e98954b063367c",
       "diffs_file": "diffs/RAG-Demon/researched_vs_prior.json",
-      "files_count": 3
+      "files_count": 3,
+      "category_cost": true,
+      "category_performance": true,
+      "category": "both",
+      "tech_debt": "Performance/Cost"
     },
     {
       "path": "Research Data/psychological-agent",
@@ -296,7 +440,11 @@
       "prior_commit": "124599544119a8487c1eb09ac05849bf6d5a0bc6",
       "researched_commit": "efcab0a6ae2707f8c9ab8b35a3eeddf8ca0e8565",
       "diffs_file": "diffs/psychological-agent/researched_vs_prior.json",
-      "files_count": 5
+      "files_count": 5,
+      "category_cost": false,
+      "category_performance": true,
+      "category": "performance",
+      "tech_debt": "Performance"
     },
     {
       "path": "Research Data/general-assistant",
@@ -304,7 +452,11 @@
       "prior_commit": "fe11f9b7b610817d5e1f08d417d1f4009f39fa7d",
       "researched_commit": "c83e2588e088adf5f4803dff9688ef07f5e925f3",
       "diffs_file": "diffs/general-assistant/researched_vs_prior.json",
-      "files_count": 18
+      "files_count": 18,
+      "category_cost": false,
+      "category_performance": true,
+      "category": "performance",
+      "tech_debt": "Maintainability/Performance"
     },
     {
       "path": "Research Data/ecommerce-chat2",
@@ -312,7 +464,11 @@
       "prior_commit": "467f81b0e3fc51a46cb03d45a3d61a03dec1273a",
       "researched_commit": "8e3edabb925f892107438516701dd6f0ac1b3def",
       "diffs_file": "diffs/ecommerce-chat2/researched_vs_prior.json",
-      "files_count": 3
+      "files_count": 3,
+      "category_cost": false,
+      "category_performance": true,
+      "category": "performance",
+      "tech_debt": "Reliability/Scalability/Performance"
     },
     {
       "path": "Research Data/Agente-de-IA-usando-Next-y-Langchain",
@@ -320,7 +476,11 @@
       "prior_commit": "bd049f6b662373f99f152ccbacebaea3b9936129",
       "researched_commit": "e7cd19cc538f3f5156dd717c457d73df6b6dae67",
       "diffs_file": "diffs/Agente-de-IA-usando-Next-y-Langchain/researched_vs_prior.json",
-      "files_count": 1
+      "files_count": 1,
+      "category_cost": true,
+      "category_performance": true,
+      "category": "both",
+      "tech_debt": "Cost/Performance"
     },
     {
       "path": "Research Data/medabot",
@@ -328,7 +488,11 @@
       "prior_commit": "3facc256a7fb92baff9246476227839385f537f4",
       "researched_commit": "b44b80ae3991ac76872bec46e622c51bb5ab4cea",
       "diffs_file": "diffs/medabot/researched_vs_prior.json",
-      "files_count": 22
+      "files_count": 22,
+      "category_cost": true,
+      "category_performance": false,
+      "category": "cost",
+      "tech_debt": "Reliability/Cost"
     },
     {
       "path": "Research Data/llmmllab",
@@ -336,7 +500,11 @@
       "prior_commit": "17cf68d744762046d273005c753725853549772f",
       "researched_commit": "70e006ef3c47e51254a9f85f00ae806278e5da0d",
       "diffs_file": "diffs/llmmllab/researched_vs_prior.json",
-      "files_count": 8
+      "files_count": 8,
+      "category_cost": false,
+      "category_performance": true,
+      "category": "performance",
+      "tech_debt": "Reliability/Scalability/Performance"
     },
     {
       "path": "Research Data/hikizan-emacs",
@@ -344,7 +512,11 @@
       "prior_commit": "57b593c832e1d1941d81895d9c0a91b196eaccb4",
       "researched_commit": "84365f48d52394fe39ed9ad9e8174a26ba1b9a8f",
       "diffs_file": "diffs/hikizan-emacs/researched_vs_prior.json",
-      "files_count": 1
+      "files_count": 1,
+      "category_cost": true,
+      "category_performance": false,
+      "category": "cost",
+      "tech_debt": "Reliability/Scalability/Cost"
     },
     {
       "path": "Research Data/aigie-io",
@@ -352,7 +524,11 @@
       "prior_commit": "ecfb314b546018e0e745344ce391a89c5d78774a",
       "researched_commit": "de4c24820cd5967f1abff5f4af6dafab0207e618",
       "diffs_file": "diffs/aigie-io/researched_vs_prior.json",
-      "files_count": 1
+      "files_count": 1,
+      "category_cost": false,
+      "category_performance": true,
+      "category": "performance",
+      "tech_debt": "Performance/Scalability/Maintainability"
     },
     {
       "path": "Research Data/HEDit",
@@ -360,7 +536,11 @@
       "prior_commit": "7567091434d09849ac0fe5b297c23bff5124e9ac",
       "researched_commit": "ef6ed6fa475a79cf6a52c3a5bf405c8d3a94414b",
       "diffs_file": "diffs/HEDit/researched_vs_prior.json",
-      "files_count": 7
+      "files_count": 7,
+      "category_cost": true,
+      "category_performance": true,
+      "category": "both",
+      "tech_debt": "Cost/Compatability/Performance"
     },
     {
       "path": "Research Data/export-langsmith-data",
@@ -368,7 +548,11 @@
       "prior_commit": "570dea898391b06a8510012a66d2d9266aa86524",
       "researched_commit": "ffe23613dfa5a90e3b03cff809114aa21df74599",
       "diffs_file": "diffs/export-langsmith-data/researched_vs_prior.json",
-      "files_count": 12
+      "files_count": 12,
+      "category_cost": true,
+      "category_performance": true,
+      "category": "both",
+      "tech_debt": "Cost/Performance"
     }
   ]
 }

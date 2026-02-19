@@ -1,0 +1,25 @@
+{
+  "variant": "prior",
+  "timestamp": "2026-02-19T13:59:13.734Z",
+  "durationMs": 493,
+  "usage": {
+    "inputTokens": 40,
+    "outputTokens": 2,
+    "totalTokens": 42
+  },
+  "rawUsage": [
+    {
+      "input_tokens": 40,
+      "output_tokens": 2,
+      "total_tokens": 42,
+      "input_token_details": {
+        "audio": 0,
+        "cache_read": 0
+      },
+      "output_token_details": {
+        "audio": 0,
+        "reasoning": 0
+      }
+    }
+  ]
+}

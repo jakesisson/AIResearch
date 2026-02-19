@@ -1,0 +1,18 @@
+{
+  "prior": {
+    "durationMs": 493,
+    "inputTokens": 40,
+    "outputTokens": 2,
+    "totalTokens": 42
+  },
+  "researched": {
+    "durationMs": 409,
+    "inputTokens": 40,
+    "outputTokens": 2,
+    "totalTokens": 42
+  },
+  "delta": {
+    "durationMs": -84,
+    "totalTokens": 0
+  }
+}

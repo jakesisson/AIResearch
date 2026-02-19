@@ -103,3 +103,5 @@ const createWorkflow = () => {
 
   return stateGraph;
 };
+
+export { createWorkflow };

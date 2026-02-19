@@ -1,0 +1,10 @@
+{
+  "variant": "prior",
+  "timestamp": "2026-02-19T14:33:36Z",
+  "durationMs": 987,
+  "usage": {
+    "inputTokens": 21,
+    "outputTokens": 2,
+    "totalTokens": 23
+  }
+}
