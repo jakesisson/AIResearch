@@ -1,0 +1,5 @@
+{
+  "target_type": "chain",
+  "target_chain": "run_rag_qa",
+  "description": "RAG QA: one query → vector search (or fixture context) → single LLM answer. Prior clone uses RagService.answer_chain; researched uses unified_rag_chain. Cost-perf runs with fixture query and optional fixed context (no Milvus required)."
+}

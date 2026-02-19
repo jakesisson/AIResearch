@@ -1,0 +1,6 @@
+{
+  "target": "chat graph",
+  "description": "Single invoke of the LangGraph chat agent (create_react_agent) with one user message to measure duration and token usage.",
+  "entry": "apps/backend/run_cost_perf.py",
+  "fixture": "cost_perf_fixture_prompt.txt"
+}

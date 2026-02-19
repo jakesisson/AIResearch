@@ -12,13 +12,24 @@ from embedding_processor import EmbeddingProcessor
 # 환경 변수 로드
 load_dotenv()
 
-
 # ===== 공용 LLM =====
-llm = ChatOpenAI(
-    model="gpt-3.5-turbo",
-    temperature=0.7,
-    openai_api_key=os.getenv("OPENAI_API_KEY"),
-)
+# Cost-perf: use Azure OpenAI when COST_PERF=1 and Azure env is set
+if os.environ.get("COST_PERF") == "1" and os.environ.get("AZURE_OPENAI_API_KEY"):
+    from langchain_openai import AzureChatOpenAI
+    _deployment = os.environ.get("AZURE_OPENAI_DEPLOYMENT") or os.environ.get("MODEL_ID") or "gpt-4o-mini"
+    llm = AzureChatOpenAI(
+        azure_endpoint=os.environ.get("AZURE_OPENAI_ENDPOINT", "").rstrip("/"),
+        api_key=os.environ.get("AZURE_OPENAI_API_KEY"),
+        api_version=os.environ.get("AZURE_OPENAI_API_VERSION") or os.environ.get("OPENAI_API_VERSION") or "2024-02-01",
+        azure_deployment=_deployment,
+        temperature=0.7,
+    )
+else:
+    llm = ChatOpenAI(
+        model="gpt-3.5-turbo",
+        temperature=0.7,
+        openai_api_key=os.getenv("OPENAI_API_KEY"),
+    )
 
 
 
@@ -109,6 +120,45 @@ def unified_rag_chain(query: str, limit: int = 5) -> Dict:
 
 # 기존 함수들과의 호환성을 위한 별칭
 run_rag_qa = unified_rag_chain
+
+
+# ===== Cost-perf: run only answer chain with fixed context (no vector search) =====
+def run_rag_qa_cost_perf(query: str, context: str) -> Dict:
+    """Run only the RAG answer chain with given context; return answer and usage. No vector search."""
+    from langchain_core.callbacks import BaseCallbackHandler
+    from langchain_core.outputs import LLMResult
+
+    class UsageCallback(BaseCallbackHandler):
+        usage: Dict = {}
+
+        def on_llm_end(self, response: LLMResult, **kwargs) -> None:
+            for gen_list in response.generations or []:
+                for gen in gen_list:
+                    msg = getattr(gen, "message", None)
+                    if msg is None:
+                        continue
+                    um = getattr(msg, "usage_metadata", None)
+                    if isinstance(um, dict):
+                        self.usage = um
+                        return
+                    if hasattr(msg, "response_metadata"):
+                        meta = msg.response_metadata or {}
+                        self.usage = meta.get("usage") or meta.get("token_usage") or {}
+                        return
+                    if hasattr(um, "input_tokens"):
+                        self.usage = {
+                            "input_tokens": getattr(um, "input_tokens", 0),
+                            "output_tokens": getattr(um, "output_tokens", 0),
+                            "total_tokens": getattr(um, "total_tokens", 0),
+                        }
+                        return
+
+    cb = UsageCallback()
+    answer = _rag_answer_chain.invoke(
+        {"question": query, "context": context},
+        config={"callbacks": [cb]},
+    )
+    return {"answer": answer, "usage": cb.usage}
 
 # LangServe 관련 스키마/래퍼 제거
 

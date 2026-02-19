@@ -1,0 +1,9 @@
+{
+  "variant": "researched",
+  "durationMs": 9690.45,
+  "usage": {
+    "inputTokens": 272,
+    "outputTokens": 122,
+    "totalTokens": 394
+  }
+}

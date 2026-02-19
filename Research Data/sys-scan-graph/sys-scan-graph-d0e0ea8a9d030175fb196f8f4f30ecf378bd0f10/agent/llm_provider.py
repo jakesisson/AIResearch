@@ -142,8 +142,12 @@ class NullLLMProvider:
         elapsed = int((time.time() - start) * 1000)
         prompt_tokens = 50 + len(lines) * 10
         completion_tokens = 40 + len(red_red.top_findings) * 8
-        avg_pt, avg_ct = self._update_avgs(prompt_tokens, completion_tokens)
-        drift_flag = (prompt_tokens > 1.3 * avg_pt)
+        # Cost-perf: do not report heuristic token counts as real usage
+        if os.environ.get("COST_PERF") == "1":
+            prompt_tokens = None
+            completion_tokens = None
+        avg_pt, avg_ct = self._update_avgs(prompt_tokens or 0, completion_tokens or 0)
+        drift_flag = (prompt_tokens or 0) > 1.3 * avg_pt
         # Token accounting (abstract for future pricing)
         metrics = {
             'tokens_prompt': prompt_tokens,
@@ -220,8 +224,17 @@ _PROVIDER: ILLMProvider = NullLLMProvider()
 
 def _maybe_init_from_env():  # lazy to avoid hard deps unless requested
     global _PROVIDER
-    prov = os.environ.get('AGENT_LLM_PROVIDER','null').lower()
-    if prov in {'langchain','openai','lc'}:
+    prov = os.environ.get('AGENT_LLM_PROVIDER', 'null').lower()
+    if os.environ.get('COST_PERF') == '1' or prov == 'azure':
+        try:
+            from .providers.azure_provider import AzureLLMProvider
+            _PROVIDER = AzureLLMProvider()
+        except Exception as e:
+            if os.environ.get('COST_PERF') == '1':
+                import sys
+                print(f"Cost-perf: Azure provider init failed: {e}", file=sys.stderr)
+            pass
+    if isinstance(_PROVIDER, NullLLMProvider) and prov in {'langchain', 'openai', 'lc'}:
         try:
             from .providers.langchain_provider import LangChainLLMProvider
             _PROVIDER = LangChainLLMProvider()

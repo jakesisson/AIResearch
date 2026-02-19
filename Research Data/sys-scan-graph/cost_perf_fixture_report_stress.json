@@ -1,0 +1,69 @@
+{
+  "meta": {
+    "hostname": "cost-perf-stress-host",
+    "tool_version": "1.0",
+    "json_schema_version": "2"
+  },
+  "summary": {
+    "finding_count_total": 22,
+    "finding_count_emitted": 22,
+    "severity_counts": { "info": 2, "low": 4, "medium": 10, "high": 6 }
+  },
+  "results": [
+    {
+      "scanner": "network",
+      "finding_count": 8,
+      "findings": [
+        { "id": "net-1", "title": "Listening service on port 22 (SSH)", "severity": "medium", "risk_score": 45, "metadata": { "port": 22, "state": "LISTEN", "service_name": "ssh" }, "tags": ["network_port", "severity:medium"] },
+        { "id": "net-2", "title": "Listening service on port 443 (HTTPS)", "severity": "medium", "risk_score": 35, "metadata": { "port": 443, "state": "LISTEN" }, "tags": ["network_port", "listening", "severity:medium"] },
+        { "id": "net-3", "title": "Listening service on port 8080", "severity": "high", "risk_score": 55, "metadata": { "port": 8080, "state": "LISTEN" }, "tags": ["network_port", "listening", "severity:high"] },
+        { "id": "net-4", "title": "Listening service on port 3306 (MySQL)", "severity": "high", "risk_score": 60, "metadata": { "port": 3306, "state": "LISTEN" }, "tags": ["network_port", "listening", "severity:high"] },
+        { "id": "net-5", "title": "Listening service on port 6379 (Redis)", "severity": "high", "risk_score": 65, "metadata": { "port": 6379, "state": "LISTEN" }, "tags": ["network_port", "listening", "severity:high"] },
+        { "id": "net-6", "title": "Listening service on port 5432 (PostgreSQL)", "severity": "medium", "risk_score": 50, "metadata": { "port": 5432, "state": "LISTEN" }, "tags": ["network_port", "listening", "severity:medium"] },
+        { "id": "net-7", "title": "Listening service on port 9200 (Elasticsearch)", "severity": "high", "risk_score": 58, "metadata": { "port": 9200, "state": "LISTEN" }, "tags": ["network_port", "listening", "severity:high"] },
+        { "id": "net-8", "title": "Listening service on port 27017 (MongoDB)", "severity": "high", "risk_score": 62, "metadata": { "port": 27017, "state": "LISTEN" }, "tags": ["network_port", "listening", "severity:high"] }
+      ]
+    },
+    {
+      "scanner": "kernel_params",
+      "finding_count": 3,
+      "findings": [
+        { "id": "kp-1", "title": "IP forwarding enabled", "severity": "medium", "risk_score": 40, "metadata": { "sysctl_key": "net.ipv4.ip_forward", "value": "1" }, "tags": ["kernel_param", "severity:medium"] },
+        { "id": "kp-2", "title": "Core dump pattern set", "severity": "low", "risk_score": 15, "metadata": { "sysctl_key": "kernel.core_pattern" }, "tags": ["kernel_param", "severity:low"] },
+        { "id": "kp-3", "title": "Unprivileged user namespaces enabled", "severity": "medium", "risk_score": 38, "metadata": { "sysctl_key": "user.max_user_namespaces", "value": "15000" }, "tags": ["kernel_param", "severity:medium"] }
+      ]
+    },
+    {
+      "scanner": "process",
+      "finding_count": 6,
+      "findings": [
+        { "id": "proc-1", "title": "nginx master process", "severity": "medium", "risk_score": 25, "metadata": { "cmdline": "nginx: master process", "pid": 1001 }, "tags": ["severity:medium"] },
+        { "id": "proc-2", "title": "redis-server", "severity": "high", "risk_score": 48, "metadata": { "cmdline": "/usr/bin/redis-server 0.0.0.0:6379", "pid": 1002 }, "tags": ["severity:high"] },
+        { "id": "proc-3", "title": "postgres", "severity": "medium", "risk_score": 42, "metadata": { "cmdline": "postgres: checkpointer", "pid": 1003 }, "tags": ["severity:medium"] },
+        { "id": "proc-4", "title": "node app server", "severity": "medium", "risk_score": 35, "metadata": { "cmdline": "node /app/server.js", "pid": 1004 }, "tags": ["severity:medium"] },
+        { "id": "proc-5", "title": "python worker", "severity": "low", "risk_score": 20, "metadata": { "cmdline": "python -m celery worker", "pid": 1005 }, "tags": ["severity:low"] },
+        { "id": "proc-6", "title": "Unusual binary path /opt/custom/script.sh", "severity": "high", "risk_score": 52, "metadata": { "cmdline": "/opt/custom/script.sh --daemon", "pid": 1006 }, "tags": ["severity:high"] }
+      ]
+    },
+    {
+      "scanner": "suid",
+      "finding_count": 3,
+      "findings": [
+        { "id": "suid-1", "title": "SUID binary: /usr/bin/passwd", "severity": "info", "risk_score": 5, "metadata": { "path": "/usr/bin/passwd", "suid": "true" }, "tags": ["suid", "severity:info"] },
+        { "id": "suid-2", "title": "SUID binary: /usr/bin/sudo", "severity": "medium", "risk_score": 30, "metadata": { "path": "/usr/bin/sudo", "suid": "true" }, "tags": ["suid", "severity:medium"] },
+        { "id": "suid-3", "title": "SUID binary in non-standard path: /opt/vendor/setuid_helper", "severity": "high", "risk_score": 55, "metadata": { "path": "/opt/vendor/setuid_helper", "suid": "true" }, "tags": ["suid", "severity:high"] }
+      ]
+    },
+    {
+      "scanner": "world_writable",
+      "finding_count": 2,
+      "findings": [
+        { "id": "ww-1", "title": "World-writable directory: /tmp", "severity": "low", "risk_score": 10, "metadata": { "path": "/tmp" }, "tags": ["severity:low"] },
+        { "id": "ww-2", "title": "World-writable config: /etc/app/config.d/local.yaml", "severity": "high", "risk_score": 50, "metadata": { "path": "/etc/app/config.d/local.yaml" }, "tags": ["severity:high"] }
+      ]
+    }
+  ],
+  "collection_warnings": [],
+  "scanner_errors": [],
+  "summary_extension": { "total_risk_score": 852, "emitted_risk_score": 852 }
+}

@@ -1,0 +1,1 @@
+What's the weather in Amsterdam right now? Based on that, suggest two specific activities I could do there today (one indoor, one outdoor), and in one sentence each explain why they fit the weather. Then list any three cities you think have similar weather today and why.

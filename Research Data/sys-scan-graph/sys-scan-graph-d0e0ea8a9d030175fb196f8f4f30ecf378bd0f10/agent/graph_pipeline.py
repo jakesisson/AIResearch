@@ -6,7 +6,7 @@ future streaming / checkpointing. For now it runs locally in-process.
 """
 
 from pathlib import Path
-from typing import Any
+from typing import Any, Optional
 import json
 from pydantic import BaseModel
 from langgraph.graph import Graph
@@ -146,12 +146,27 @@ def build_graph() -> Graph:
     return g
 
 
-def run_graph(report_path: Path, checkpoint_dir: str | None = None, schema_path: str | None = None, index_dir: str | None = None) -> EnrichedOutput:
+def run_graph(
+    report_path: Path,
+    checkpoint_dir: str | None = None,
+    schema_path: str | None = None,
+    index_dir: str | None = None,
+    usage_out: Optional[dict] = None,
+) -> EnrichedOutput:
     g = build_graph()
     wrapper = GraphWrapperState(report_path=str(report_path), checkpoint_dir=checkpoint_dir, schema_path=schema_path, index_dir=index_dir)
     app = g.compile()
     final: GraphWrapperState = app.invoke(wrapper)  # type: ignore
     enriched = final.enriched
+    if usage_out is not None and final.state.summaries and getattr(final.state.summaries, "metrics", None):
+        m = final.state.summaries.metrics or {}
+        pt = m.get("tokens_prompt")
+        ct = m.get("tokens_completion")
+        usage_out["inputTokens"] = int(pt) if pt is not None else None
+        usage_out["outputTokens"] = int(ct) if ct is not None else None
+        usage_out["totalTokens"] = (int(pt) + int(ct)) if (pt is not None and ct is not None) else None
+        if m.get("error"):
+            usage_out["error"] = m.get("error")
     if enriched and index_dir:
         os.makedirs(index_dir, exist_ok=True)
         # Write/update index JSON (append style)

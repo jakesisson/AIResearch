@@ -1,0 +1,5 @@
+{
+  "target_type": "graph_pipeline",
+  "description": "Full graph_pipeline run (load -> validate -> augment -> correlate -> baseline -> reduce -> summarize -> actions -> output). Scope derived from diffs/sys-scan-graph: agent/graph.py, agent/graph_pipeline.py, agent/pipeline.py, agent/graph_nodes_*.py.",
+  "target_nodes": ["load", "validate", "augment", "correlate", "baseline", "reduce", "summarize", "actions", "output"]
+}

@@ -44,6 +44,17 @@ async def get_weather(city: str) -> str:
 
 
 def get_model() -> BaseChatModel:
+    # Cost-perf: use Azure OpenAI when COST_PERF=1 and Azure env vars set for token usage
+    if os.environ.get("COST_PERF") == "1":
+        if os.environ.get("AZURE_OPENAI_API_KEY"):
+            model_name = os.getenv("AZURE_OPENAI_DEPLOYMENT") or os.getenv("MODEL_ID") or os.getenv("CHAT_MODEL_NAME", "gpt-4o-mini")
+            return init_chat_model(
+                model_name,
+                model_provider="azure_openai",
+                temperature=0.9,
+            )
+        model_name = os.getenv("CHAT_MODEL_NAME", "gpt-4o-mini")
+        return init_chat_model(model_name, model_provider="openai", temperature=0.9)
     model_name = os.getenv("CHAT_MODEL_NAME", "gpt-4o-mini")
     model = init_chat_model(
         model_name,

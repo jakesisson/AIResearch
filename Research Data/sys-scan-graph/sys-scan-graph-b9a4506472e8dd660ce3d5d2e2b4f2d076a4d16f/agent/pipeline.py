@@ -10,5 +10,7 @@ from .legacy.pipeline import (
     sequence_correlation,
     reduce,
     summarize,
-    run_pipeline
+    actions,
+    build_output,
+    run_pipeline,
 )

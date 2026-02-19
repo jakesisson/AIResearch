@@ -1,0 +1,12 @@
+{
+  "meta": {
+    "hostname": "cost-perf-host",
+    "tool_version": "1.0",
+    "json_schema_version": "2"
+  },
+  "summary": {},
+  "results": [],
+  "collection_warnings": [],
+  "scanner_errors": [],
+  "summary_extension": { "total_risk_score": 0 }
+}

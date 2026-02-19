@@ -77,7 +77,7 @@ class MetricsCollector:
                 else:
                     baseline_avg = baseline_time
                 
-                if current_avg > baseline_avg * (1 + threshold):
+                if baseline_avg and current_avg > baseline_avg * (1 + threshold):
                     regressions.append({
                         'stage': stage,
                         'current_time': current_avg,

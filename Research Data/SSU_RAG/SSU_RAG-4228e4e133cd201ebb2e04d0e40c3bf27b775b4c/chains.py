@@ -11,7 +11,19 @@ from embedding_processor import EmbeddingProcessor
 load_dotenv()
 
 # ===== 설정 =====
-LLM = ChatOpenAI(model="gpt-4o-mini", temperature=0.3, api_key=os.getenv("OPENAI_API_KEY"))
+# Cost-perf: use Azure OpenAI when COST_PERF=1 and Azure env is set
+if os.environ.get("COST_PERF") == "1" and os.environ.get("AZURE_OPENAI_API_KEY"):
+    from langchain_openai import AzureChatOpenAI
+    _deployment = os.environ.get("AZURE_OPENAI_DEPLOYMENT") or os.environ.get("MODEL_ID") or "gpt-4o-mini"
+    LLM = AzureChatOpenAI(
+        azure_endpoint=os.environ.get("AZURE_OPENAI_ENDPOINT", "").rstrip("/"),
+        api_key=os.environ.get("AZURE_OPENAI_API_KEY"),
+        api_version=os.environ.get("AZURE_OPENAI_API_VERSION") or os.environ.get("OPENAI_API_VERSION") or "2024-02-01",
+        azure_deployment=_deployment,
+        temperature=0.3,
+    )
+else:
+    LLM = ChatOpenAI(model="gpt-4o-mini", temperature=0.3, api_key=os.getenv("OPENAI_API_KEY"))
 
 # ===== 프롬프트 =====
 RAG_PROMPT = ChatPromptTemplate.from_messages([
@@ -54,11 +66,17 @@ def history_to_text(messages) -> str:
 # ===== 서비스 =====
 class RagService:
     def __init__(self):
-        self.processor = EmbeddingProcessor()
+        self._processor = None  # lazy: avoid Milvus connection when only running cost-perf answer chain
         self.histories: Dict[str, ChatMessageHistory] = {}
         self.answer_chain = RAG_PROMPT | LLM | StrOutputParser()
         self.condense_chain = CONDENSE_PROMPT | LLM | StrOutputParser()
-    
+
+    @property
+    def processor(self):
+        if self._processor is None:
+            self._processor = EmbeddingProcessor()
+        return self._processor
+
     def get_history(self, session_id: str) -> ChatMessageHistory:
         if session_id not in self.histories:
             self.histories[session_id] = ChatMessageHistory()
@@ -143,3 +161,43 @@ def get_service() -> RagService:
 
 def run_rag_qa(query: str, limit: int = 5, messages: Optional[List[Dict]] = None, session_id: Optional[str] = None) -> Dict:
     return get_service().rag_query(query, session_id, messages, limit)
+
+
+# ===== Cost-perf: run only answer chain with fixed context (no vector search) =====
+def run_rag_qa_cost_perf(query: str, context: str) -> Dict:
+    """Run only the answer chain with given context. No vector search, no condense."""
+    from langchain_core.callbacks import BaseCallbackHandler
+    from langchain_core.outputs import LLMResult
+
+    class UsageCallback(BaseCallbackHandler):
+        usage: Dict = {}
+
+        def on_llm_end(self, response: LLMResult, **kwargs) -> None:
+            for gen_list in response.generations or []:
+                for gen in gen_list:
+                    msg = getattr(gen, "message", None)
+                    if msg is None:
+                        continue
+                    um = getattr(msg, "usage_metadata", None)
+                    if isinstance(um, dict):
+                        self.usage = um
+                        return
+                    if hasattr(msg, "response_metadata"):
+                        meta = msg.response_metadata or {}
+                        self.usage = meta.get("usage") or meta.get("token_usage") or {}
+                        return
+                    if hasattr(um, "input_tokens"):
+                        self.usage = {
+                            "input_tokens": getattr(um, "input_tokens", 0),
+                            "output_tokens": getattr(um, "output_tokens", 0),
+                            "total_tokens": getattr(um, "total_tokens", 0),
+                        }
+                        return
+
+    cb = UsageCallback()
+    svc = get_service()
+    answer = svc.answer_chain.invoke(
+        {"question": query, "context": context, "history": []},
+        config={"callbacks": [cb]},
+    )
+    return {"answer": answer, "usage": cb.usage}

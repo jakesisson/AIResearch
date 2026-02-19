@@ -1,0 +1,57 @@
+{
+  "metrics": {
+    "load_report.read_bytes": [
+      0.0008511543273925781
+    ],
+    "load_report.json_parse": [
+      4.00543212890625e-05
+    ],
+    "load_report.validate": [
+      7.510185241699219e-05
+    ],
+    "augment.iter_findings": [
+      6.890296936035156e-05
+    ],
+    "augment.risk_recompute_initial": [
+      1.1920928955078125e-06
+    ],
+    "knowledge.enrichment": [
+      0.011027097702026367
+    ],
+    "correlate.apply_rules": [
+      8.988380432128906e-05
+    ],
+    "correlate.rules_loaded": 2,
+    "correlate.correlations": 0,
+    "reduce.reduce_all": [
+      0.0002486705780029297
+    ],
+    "summarize.llm": [
+      2.020573854446411
+    ],
+    "actions.build": [
+      9.5367431640625e-07
+    ],
+    "actions.count": 1,
+    "graph.annotate": [
+      1.2874603271484375e-05
+    ]
+  },
+  "timestamp": 1771532155.800873,
+  "total_stages": 14,
+  "baseline_regressions": [
+    {
+      "stage": "load_report.read_bytes",
+      "current_time": 0.0008511543273925781,
+      "baseline_time": 0.00040602684020996094,
+      "regression_pct": 109.63006459189666
+    },
+    {
+      "stage": "knowledge.enrichment",
+      "current_time": 0.011027097702026367,
+      "baseline_time": 0.0037758350372314453,
+      "regression_pct": 192.0439477173707
+    }
+  ],
+  "baseline_threshold_pct": 30.0
+}

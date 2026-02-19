@@ -605,6 +605,8 @@ def summarize(state: AgentState) -> AgentState:
         if any(t == 'baseline:new' for t in (f.tags or [])):
             new_found = True
     skip = (high_med_sum < threshold) and (not new_found)
+    if os.environ.get("COST_PERF") == "1":
+        skip = False  # force LLM call so token usage is reported
     prev = getattr(state, 'summaries', None)
     # Redact inputs before passing to provider (governance enforcement)
     red_reductions = governor.redact_for_llm(state.reductions)

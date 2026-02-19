@@ -2507,3 +2507,98 @@ Discord bot that integrates with LangGraph for AI-assisted conversations with lo
 - LangChain may emit warnings (e.g. azure_deployment/azure_endpoint transferred to model_kwargs, Pydantic V1 compatibility); these do not affect functionality
 
 ---
+
+## Research Data/sys-scan-graph
+
+### Project Overview
+Cost-perf comparison between prior and researched commits of sys-scan-graph (LangGraph-based sys scan agent). Supports targeted cost/performance testing with Azure OpenAI as the LLM and real token usage reporting.
+
+### Scope and Fixtures
+- **Scope**: `cost_perf_scope.json` defines the comparison target (prior vs researched commits).
+- **Fixture**: `cost_perf_fixture_report.json` — minimal report used for both runs so duration and token usage are comparable.
+- **Reference**: `Research Data/cost-perf-targeted-testing.md` documents the process and §10 constrains LLM to Azure-only.
+
+### Modifications Made
+
+#### 1. Cost-perf harness (shared)
+- **Files**: `compare-cost-perf.py`, `cost_perf_scope.json`, `cost_perf_fixture_report.json`, `README-cost-perf.md`
+- **Details**:
+  - `compare-cost-perf.py`: Runs `run_cost_perf.py` in each clone (prior then researched), loads `master.env` and `.env` for Azure credentials, sets `COST_PERF=1` and `COST_PERF_VARIANT`, writes `compare-cost-perf-report.json` with duration and token usage for both and deltas.
+  - Shared `.venv` at `Research Data/sys-scan-graph/.venv` used by both clones when present; compare script prefers that Python.
+
+#### 2. Azure OpenAI LLM provider (both clones)
+- **File Created**: `agent/providers/azure_provider.py` (in both prior and researched clones)
+- **Details**:
+  - `AzureLLMProvider` using `AzureChatOpenAI` (langchain-openai). Env: `AZURE_OPENAI_API_KEY`, `AZURE_OPENAI_ENDPOINT`, `AZURE_OPENAI_API_VERSION`, `AZURE_OPENAI_DEPLOYMENT`.
+  - `summarize()` calls Azure and sets `Summaries.metrics` with real `tokens_prompt` and `tokens_completion` from `response_metadata`.
+
+#### 3. Researched clone (b9a45064...)
+- **agent/llm_provider.py**: When `COST_PERF=1` or `AGENT_LLM_PROVIDER=azure`, `_maybe_init_from_env()` tries `AzureLLMProvider()` first.
+- **agent/graph_pipeline.py**: `run_graph(..., usage_out: Optional[dict] = None)`. After `app.invoke(wrapper)`, aggregates `final.state.summaries.metrics` (`tokens_prompt`, `tokens_completion`) into `usage_out['inputTokens']`, `['outputTokens']`, `['totalTokens']`.
+- **run_cost_perf.py**: Passes `usage_out={}` into `run_graph(..., usage_out=usage_out)` and sets `result["usage"]` from `usage_out`.
+- **agent/legacy/** re-exports added where needed for cost-perf run (e.g. `data_governance`, `baseline`, `metrics`, `pipeline` actions/build_output) so the graph pipeline runs without import errors.
+
+#### 4. Prior clone (d0e0ea8a...)
+- **agent/llm_provider.py**: Same logic as researched — when `COST_PERF=1` or `AGENT_LLM_PROVIDER=azure`, try `AzureLLMProvider()` first.
+- **agent/graph_pipeline.py**: Same `usage_out` parameter and aggregation from `final.state.summaries.metrics` into `usage_out`.
+- **run_cost_perf.py**: Same — pass `usage_out` into `run_graph`, set `result["usage"]` from `usage_out`.
+- **agent/legacy/metrics.py**: Division-by-zero fix in `compare_to_baseline` when `baseline_avg == 0` (guard with `if baseline_avg and current_avg > ...`).
+
+#### 5. Compare script environment
+- **compare-cost-perf.py**: Sets `COST_PERF=1` in subprocess env so both runs use Azure when configured. Loads `master.env` and `.env` from sys-scan-graph root (if present) so `AZURE_OPENAI_*` variables are available to both runs.
+
+### Build / Run Status
+- Cost-perf run: ✅ `python compare-cost-perf.py` from `Research Data/sys-scan-graph` runs both clones and produces `compare-cost-perf-report.json`.
+- Token usage: Reported as `prior.inputTokens/outputTokens/totalTokens` and `researched.*`; if summarization is skipped (e.g. low-risk fixture), values may be 0 until fixture or thresholds force an LLM call.
+- Azure: Ensure `AZURE_OPENAI_API_KEY`, `AZURE_OPENAI_ENDPOINT`, and optionally `AZURE_OPENAI_API_VERSION`, `AZURE_OPENAI_DEPLOYMENT` are set (e.g. via `master.env` or `.env` in that directory).
+
+### Versions Modified
+- **prior**: sys-scan-graph-d0e0ea8a9d030175fb196f8f4f30ecf378bd0f10
+- **researched**: sys-scan-graph-b9a4506472e8dd660ce3d5d2e2b4f2d076a4d16f
+
+---
+
+## Research Data/svelte-langgraph
+
+### Project Overview
+SvelteKit + LangGraph monorepo (frontend + Python backend). Cost-perf compares **prior** vs **researched** by running the backend chat graph (create_react_agent) once per clone and reporting duration and token usage.
+
+### Scope and Fixtures
+- **Scope**: `cost_perf_scope.json` — target is a single invoke of the chat graph with one user message.
+- **Fixture**: `cost_perf_fixture_prompt.txt` (e.g. "What's the weather in Amsterdam?") — used for both runs; path passed via `COST_PERF_FIXTURE_PATH` from compare script.
+- **Reference**: Same targeted cost-perf approach as sys-scan-graph; see `Research Data/cost-perf-targeted-testing.md`.
+
+### Modifications Made
+
+#### 1. Cost-perf harness (shared)
+- **Files**: `compare-cost-perf.py`, `cost_perf_scope.json`, `cost_perf_fixture_prompt.txt`, `README-cost-perf.md`
+- **Details**:
+  - `compare-cost-perf.py`: Runs `run_cost_perf.py` in each clone’s `apps/backend` (prior then researched), loads `master.env` / `.env`, sets `COST_PERF=1`, `COST_PERF_FIXTURE_PATH`; writes `compare-cost-perf-report.json` with duration and token usage and deltas.
+  - Prefers shared `.venv` at svelte-langgraph root (optional); otherwise `uv run python` or system python.
+  - Clone roots: `svelte-langgraph-80f19464...` (prior), `svelte-langgraph-1ae88f75...` (researched).
+
+#### 2. Backend graph model selection (both clones)
+- **apps/backend/src/graph.py** (prior and researched):
+  - When `COST_PERF=1`: if `AZURE_OPENAI_API_KEY` is set, use `init_chat_model(..., model_provider="azure_openai")` for token usage; else use `init_chat_model(..., model_provider="openai")` with `CHAT_MODEL_NAME` so runs work with OpenAI keys when Azure is not set.
+  - Prior default (non–cost-perf) remains Claude (`claude-3-5-haiku-latest`); researched default remains OpenAI (`gpt-4o-mini`).
+- **Prior only**: Added `import os` for env checks.
+
+#### 3. Backend run_cost_perf.py (both clones)
+- **apps/backend/run_cost_perf.py** (prior and researched):
+  - Sets `COST_PERF=1`, loads `.env` and clone-root / svelte-langgraph-root `master.env` / `.env`.
+  - Imports `make_graph` from `graph`, builds config with `thread_id="cost-perf"`, `user_name="CostPerf"`.
+  - Reads fixture prompt from `COST_PERF_FIXTURE_PATH` or `CLONE_ROOT/cost_perf_fixture_prompt.txt`.
+  - Runs `agent.ainvoke({"messages": [{"role": "user", "content": prompt}]}, config)`.
+  - Sums token usage from all messages’ `response_metadata` (usage / token_usage: input_tokens, output_tokens).
+  - Writes `variant`, `durationMs`, `usage.inputTokens/outputTokens/totalTokens` to clone root `cost-perf-results.json`.
+
+### Build / Run Status
+- **Setup**: Optional shared venv: `python3 -m venv .venv` and `pip install langchain[openai] langgraph python-dotenv` in svelte-langgraph root; or use `uv` in each backend.
+- **Run**: From `Research Data/svelte-langgraph`, run `python3 compare-cost-perf.py`. Requires `OPENAI_API_KEY` and/or Azure env vars (e.g. in `master.env` or `.env`) for real LLM calls and token counts.
+- **Output**: `compare-cost-perf-report.json` with prior/researched duration and token usage and deltas.
+
+### Versions Modified
+- **prior**: svelte-langgraph-80f19464f7b79708c75473f5be407035bd5d0ff3
+- **researched**: svelte-langgraph-1ae88f755e6d8550cff98f00c5c8baf48a65ff76
+
+---
