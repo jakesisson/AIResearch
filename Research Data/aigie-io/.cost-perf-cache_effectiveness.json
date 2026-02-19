@@ -1,0 +1,14 @@
+{
+  "prior": {
+    "run1_tokens": 5184,
+    "run2_tokens": 5260,
+    "run1_durationMs": 20508.69,
+    "run2_durationMs": 17736.73
+  },
+  "researched": {
+    "run1_tokens": 6718,
+    "run2_tokens": 6512,
+    "run1_durationMs": 17548.86,
+    "run2_durationMs": 19540.05
+  }
+}

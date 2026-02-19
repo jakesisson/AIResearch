@@ -130,7 +130,125 @@ def get_llm():
 
 
 # ============================================================================
-# Advanced Research Tools with Error Simulation
+# Real LLM-Powered Research Tools (for cost-perf comparison with researched)
+# ============================================================================
+
+async def advanced_web_search_with_llm(query: str, depth: Literal["basic", "comprehensive"] = "basic", model=None) -> List[Dict[str, Any]]:
+    """Real web search using LLM to generate research sources."""
+    logger.info(f"🔍 LLM-powered web search: {query} (depth: {depth})")
+    if not model:
+        model = get_llm()
+    search_prompt = f"""You are a research assistant. For the query "{query}", generate {depth} research sources.
+For each source provide: 1) A realistic academic title 2) A detailed abstract (2-3 sentences) 3) A realistic URL 4) Publication year (2020-2024) 5) Methodology type 6) Key findings.
+Return as JSON array with fields: title, abstract, url, year, methodology, key_findings, relevance_score"""
+    try:
+        response = await model.ainvoke(search_prompt)
+        import json
+        import re
+        content = response.content
+        json_match = re.search(r'\[.*\]', content, re.DOTALL)
+        if json_match:
+            sources_data = json.loads(json_match.group())
+        else:
+            sources_data = [{"title": f"Research on {query}", "abstract": content[:200], "url": "https://research.com/1", "year": 2023, "methodology": "experimental", "key_findings": "Findings", "relevance_score": 0.9}]
+        results = []
+        for i, source in enumerate(sources_data):
+            results.append({
+                "id": f"llm_result_{i}",
+                "title": source.get("title", f"Research on {query}"),
+                "url": source.get("url", f"https://research.com/paper-{i}"),
+                "abstract": source.get("abstract", ""),
+                "relevance_score": source.get("relevance_score", 0.85),
+                "publication_date": str(source.get("year", 2023)),
+                "methodology": source.get("methodology", "experimental"),
+                "key_findings": source.get("key_findings", "Findings"),
+                "confidence": 0.9
+            })
+        logger.info(f"✅ LLM generated {len(results)} research sources")
+        return results
+    except Exception as e:
+        logger.error(f"LLM search failed: {e}")
+        return [{"id": "fallback", "title": f"Research on {query}", "url": "https://research.com/fallback", "abstract": str(e), "relevance_score": 0.8, "publication_date": "2023", "methodology": "experimental", "key_findings": "Fallback", "confidence": 0.8}]
+
+async def deep_analysis_with_llm(source_data: Dict[str, Any], analysis_type: Literal["statistical", "qualitative", "mixed"] = "mixed", model=None) -> Dict[str, Any]:
+    """Real deep analysis using LLM."""
+    logger.info(f"🔬 LLM-powered analysis: {analysis_type} on {source_data.get('title', 'Unknown')}")
+    if not model:
+        model = get_llm()
+    analysis_prompt = f"""You are a research analyst. Perform a {analysis_type} analysis on this source:
+Title: {source_data.get('title', 'Unknown')}
+Abstract: {source_data.get('abstract', '')}
+Key Findings: {source_data.get('key_findings', '')}
+Methodology: {source_data.get('methodology', 'Unknown')}
+Provide analysis as JSON with fields: findings, metrics, quality_score, recommendations, analysis_summary"""
+    try:
+        import time
+        response = await model.ainvoke(analysis_prompt)
+        content = response.content
+        import json
+        import re
+        json_match = re.search(r'\{.*\}', content, re.DOTALL)
+        if json_match:
+            analysis_data = json.loads(json_match.group())
+        else:
+            analysis_data = {"findings": [content[:200]], "metrics": {"confidence": 0.85}, "quality_score": 0.9, "recommendations": [], "analysis_summary": content[:200]}
+        analysis_result = {
+            "analysis_id": f"llm_analysis_{int(time.time())}",
+            "source": source_data.get("title", "Unknown"),
+            "methodology": analysis_type,
+            "findings": analysis_data.get("findings", ["Analysis completed"]),
+            "metrics": analysis_data.get("metrics", {"confidence": 0.85}),
+            "quality_score": analysis_data.get("quality_score", 0.9),
+            "processing_time": 2.0,
+            "recommendations": analysis_data.get("recommendations", []),
+            "analysis_summary": analysis_data.get("analysis_summary", "LLM analysis completed"),
+            "llm_generated": True
+        }
+        logger.info(f"✅ LLM analysis complete (quality: {analysis_result['quality_score']:.1%})")
+        return analysis_result
+    except Exception as e:
+        logger.error(f"LLM analysis failed: {e}")
+        return {"analysis_id": f"fallback_{int(__import__('time').time())}", "source": source_data.get("title", "Unknown"), "methodology": analysis_type, "findings": ["Fallback"], "metrics": {"confidence": 0.7}, "quality_score": 0.7, "processing_time": 1.0, "recommendations": [], "analysis_summary": "Fallback", "llm_generated": False}
+
+async def synthesis_engine_with_llm(analysis_results: List[Dict[str, Any]], synthesis_mode: str = "comprehensive", model=None) -> Dict[str, Any]:
+    """Real synthesis using LLM to combine analyses."""
+    logger.info(f"🔄 LLM-powered synthesis: {len(analysis_results)} analyses (mode: {synthesis_mode})")
+    if not model:
+        model = get_llm()
+    analysis_summaries = "\n".join([f"Analysis {i+1}: Source: {a.get('source')}; Findings: {a.get('findings', [])}; Quality: {a.get('quality_score', 0.8)}" for i, a in enumerate(analysis_results)])
+    synthesis_prompt = f"""You are a research synthesis expert. Synthesize these {len(analysis_results)} analyses:\n{analysis_summaries}\nReturn as JSON with fields: unified_findings, confidence_level, consensus_score, key_insights, quality_metrics, synthesis_summary"""
+    try:
+        import time
+        response = await model.ainvoke(synthesis_prompt)
+        content = response.content
+        import json
+        import re
+        json_match = re.search(r'\{.*\}', content, re.DOTALL)
+        if json_match:
+            synthesis_data = json.loads(json_match.group())
+        else:
+            synthesis_data = {"unified_findings": ["Synthesis completed"], "confidence_level": 0.9, "consensus_score": 0.85, "key_insights": [], "quality_metrics": {}, "synthesis_summary": content[:200]}
+        synthesis = {
+            "synthesis_id": f"llm_synthesis_{int(time.time())}",
+            "input_analyses": len(analysis_results),
+            "mode": synthesis_mode,
+            "unified_findings": synthesis_data.get("unified_findings", ["Synthesis completed"]),
+            "confidence_level": synthesis_data.get("confidence_level", 0.9),
+            "consensus_score": synthesis_data.get("consensus_score", 0.85),
+            "key_insights": synthesis_data.get("key_insights", []),
+            "quality_metrics": synthesis_data.get("quality_metrics", {}),
+            "synthesis_summary": synthesis_data.get("synthesis_summary", "LLM synthesis completed"),
+            "llm_generated": True
+        }
+        logger.info(f"✅ LLM synthesis complete (confidence: {synthesis['confidence_level']:.1%})")
+        return synthesis
+    except Exception as e:
+        logger.error(f"LLM synthesis failed: {e}")
+        return {"synthesis_id": f"fallback_{int(__import__('time').time())}", "input_analyses": len(analysis_results), "mode": synthesis_mode, "unified_findings": ["Fallback"], "confidence_level": 0.7, "consensus_score": 0.7, "key_insights": [], "quality_metrics": {}, "synthesis_summary": "Fallback", "llm_generated": False}
+
+
+# ============================================================================
+# Advanced Research Tools with Error Simulation (mocks; kept for compatibility)
 # ============================================================================
 
 def advanced_web_search(query: str, depth: Literal["basic", "comprehensive"] = "basic") -> List[Dict[str, Any]]:
@@ -347,25 +465,52 @@ async def create_advanced_research_workflow(config: AdvancedConfig, lg_intercept
             checkpointer = MemorySaver()
             logger.info("✅ Memory checkpointer")
         
-        # Create advanced tools
-        @tool
-        def web_search(query: str, depth: str = "basic") -> List[Dict[str, Any]]:
-            """Advanced web search with depth control."""
-            return advanced_web_search(query, depth)
-        
-        @tool
-        def deep_analysis(source_data: str, analysis_type: str = "mixed") -> Dict[str, Any]:
-            """Perform deep analysis on research data."""
-            import json
-            source_dict = json.loads(source_data) if isinstance(source_data, str) else source_data
-            return deep_analysis_tool(source_dict, analysis_type)
-        
-        @tool
-        def synthesis(analysis_data: str, mode: str = "comprehensive") -> Dict[str, Any]:
-            """Synthesize multiple analyses into unified insights."""
-            import json
-            analyses = json.loads(analysis_data) if isinstance(analysis_data, str) else [analysis_data]
-            return synthesis_engine(analyses, mode)
+        # Create tools: when COST_PERF=1 use same LLM-powered tools as researched for fair comparison
+        if os.environ.get("COST_PERF"):
+            @tool
+            def web_search(query: str, depth: str = "basic") -> str:
+                """Real LLM-powered web search (same as researched for cost-perf)."""
+                import asyncio
+                import json
+                results = asyncio.run(advanced_web_search_with_llm(query, depth, model))
+                return json.dumps(results, indent=2)
+            
+            @tool
+            def deep_analysis(source_data: str, analysis_type: str = "mixed") -> str:
+                """Real LLM-powered deep analysis (same as researched for cost-perf)."""
+                import asyncio
+                import json
+                source_dict = json.loads(source_data) if isinstance(source_data, str) else source_data
+                result = asyncio.run(deep_analysis_with_llm(source_dict, analysis_type, model))
+                return json.dumps(result, indent=2)
+            
+            @tool
+            def synthesis(analysis_data: str, mode: str = "comprehensive") -> str:
+                """Real LLM-powered synthesis (same as researched for cost-perf)."""
+                import asyncio
+                import json
+                analyses = json.loads(analysis_data) if isinstance(analysis_data, str) else [analysis_data]
+                result = asyncio.run(synthesis_engine_with_llm(analyses, mode, model))
+                return json.dumps(result, indent=2)
+        else:
+            @tool
+            def web_search(query: str, depth: str = "basic") -> List[Dict[str, Any]]:
+                """Advanced web search with depth control."""
+                return advanced_web_search(query, depth)
+            
+            @tool
+            def deep_analysis(source_data: str, analysis_type: str = "mixed") -> Dict[str, Any]:
+                """Perform deep analysis on research data."""
+                import json
+                source_dict = json.loads(source_data) if isinstance(source_data, str) else source_data
+                return deep_analysis_tool(source_dict, analysis_type)
+            
+            @tool
+            def synthesis(analysis_data: str, mode: str = "comprehensive") -> Dict[str, Any]:
+                """Synthesize multiple analyses into unified insights."""
+                import json
+                analyses = json.loads(analysis_data) if isinstance(analysis_data, str) else [analysis_data]
+                return synthesis_engine(analyses, mode)
         
         tools = [web_search, deep_analysis, synthesis]
         
@@ -393,12 +538,13 @@ async def create_advanced_research_workflow(config: AdvancedConfig, lg_intercept
             return state
         
         def research_node(state: ResearchState) -> ResearchState:
-            """Advanced research with multi-source search."""
+            """Advanced research with multi-source search. Uses same tools as researched when COST_PERF=1."""
             logger.info("🔍 Advanced research phase")
             
             try:
-                # Perform comprehensive search
-                search_results = advanced_web_search(state["query"], "comprehensive")
+                # Use tool invocation (same path as researched; tools are LLM-powered when COST_PERF=1)
+                res = web_search.invoke({"query": state["query"], "depth": "comprehensive"})
+                search_results = json.loads(res) if isinstance(res, str) else res
                 state["search_results"] = search_results
                 state["current_step"] = "analysis"
                 
@@ -421,16 +567,17 @@ async def create_advanced_research_workflow(config: AdvancedConfig, lg_intercept
             return state
         
         def analysis_node(state: ResearchState) -> ResearchState:
-            """Advanced analysis with multiple methodologies."""
+            """Advanced analysis with multiple methodologies. Uses same tools as researched when COST_PERF=1."""
             logger.info("🔬 Advanced analysis phase")
             
             try:
                 analysis_results = []
                 
-                # Analyze top search results
+                # Use tool invocation (same path as researched; tools are LLM-powered when COST_PERF=1)
                 for result in state["search_results"][:3]:  # Top 3 results
                     try:
-                        analysis = deep_analysis_tool(result, "mixed")
+                        res = deep_analysis.invoke({"source_data": json.dumps(result), "analysis_type": "mixed"})
+                        analysis = json.loads(res) if isinstance(res, str) else res
                         analysis_results.append(analysis)
                     except Exception as e:
                         logger.warning(f"Analysis failed for {result.get('title', 'Unknown')}: {e}")
@@ -456,12 +603,13 @@ async def create_advanced_research_workflow(config: AdvancedConfig, lg_intercept
             return state
         
         def synthesis_node(state: ResearchState) -> ResearchState:
-            """Advanced synthesis with human input."""
+            """Advanced synthesis with human input. Uses same tools as researched when COST_PERF=1."""
             logger.info("🔄 Advanced synthesis phase")
             
             try:
-                # Perform synthesis
-                synthesis_result = synthesis_engine(state["analysis_results"], "comprehensive")
+                # Use tool invocation (same path as researched; tools are LLM-powered when COST_PERF=1)
+                res = synthesis.invoke({"analysis_data": json.dumps(state["analysis_results"]), "mode": "comprehensive"})
+                synthesis_result = json.loads(res) if isinstance(res, str) else res
                 state["agent_outputs"]["synthesis"] = synthesis_result
                 
                 # Request human feedback on synthesis
@@ -1014,9 +1162,13 @@ async def run_cost_perf_mode():
     compiled_workflow, checkpointer = await create_advanced_research_workflow(config, lg_interceptor)
     usage = UsageAggregator()
     thread_id = f"cost-perf-{datetime.now().strftime('%Y%m%d%H%M%S')}"
+    query = "What is 2+2? Reply briefly."
+    input_id = os.environ.get("COST_PERF_INPUT_ID")
+    if input_id:
+        query = query + " [cost-perf-id=" + str(input_id) + "]"
     initial_state = {
         "messages": [],
-        "query": "What is 2+2? Reply briefly.",
+        "query": query,
         "current_step": "planning",
         "search_results": [],
         "analysis_results": [],

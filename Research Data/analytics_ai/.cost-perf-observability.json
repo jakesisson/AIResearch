@@ -1,0 +1,18 @@
+{
+  "prior": {
+    "markers": [
+      "Cost-perf",
+      "create_analysis_plan_node",
+      "durationMs",
+      "variant"
+    ]
+  },
+  "researched": {
+    "markers": [
+      "Cost-perf",
+      "create_analysis_plan_node",
+      "durationMs",
+      "variant"
+    ]
+  }
+}

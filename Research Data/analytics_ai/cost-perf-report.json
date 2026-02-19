@@ -1,0 +1,83 @@
+{
+  "comparison": {
+    "prior": {
+      "durationMs": 919.95,
+      "inputTokens": 1891,
+      "outputTokens": 42,
+      "totalTokens": 1933
+    },
+    "researched": {
+      "durationMs": 809.73,
+      "inputTokens": 1891,
+      "outputTokens": 42,
+      "totalTokens": 1933
+    },
+    "delta": {
+      "durationMs": -110.22000000000003,
+      "totalTokens": 0
+    }
+  },
+  "tests": {
+    "cache_effectiveness": {
+      "prior": {
+        "run1_tokens": 1933,
+        "run2_tokens": 1933,
+        "run1_durationMs": 1076.86,
+        "run2_durationMs": 940.72
+      },
+      "researched": {
+        "run1_tokens": 1933,
+        "run2_tokens": 1933,
+        "run1_durationMs": 977.75,
+        "run2_durationMs": 714.18
+      }
+    },
+    "consistency": {
+      "prior": {
+        "mean_durationMs": 896.23,
+        "stdev": 51.98,
+        "cv": 0.058,
+        "p50_ms": 883.71,
+        "p95_ms": 972.68
+      },
+      "researched": {
+        "mean_durationMs": 845.03,
+        "stdev": 61.38,
+        "cv": 0.0726,
+        "p50_ms": 821.32,
+        "p95_ms": 951.39
+      }
+    },
+    "cost_per_unique_request": {
+      "prior": {
+        "total_tokens": 11615,
+        "ideal_tokens": 5807
+      },
+      "researched": {
+        "total_tokens": 11616,
+        "ideal_tokens": 5809
+      }
+    },
+    "observability": {
+      "prior": {
+        "markers": [
+          "Cost-perf",
+          "create_analysis_plan_node",
+          "durationMs",
+          "variant"
+        ]
+      },
+      "researched": {
+        "markers": [
+          "Cost-perf",
+          "create_analysis_plan_node",
+          "durationMs",
+          "variant"
+        ]
+      }
+    }
+  },
+  "summary": {
+    "all_passed": true
+  }
+}

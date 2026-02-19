@@ -33,6 +33,12 @@ def main():
     env["COST_PERF_VARIANT"] = variant
     if master_env.exists():
         env["COST_PERF_ENV"] = str(master_env.resolve())
+    if os.environ.get("COST_PERF_INPUT_ID"):
+        env["COST_PERF_INPUT_ID"] = os.environ["COST_PERF_INPUT_ID"]
+    if os.environ.get("COST_PERF_FORCE_REFRESH") is not None:
+        env["COST_PERF_FORCE_REFRESH"] = os.environ["COST_PERF_FORCE_REFRESH"]
+
+    print("Cost-perf: advanced_langgraph_features", flush=True)
 
     proc = subprocess.run(
         [PYTHON, "examples/advanced_langgraph_features.py"],

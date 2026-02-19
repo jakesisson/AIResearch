@@ -1,0 +1,10 @@
+{
+  "prior": {
+    "total_tokens": 28090,
+    "ideal_tokens": 14162
+  },
+  "researched": {
+    "total_tokens": 38108,
+    "ideal_tokens": 19230
+  }
+}

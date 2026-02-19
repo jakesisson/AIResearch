@@ -1,0 +1,9 @@
+{
+  "variant": "prior",
+  "durationMs": 868.2,
+  "usage": {
+    "inputTokens": 1891,
+    "outputTokens": 42,
+    "totalTokens": 1933
+  }
+}

@@ -1,9 +1,9 @@
 {
-  "durationMs": 7646.05,
+  "durationMs": 15596.41,
   "usage": {
-    "inputTokens": 0,
-    "outputTokens": 0,
-    "totalTokens": 0
+    "inputTokens": 1786,
+    "outputTokens": 3666,
+    "totalTokens": 5452
   },
   "variant": "prior",
   "timestamp": null

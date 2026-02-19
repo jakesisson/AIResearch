@@ -478,6 +478,18 @@ Python-based analytics AI system using LangGraph for data analysis workflows. Pr
   - Added PostgreSQL database URLs from master.env
   - Added LLM_MODEL_NAME for backward compatibility
 
+#### 6. Cost-perf: Prior Same as Researched (No Mocks)
+- **Purpose**: Cost/performance comparison must run the **same** code path (real Azure OpenAI plan generation) on both prior and researched so metrics are comparable; prior was previously mock-only (0 tokens).
+- **File Modified**: `files/backend_codes.py` (both clones)
+  - **LangChain import fix**: Replaced `from langchain.agents import Tool, initialize_agent` with `from langchain_core.tools import Tool` and `from langchain.agents import initialize_agent` so imports work with langchain 0.3.
+  - **Prior clone only**: When `COST_PERF=1`, `create_analysis_plan_node` now runs the **same** Azure OpenAI function-calling plan generation as the researched clone (same prompt, tools, `azure_client.chat.completions.create`). Added `from openai import AzureOpenAI` and module-level `COST_PERF_PLAN_USAGE = []`; the COST_PERF branch records token usage and returns the same state shape as the researched path.
+- **File Modified**: `run_cost_perf.py` (prior clone only)
+  - Prior script now imports `files.backend_codes` as a module, clears `COST_PERF_PLAN_USAGE` before the run, and after `create_analysis_plan_node` reads usage from `backend_codes.COST_PERF_PLAN_USAGE` to fill `usage` in the output (same pattern as researched clone). No longer hardcodes 0 tokens.
+- **File Modified**: `README-cost-perf.md` (Research Data/analytics_ai)
+  - Updated to state that when `COST_PERF=1` the prior uses the same Azure path as researched for comparable metrics, and that the shared `.venv` must have full project deps (langchain, FAISS, etc.) so both clones can import `files.backend_codes`.
+- **Venv** (Research Data/analytics_ai/.venv): Installed `setuptools` (for `distutils` on Python 3.12) and `langchain-openai>=0.3,<0.4` with compatible `langchain-core>=0.3.61` so Azure client works with the existing langchain 0.3 stack.
+- **Result**: `compare-cost-perf.py` now reports real token usage and duration for both prior and researched (e.g. ~1933 tokens each, duration ~1s); delta is meaningful for comparison.
+
 ### Build Status
 - Dependencies: ✅ Installed successfully for both versions (removed langchain-google-genai, using existing langchain-openai)
 - Code modifications: ✅ Completed for both commit versions
@@ -491,7 +503,7 @@ Python-based analytics AI system using LangGraph for data analysis workflows. Pr
     - `AzureOpenAIEmbeddings` (Azure OpenAI) initializes correctly
     - `AzureOpenAI` client (for function calling) initializes correctly
     - All Azure OpenAI components verified working
-- Note: There is a pre-existing LangChain compatibility issue with `Tool` import from `langchain.agents` (this is not related to our Azure OpenAI changes). The Azure OpenAI components we modified all build and initialize correctly.
+- Note: LangChain import for `Tool` was updated (see §6): use `from langchain_core.tools import Tool` and `from langchain.agents import initialize_agent` for langchain 0.3 compatibility.
 - Note: The project uses FAISS vector stores that were created with Google Gemini embeddings. These may need to be regenerated with Azure OpenAI embeddings for optimal performance, but the code will work with existing vector stores. The project provides SQL generation, data visualization, and interpretation capabilities for analytics workflows.
 
 ### Versions Modified
@@ -611,6 +623,18 @@ TypeScript/Node.js monorepo (Turborepo) for AI-powered resume and cover letter g
   - Added PostgreSQL database URLs from `master.env`
   - Kept `OPENAI_API_KEY` as commented legacy option for backward compatibility
 
+#### 5. Cost-perf (resume LLM path – prior vs researched)
+- **Purpose**: Compare cost (token usage) and performance (duration) of the resume generation LLM path between prior and researched commits; both run the same logical operation (one LLM call with minimal fixed test data).
+- **File Added**: `packages/core/src/main/shared/infrastructure/langchain/UsageAggregator.ts` (both clones)
+  - `BaseCallbackHandler` that implements `handleLLMEnd` to read token usage from `LLMResult` (llmOutput or generations) and append to exported `COST_PERF_USAGE` array.
+- **Prior clone**: `packages/core/src/main/shared/infrastructure/langchain/index.ts` — export `UsageAggregator`. `packages/core/src/main/resume/infrastructure/langchain/PromptRunner.ts` — when `COST_PERF=1`, bypass cache and pass `callbacks: [new UsageAggregator()]` to `chain.invoke()`.
+- **Researched clone**: `LangchainPromptRunner.ts` — when `COST_PERF`, pass `callbacks: [new UsageAggregator()]` to `chain.invoke()`; export `UsageAggregator` from langchain index.
+- **File Added**: `packages/core/src/main/scripts/cost-perf.ts` (both clones)
+  - Sets `COST_PERF=1`, calls `validateEnvironment()`, clears `COST_PERF_USAGE`, runs `new PromptRunner().run(MINIMAL_PARSED_DATA, true)`, sums usage, writes `cost-perf-results.json` to `process.cwd()` (clone root).
+- **Build**: Both clones’ `packages/core/package.json` build script extended to produce `dist/cost-perf.js` via esbuild from `src/main/scripts/cost-perf.ts`.
+- **Research Data/aruizca-resume**: `compare-cost-perf.py` loads master.env, runs build + `node packages/core/dist/cost-perf.js` in prior then researched clone, writes `compare-cost-perf-report.json` (prior, researched, delta: durationMs, totalTokens). `README-cost-perf.md` documents how to run the compare and single-clone cost-perf.
+- **Requirements**: Azure OpenAI env (e.g. master.env); pnpm or npm + Node to build and run the cost-perf script.
+
 ### Build Status
 - Dependencies: ✅ Installed successfully for both versions (including `jszip` and `@types/jszip`)
 - Code modifications: ✅ Completed for both commit versions
@@ -622,7 +646,7 @@ TypeScript/Node.js monorepo (Turborepo) for AI-powered resume and cover letter g
 - Build: ✅ **Both versions build successfully without errors**
   - `tsc` compilation: ✅ Passes
   - `esbuild` bundling: ✅ Completes successfully
-  - All output files generated: `dist/index.js`, `dist/resume.js`, `dist/cover-letter.js`
+  - All output files generated: `dist/index.js`, `dist/resume.js`, `dist/cover-letter.js`, `dist/cost-perf.js`
 - Code verification: ✅ **Azure OpenAI configuration verified in source code and runtime**
   - `azureOpenAIApiKey` parameter present
   - `AZURE_OPENAI_ENDPOINT` validation present

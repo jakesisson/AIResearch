@@ -1,0 +1,16 @@
+{
+  "prior": {
+    "mean_durationMs": 896.23,
+    "stdev": 51.98,
+    "cv": 0.058,
+    "p50_ms": 883.71,
+    "p95_ms": 972.68
+  },
+  "researched": {
+    "mean_durationMs": 845.03,
+    "stdev": 61.38,
+    "cv": 0.0726,
+    "p50_ms": 821.32,
+    "p95_ms": 951.39
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "prior": {
+    "markers": [
+      "Calling OpenAI",
+      "Langchain"
+    ]
+  },
+  "researched": {
+    "markers": [
+      "Executing",
+      "Generate JSON Resume"
+    ]
+  }
+}

@@ -6,7 +6,8 @@ import sqlite3
 import pandas as pd
 import logging
 from langgraph.graph import StateGraph, END
-from langchain.agents import Tool, initialize_agent
+from langchain_core.tools import Tool
+from langchain.agents import initialize_agent
 from langchain_experimental.tools.python.tool import PythonAstREPLTool
 import os
 import base64
@@ -31,6 +32,9 @@ azure_openai_api_key = os.getenv("AZURE_OPENAI_API_KEY")
 azure_openai_endpoint = os.getenv("AZURE_OPENAI_ENDPOINT", "")
 azure_openai_api_version = os.getenv("AZURE_OPENAI_API_VERSION", "2025-01-01-preview")
 azure_openai_deployment = os.getenv("AZURE_OPENAI_API_DEPLOYMENT") or os.getenv("MODEL_ID", "gpt-4.1")
+
+# Cost-perf: token usage from create_analysis_plan_node (when COST_PERF=1)
+COST_PERF_PLAN_USAGE = []
 
 # Azure OpenAI embeddings
 embeddings = AzureOpenAIEmbeddings(
@@ -299,6 +303,13 @@ def create_analysis_plan_node(state: MyState) -> MyState:
                 temperature=0
             )
             logging.info(f"Azure OpenAIからのレスポンス: {response}")
+
+            if os.environ.get("COST_PERF") and getattr(response, "usage", None):
+                u = response.usage
+                COST_PERF_PLAN_USAGE.append({
+                    "input_tokens": getattr(u, "input_tokens", None) or getattr(u, "prompt_tokens", 0),
+                    "output_tokens": getattr(u, "output_tokens", None) or getattr(u, "completion_tokens", 0),
+                })
 
             # Function calling response handling
             message = response.choices[0].message

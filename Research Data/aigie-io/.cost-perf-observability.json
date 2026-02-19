@@ -1,0 +1,18 @@
+{
+  "prior": {
+    "markers": [
+      "Cost-perf",
+      "advanced_langgraph_features",
+      "durationMs",
+      "variant"
+    ]
+  },
+  "researched": {
+    "markers": [
+      "Cost-perf",
+      "advanced_langgraph_features",
+      "durationMs",
+      "variant"
+    ]
+  }
+}

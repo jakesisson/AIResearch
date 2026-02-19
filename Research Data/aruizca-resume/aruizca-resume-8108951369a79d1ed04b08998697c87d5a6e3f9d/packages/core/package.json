@@ -6,7 +6,7 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsc && esbuild src/main/index.ts --bundle --platform=node --format=esm --outfile=dist/index.js --external:@langchain/* --external:openai --external:playwright --external:papaparse && esbuild src/main/resume/service/resume-generation-script.ts --bundle --platform=node --format=esm --outfile=dist/resume.js && esbuild src/main/cover-letter/service/cover-letter-generation-script.ts --bundle --platform=node --format=esm --outfile=dist/cover-letter.js",
+    "build": "tsc && esbuild src/main/index.ts --bundle --platform=node --format=esm --outfile=dist/index.js --external:@langchain/* --external:openai --external:playwright --external:papaparse && esbuild src/main/resume/service/resume-generation-script.ts --bundle --platform=node --format=esm --outfile=dist/resume.js && esbuild src/main/cover-letter/service/cover-letter-generation-script.ts --bundle --platform=node --format=esm --outfile=dist/cover-letter.js && esbuild src/main/scripts/cost-perf.ts --bundle --platform=node --format=esm --outfile=dist/cost-perf.js --external:@langchain/* --external:openai --external:playwright --external:papaparse",
     "build:lib": "esbuild src/main/index.ts --bundle --platform=node --format=esm --outfile=dist/index.js --external:@langchain/* --external:openai --external:playwright --external:papaparse",
     "build:lib:watch": "esbuild src/main/index.ts --bundle --platform=node --format=esm --outfile=dist/index.js --external:@langchain/* --external:openai --external:playwright --external:papaparse --watch",
     "build:types": "tsc",

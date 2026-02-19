@@ -1,18 +1,18 @@
 {
   "prior": {
-    "durationMs": 7646.05,
-    "inputTokens": 0,
-    "outputTokens": 0,
-    "totalTokens": 0
+    "durationMs": 16587.57,
+    "inputTokens": 1614,
+    "outputTokens": 3194,
+    "totalTokens": 4808
   },
   "researched": {
-    "durationMs": 17580.36,
-    "inputTokens": 2786,
-    "outputTokens": 3910,
-    "totalTokens": 6696
+    "durationMs": 18337.98,
+    "inputTokens": 2604,
+    "outputTokens": 3670,
+    "totalTokens": 6274
   },
   "delta": {
-    "durationMs": 9934.310000000001,
-    "totalTokens": 6696
+    "durationMs": 1750.4099999999999,
+    "totalTokens": 1466
   }
 }

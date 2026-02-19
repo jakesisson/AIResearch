@@ -3,6 +3,7 @@ import { PromptTemplate } from '@langchain/core/prompts';
 import { Runnable } from '@langchain/core/runnables';
 import { OpenAICache } from '../cache';
 import { performanceMonitor } from '../utils';
+import { UsageAggregator } from './UsageAggregator';
 
 export interface PromptRunnerConfig<TInput, TOutput> {
   /**
@@ -97,14 +98,11 @@ export class LangchainPromptRunner<TInput, TOutput> {
 
       console.log(`🤖 Executing ${operationName}...`);
 
-      // Execute the LLM operation with performance monitoring
+      const chain = await this.createChain();
+      const runnableConfig = process.env.COST_PERF ? { callbacks: [new UsageAggregator()] } : {};
       const result = await performanceMonitor.trackOperation(
         operationName,
-        async () => {
-          // Create and execute chain
-          const chain = await this.createChain();
-          return await chain.invoke(promptVariables);
-        },
+        async () => chain.invoke(promptVariables, runnableConfig),
         { logToConsole: true }
       );
 

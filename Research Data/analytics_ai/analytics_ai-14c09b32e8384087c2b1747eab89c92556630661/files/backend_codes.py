@@ -6,7 +6,8 @@ import sqlite3
 import pandas as pd
 import logging
 from langgraph.graph import StateGraph, END
-from langchain.agents import Tool, initialize_agent
+from langchain_core.tools import Tool
+from langchain.agents import initialize_agent
 from langchain_experimental.tools.python.tool import PythonAstREPLTool
 import os
 import base64
@@ -21,6 +22,7 @@ import japanize_matplotlib
 import seaborn as sns
 from langchain_openai import AzureOpenAIEmbeddings, ChatOpenAI
 import json # import jsonを先頭に移動しました
+from openai import AzureOpenAI
 
 # 基本的なロギングを設定
 logging.basicConfig(level=logging.INFO)
@@ -30,6 +32,9 @@ azure_openai_api_key = os.getenv("AZURE_OPENAI_API_KEY")
 azure_openai_endpoint = os.getenv("AZURE_OPENAI_ENDPOINT", "")
 azure_openai_api_version = os.getenv("AZURE_OPENAI_API_VERSION", "2025-01-01-preview")
 azure_openai_deployment = os.getenv("AZURE_OPENAI_API_DEPLOYMENT") or os.getenv("MODEL_ID", "gpt-4.1")
+
+# Cost-perf: token usage when COST_PERF=1 (prior uses same Azure path as researched for comparison)
+COST_PERF_PLAN_USAGE = []
 
 # Azure OpenAI embeddings
 embeddings = AzureOpenAIEmbeddings(
@@ -166,11 +171,184 @@ def clear_data_node(state: MyState):
 def create_analysis_plan_node(state: MyState) -> MyState:
     user_query = state.get("input", "")
     user_clarification = state.get("user_clarification")
+    intent_list = state.get("intent_list", [])
+
+    # Cost-perf: use same Azure OpenAI plan generation as researched for comparable metrics
+    if os.environ.get("COST_PERF") == "1":
+        try:
+            azure_client = AzureOpenAI(
+                api_key=azure_openai_api_key,
+                azure_endpoint=azure_openai_endpoint,
+                api_version=azure_openai_api_version
+            )
+            functions = [
+                {
+                    "name": "create_plan",
+                    "description": "ユーザーの要求に基づいて分析計画を作成します。",
+                    "parameters": {
+                        "type": "object",
+                        "properties": {
+                            "plan_steps": {
+                                "type": "array",
+                                "items": {
+                                    "type": "object",
+                                    "properties": {
+                                        "action": {
+                                            "type": "string",
+                                            "description": "実行するアクション（clarify, check_history, sql, chart, interpret, data_processing）"
+                                        },
+                                        "details": {
+                                            "description": "アクションの詳細。clarifyとsqlは文字列、check_historyは文字列の配列。"
+                                        }
+                                    },
+                                    "required": ["action", "details"]
+                                }
+                            }
+                        },
+                        "required": ["plan_steps"]
+                    }
+                }
+            ]
+            SYSTEM_PROMPT = """あなたはAIデータアナリストです。ユーザーの要求を分析し、ステップバイステップの分析計画を作成してください。
+利用可能なアクションは次のとおりです:
+- clarify: ユーザーに詳細を質問します。 (例: "期間の指定を求める")
+  - "details": (string) ユーザーへの質問文。
+- check_history: 過去に同様のデータが取得されているか確認します。 (例: "'月次売上データ'を確認")
+  - "details": (array of strings) 確認するデータ要件のリスト。
+- sql: データベースからデータを取得します。 (例: "'特定の製品の売上データを取得'")
+  - "details": (string) SQLで取得する具体的なデータの内容。
+- chart: 取得したデータからグラフを作成します。 (例: "'売上データを棒グラフで表示'")
+  - "details": (string) グラフ作成の指示 (例: "売上データを棒グラフで表示", "DF_KEY['売上データ'] を使用して時系列グラフを作成")。
+- interpret: データやグラフを解釈し、洞察を提供します。 (例: "'売上傾向を分析する'")
+  - "details": (string) 解釈の焦点や内容。
+- data_processing: 既存のデータを加工・変換します。 (例: "'売上データに利益率列を追加する'")
+  - "details": (string) データ加工の具体的な指示。処理対象のDataFrameを指定するには `DF_KEY['your_dataframe_key_in_latest_df']` を含めてください。
+
+以下は計画作成の例です:
+
+例1: 曖昧なリクエスト
+ユーザーのクエリ: "Show me sales data."
+生成されるプラン:
+```json
+[
+  {"action": "clarify", "details": "Could you please specify the time period for the sales data (e.g., last month, last quarter)?"}
+]
+```
+
+例2: 複数ステップのリクエスト
+ユーザーのクエリ: "Get the total sales for product X last month, then visualize it as a bar chart, and finally interpret the chart."
+生成されるプラン:
+```json
+[
+  {"action": "check_history", "details": ["total sales for product X last month"]},
+  {"action": "sql", "details": "total sales for product X last month"},
+  {"action": "chart", "details": "bar chart of total sales for product X last month"},
+  {"action": "interpret", "details": "interpret the bar chart of total sales for product X last month"}
+]
+```
+
+例3: データ加工を含むリクエスト
+ユーザーのクエリ: "Load the customer dataset, then add a new column 'age_group' based on the 'age' column (e.g., <18: Teen, 18-65: Adult, >65: Senior), and show the first 5 rows of the processed data."
+生成されるプラン:
+```json
+[
+  {"action": "check_history", "details": ["customer dataset"]},
+  {"action": "sql", "details": "customer dataset"},
+  {"action": "data_processing", "details": "Add a new column 'age_group' to DF_KEY['customer dataset'] based on the 'age' column (e.g., <18: Teen, 18-65: Adult, >65: Senior)"},
+  {"action": "interpret", "details": "Describe the first 5 rows of the processed customer dataset (DF_KEY['customer dataset']) including the new 'age_group' column."}
+]
+```
+
+必ずJSON形式で plan_steps を含む応答を生成してください。
+"""
+            prompt_parts = [SYSTEM_PROMPT]
+            query_history = state.get("query_history", [])
+            MAX_HISTORY_LEN = 5
+            if query_history:
+                history_start_index = max(0, len(query_history) - MAX_HISTORY_LEN - 1)
+                relevant_history = query_history[history_start_index:-1] if len(query_history) > 1 else []
+                if relevant_history:
+                    formatted_history = "\n\n過去の関連する問い合わせ履歴 (新しいものが最後):\n"
+                    for hist_item in relevant_history:
+                        formatted_history += f"- {hist_item}\n"
+                    prompt_parts.append(formatted_history)
+            prompt_parts.append("\nユーザーの現在のクエリ: ")
+            prompt_parts.append(user_query)
+            if user_clarification:
+                prompt_parts.append(f"\nユーザーからの追加情報: {user_clarification}")
+                original_query = state.get("complex_analysis_original_query", "")
+                if original_query and original_query != user_query:
+                    prompt_parts.append(f"\n(この追加情報は、以前のクエリ「{original_query}」に関連しています)")
+            final_prompt_string = "".join(prompt_parts)
+            logging.info(f"Azure OpenAIへの最終プロンプト:\n{final_prompt_string}")
+            response = azure_client.chat.completions.create(
+                model=azure_openai_deployment,
+                messages=[
+                    {"role": "system", "content": SYSTEM_PROMPT},
+                    {"role": "user", "content": final_prompt_string}
+                ],
+                tools=[{"type": "function", "function": functions[0]}],
+                tool_choice={"type": "function", "function": {"name": "create_plan"}},
+                temperature=0
+            )
+            logging.info(f"Azure OpenAIからのレスポンス: {response}")
+            if getattr(response, "usage", None):
+                u = response.usage
+                COST_PERF_PLAN_USAGE.append({
+                    "input_tokens": getattr(u, "input_tokens", None) or getattr(u, "prompt_tokens", 0),
+                    "output_tokens": getattr(u, "output_tokens", None) or getattr(u, "completion_tokens", 0),
+                })
+            message = response.choices[0].message
+            if message.tool_calls and len(message.tool_calls) > 0:
+                function_call = message.tool_calls[0].function
+                if function_call.name == "create_plan":
+                    function_args = json.loads(function_call.arguments)
+                    if "plan_steps" not in function_args:
+                        raise ValueError("Azure OpenAIレスポンスのfunction_call.argumentsにplan_stepsが含まれていません。")
+                    plan_steps = function_args["plan_steps"]
+                else:
+                    raise ValueError(f"予期しない関数名: {function_call.name}")
+            else:
+                raw_text_response = message.content if message.content else "利用可能なテキストレスポンスがありません。"
+                logging.warning(f"Azure OpenAIレスポンスにfunction_callが含まれていません。テキストレスポンスを試みます: {raw_text_response}")
+                try:
+                    parsed_plan_from_text = json.loads(raw_text_response)
+                    if not (isinstance(parsed_plan_from_text, list) and
+                            all(isinstance(step, dict) and "action" in step and "details" in step for step in parsed_plan_from_text)):
+                        raise ValueError("テキストレスポンスは有効なプラン形式ではありません。")
+                    plan_steps = parsed_plan_from_text
+                except (json.JSONDecodeError, ValueError) as e_text_parse:
+                    raise ValueError(f"モデル応答の解析に失敗しました: {e_text_parse}") from e_text_parse
+            if isinstance(plan_steps, str):
+                plan_steps = json.loads(plan_steps)
+            if not isinstance(plan_steps, list):
+                raise ValueError(f"plan_stepsがリスト形式ではありません。型: {type(plan_steps)}")
+            for step in plan_steps:
+                if not (isinstance(step, dict) and "action" in step and "details" in step):
+                    raise ValueError("分析プラン内の各ステップが正しい形式ではありません（'action'と'details'必須）。")
+            parsed_plan = plan_steps
+            current_input = state.get("input", "")
+            original_query_for_complex = state.get("complex_analysis_original_query", current_input if parsed_plan else None)
+            if user_clarification and not state.get("complex_analysis_original_query"):
+                original_query_for_complex = current_input
+            return {
+                **state,
+                "complex_analysis_original_query": original_query_for_complex,
+                "analysis_plan": parsed_plan,
+                "current_plan_step_index": 0 if parsed_plan else None,
+                "awaiting_step_confirmation": False,
+                "user_clarification": None,
+                "condition": "plan_generated" if parsed_plan else "empty_plan_generated",
+                "error": None
+            }
+        except Exception as e_api:
+            logging.error(f"Azure OpenAI API呼び出し中にエラーが発生しました: {e_api}", exc_info=True)
+            return {**state, "analysis_plan": None, "current_plan_step_index": None, "user_clarification": None,
+                    "condition": "plan_generation_failed", "error": str(e_api)}
 
     # モッキング戦略
     mock_plan = []
     plan_json_str = ""
-    intent_list = state.get("intent_list", [])
 
     if user_clarification:
         original_query_for_llm = state.get("complex_analysis_original_query", user_query)

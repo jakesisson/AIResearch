@@ -1698,9 +1698,13 @@ async def run_cost_perf_mode():
     compiled_workflow, checkpointer = await create_advanced_research_workflow(config, lg_interceptor)
     usage = UsageAggregator()
     thread_id = f"cost-perf-{datetime.now().strftime('%Y%m%d%H%M%S')}"
+    query = "What is 2+2? Reply briefly."
+    input_id = os.environ.get("COST_PERF_INPUT_ID")
+    if input_id:
+        query = query + " [cost-perf-id=" + str(input_id) + "]"
     initial_state = {
         "messages": [],
-        "query": "What is 2+2? Reply briefly.",
+        "query": query,
         "current_step": "planning",
         "next_step": None,
         "research_data": [],

@@ -1,0 +1,79 @@
+{
+  "comparison": {
+    "prior": {
+      "durationMs": 3562.76,
+      "inputTokens": 216,
+      "outputTokens": 505,
+      "totalTokens": 721
+    },
+    "researched": {
+      "durationMs": 3568.46,
+      "inputTokens": 216,
+      "outputTokens": 570,
+      "totalTokens": 786
+    },
+    "delta": {
+      "durationMs": 5.7,
+      "totalTokens": 65
+    }
+  },
+  "tests": {
+    "cache_effectiveness": {
+      "prior": {
+        "run1_tokens": 514,
+        "run2_tokens": 0,
+        "run1_durationMs": 2009.98,
+        "run2_durationMs": 4.49
+      },
+      "researched": {
+        "run1_tokens": 726,
+        "run2_tokens": 0,
+        "run1_durationMs": 2784.08,
+        "run2_durationMs": 4.22
+      }
+    },
+    "consistency": {
+      "prior": {
+        "mean_durationMs": 1920.77,
+        "stdev": 106.98,
+        "cv": 0.0557,
+        "p50_ms": 1950.24,
+        "p95_ms": 2066.48
+      },
+      "researched": {
+        "mean_durationMs": 1957.29,
+        "stdev": 155.32,
+        "cv": 0.0794,
+        "p50_ms": 1954.32,
+        "p95_ms": 2129.84
+      }
+    },
+    "cost_per_unique_request": {
+      "prior": {
+        "total_tokens": 1520,
+        "ideal_tokens": 1520
+      },
+      "researched": {
+        "total_tokens": 1452,
+        "ideal_tokens": 1452
+      }
+    },
+    "observability": {
+      "prior": {
+        "markers": [
+          "Calling OpenAI",
+          "Langchain"
+        ]
+      },
+      "researched": {
+        "markers": [
+          "Executing",
+          "Generate JSON Resume"
+        ]
+      }
+    }
+  },
+  "summary": {
+    "all_passed": true
+  }
+}
