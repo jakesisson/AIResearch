@@ -1,0 +1,29 @@
+{
+  "project": "Research Data/cm3070-lawtime",
+  "repo": "lothronx/cm3070-lawtime",
+  "prior_commit": "331aa34eb5e6f7447e4276a816095d8c4c440ed5",
+  "researched_commit": "c72917ff1975277c7462ab0babc37b69d0a49fba",
+  "compare_url": "https://github.com/lothronx/cm3070-lawtime/compare/331aa34eb5e6f7447e4276a816095d8c4c440ed5...c72917ff1975277c7462ab0babc37b69d0a49fba",
+  "ahead_by": 1,
+  "behind_by": 0,
+  "changed_files": [
+    {
+      "path": "server/services/task_service.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "patch": "@@ -139,7 +139,7 @@ async def propose_tasks(\n         try:\n             # Invoke the LangGraph agent - it will handle all validation and initialization\n             logger.info(f\"Invoking LangGraph agent with source_type: {source_type}\")\n-            final_state = graph.invoke(initial_state)\n+            final_state = await graph.ainvoke(initial_state)\n \n             # Extract proposed tasks from final state\n             proposed_tasks = final_state.get(\"proposed_tasks\", [])",
+      "patch_lines": [
+        "@@ -139,7 +139,7 @@ async def propose_tasks(\n",
+        "         try:\n",
+        "             # Invoke the LangGraph agent - it will handle all validation and initialization\n",
+        "             logger.info(f\"Invoking LangGraph agent with source_type: {source_type}\")\n",
+        "-            final_state = graph.invoke(initial_state)\n",
+        "+            final_state = await graph.ainvoke(initial_state)\n",
+        " \n",
+        "             # Extract proposed tasks from final state\n",
+        "             proposed_tasks = final_state.get(\"proposed_tasks\", [])\n"
+      ]
+    }
+  ]
+}
